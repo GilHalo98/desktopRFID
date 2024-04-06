@@ -1,0 +1,143 @@
+
+@config "../tailwind.config.js";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind variants;
+
+@layer base {
+    ::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .tituloLogin {
+        font-size: 40px;
+        color: #FFFFFF;
+        text-align: center;
+    }
+
+    .separadorTituloLogin {
+        width: 100%;
+        height: 5px;
+        background-color: #FFBC26;
+    }
+
+    .separacionNavegacion {
+        width: 100%;
+        height: 2px;
+        background-color: #FFBC26;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .inputLogin {
+        text-align: center;
+        color: #2C3136
+    }
+
+    .cardLogin {
+        margin-left: 10%;
+        margin-right: 10%;
+        padding: 10vh;
+        font-weight: bold;
+        min-width: 500px;
+        min-height: 500px;
+    }
+
+    .cabeceraTablaRegistros {
+        border-color: #FFBC26;
+        border-bottom-width: 14px;
+    }
+
+    .tituloModalAlerta {
+        font-size: 25px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .tituloModalOpcionesTabla {
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .cardModalAlerta {
+        color: white;
+    }
+
+    .tarjetaDatos {
+        padding-top: 10px;
+    }
+
+    .sidebar {
+        text-align: center;
+        float: left;
+        height: 100vh;
+        width: 20%;
+        position: sticky;
+        top: 0px;
+        padding: 10px;
+    }
+
+    .botonLogout {
+        position: absolute;
+        bottom: 2vh;
+        left: 25%;
+        width: 50%;
+    }
+
+    .botonDivicionSubPaginas {
+        border: none;
+        text-align: left;
+    }
+
+    .botonIcono {
+        border: none;
+    }
+
+    @keyframes mostrarAlerta {
+        from {
+            top: -20%;
+        }
+        to {
+            top: 10%;
+        }
+    }
+
+    .componenteAlerta {
+        top: 10%;
+        width: 50%;
+        left: 25%;
+        position: absolute;
+        z-index: 1;
+        animation-name: mostrarAlerta;
+        animation-duration: 2s;
+    }
+
+    .tituloAlerta {
+        font-size: 30px;
+        text-align: center;
+        padding-bottom: 10px;
+        color: #DB2843;
+    }
+
+    .contenidoAlerta {
+        color: #DB2843;
+        padding-top: 10px;
+        text-align: center;
+    }
+
+    .cardEmpleado {
+        color: #FFFFFF;
+        margin-bottom: 10px;
+    }
+}
+
+@layer components {
+}
+
+@layer utilities {
+}
+
+@layer variants {
+}
