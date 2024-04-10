@@ -17,7 +17,7 @@ import { RespuestaConsultaDispositivos } from '../../../utils/API/respuestas/con
 
 // Interfaz con la API.
 import { funcionRefresh } from '../../../utils/refresh';
-import { GenerarTokenIoT } from '../../../utils/API/interface/IoT';
+import { GenerarTokenDispositivo } from '../../../utils/API/interface/dispositivo';
 
 // Funciones del form.
 import { guardarConfiguracion } from './logic/guardarConfiguracionIoT';
@@ -86,7 +86,7 @@ export default function MenuGuardarConfiguracionIoT(
 
     // Generamos la API KEY del dispositivo.
     React.useEffect(() => {
-        GenerarTokenIoT(
+        GenerarTokenDispositivo(
             props.registro.id,
             setToken
         );

@@ -9,7 +9,7 @@ import { funcionRefresh } from '../../../utils/refresh';
 
 // Interfaz de API.
 import { ConsultaZona } from '../../../utils/API/interface/zona';
-import { ConsultaIoT, RemoverIoT } from '../../../utils/API/interface/IoT';
+import { ConsultaDispositivo, RemoverDispositivo } from '../../../utils/API/interface/dispositivo';
 import { ConsultaTipoDispositivo } from '../../../utils/API/interface/tipoDispositivo';
 
 // Componentes propios.
@@ -69,7 +69,7 @@ export default function TablaDispositivos(
 
         setListaRegistros([]);
 
-        ConsultaIoT(
+        ConsultaDispositivo(
             elementos,
             offset,
             idDispositivo,
@@ -293,7 +293,7 @@ export default function TablaDispositivos(
                     setEstadoModalRemoverRegistro(!estadoModalRemoverRegistro);
                 }}
                 onOk={(idRegistro: number) => {
-                    RemoverIoT(idRegistro);
+                    RemoverDispositivo(idRegistro);
                     funcionRefresh(refresh, setRefresh);
                 }}
                 onRechazar={() => {}}

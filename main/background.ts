@@ -4,7 +4,11 @@ import serve from 'electron-serve'
 import { createWindow } from './helpers'
 
 // Manipulación de puerto serial
-import { ByteLengthParser, ReadlineParser, SerialPort } from 'serialport';
+import {
+    ByteLengthParser, 
+    ReadlineParser,
+    SerialPort
+} from 'serialport';
 
 // Para la conexion al servidor socket.
 import { io } from 'socket.io-client';
@@ -16,6 +20,12 @@ import {
     EVENTOS_GUARDADO_CONFIGURACION_IOT
 } from './enums';
 
+// Controladores de IPC.
+import {
+    explorarPuertos,
+    guardarDatosTarjeta
+} from './controladores/controladorSerial';
+
 const isProd = process.env.NODE_ENV === 'production'
 
 const colaOperaciones = [];
@@ -26,14 +36,16 @@ let socket = undefined;
 
 let listaClientes = [];
 
+let puertoSerial = null;
+
 if (isProd) {
-    serve({ directory: 'app' })
+    serve({ directory: 'app' });
 } else {
-    app.setPath('userData', `${app.getPath('userData')} (development)`)
+    app.setPath('userData', `${app.getPath('userData')} (development)`);
 }
 
 ;(async () => {
-    await app.whenReady()
+    await app.whenReady();
 
     const mainWindow = createWindow('main', {
         width: 1000,
@@ -41,148 +53,24 @@ if (isProd) {
         webPreferences: {
         preload: path.join(__dirname, 'preload.js'),
         },
-    })
+    });
 
     if (isProd) {
-        await mainWindow.loadURL('app://./')
+        await mainWindow.loadURL('app://./');
     } else {
-        const port = process.argv[2]
-        await mainWindow.loadURL(`http://localhost:${port}/`)
+        const port = process.argv[2];
+        await mainWindow.loadURL(`http://localhost:${port}/`);
     }
 })()
 
 app.on('window-all-closed', () => {
-    app.quit()
-})
+    app.quit();
+});
 
 // Exploramos los puertos seriales disponibles.
-ipcMain.on('explorar_puertos_serial', async (
-    evento,
-    mostrarTodosLosPuertos
-) => {
-    // Listamos los puertos seriales.
-    const puertos = await SerialPort.list();
+ipcMain.on('explorar_puertos_serial', explorarPuertos);
 
-    // Lista de puertos filtrados.
-    const puertosFiltrados = [];
-
-    // Si se pasa el parametro de filtrado de puertos.
-    if(!mostrarTodosLosPuertos) {
-        // Filtramos los puertos.
-        puertos.map((puerto) => {
-            if(!puerto.path.includes('ttyS')) {
-                puertosFiltrados.push(puerto);
-            }
-        });
-
-        // Retornamos los puertos filtrados
-        evento.reply('puertos_seriales_encontrados', puertosFiltrados);
-
-    } else {
-        // Retornamos los puertos encontrados.
-        evento.reply('puertos_seriales_encontrados', puertos);
-    }
-});
-
-ipcMain.on('guardar_datos_tarjeta', async (
-    evento,
-    args
-) => {
-    console.log(args.datosDispositivo);
-    console.log(args.registro);
-
-    // Se maneja por contexto
-    const puerto = new SerialPort(args.datosDispositivo, (callback) => {
-        console.log('Conexión a puerto establecido');
-
-        console.log(callback);
-    });
-    
-    const parser = puerto.pipe(new ReadlineParser({ delimiter: '\r\n' }));
-
-    // Esperamos por el evento del puerto abierto.
-    puerto.on("open", () => {
-        console.log("-- Connection opened --");
-    });
-
-    // Si recivimos datos, los mostramos.
-    parser.on('data', (respuesta) => { 
-        console.log(respuesta);
-
-        if(respuesta == FLAGS_DISPOSITIVO.INICIALIZACION_TERMINADA) {
-            console.log('inicializacion del dispositivo terminada');
-            parser.emit('iniciar_envio_datos');
-        }
-
-        if(respuesta == FLAGS_DISPOSITIVO.ESCRITURA_TERMINADA) {
-            console.log('escritura de datos terminada');
-            /**
-             * En este caso se mandara el evento a la cola de
-             * operaciones desde el handler del evento se extraera de la
-             * cola y se llamara al handler.
-             */
-            const operacion = colaOperaciones.shift();
-            parser.emit(operacion);
-        }
-
-        if(respuesta == FLAGS_DISPOSITIVO.OPERACION_TERMINADA) {
-            console.log('puerto cerrado');
-            puerto.close();
-        }
-    });
-
-    parser.once('iniciar_envio_datos', () => {
-        puerto.write(
-            EVENTOS_GUARDADO_DATOS_TARJETA.INICIAR_GUARDADO_DATOS,
-            'ascii'
-        );
-        puerto.drain((error) => {    
-            colaOperaciones.push('enviar_id');
-        });
-    });
-
-    parser.once('enviar_id', () => {
-        puerto.write(
-            EVENTOS_GUARDADO_DATOS_TARJETA.ID_ENVIADO,
-            'ascii'
-        );
-        puerto.write(
-            args.registro.id.toString(), 
-            'ascii'
-        );
-        puerto.drain((error) => {
-            colaOperaciones.push('enviar_autorizacion');
-        });
-    });
-
-    parser.once('enviar_autorizacion', () => {
-        puerto.write(
-            EVENTOS_GUARDADO_DATOS_TARJETA.AUTORIZACION_ENVIADO,
-            'ascii'
-        );
-        puerto.write(
-            args.registro.rol.permiso.autorizacion.toString(),
-            'ascii'
-        );
-        puerto.drain((error) => {
-            colaOperaciones.push('terminar_envio_datos');
-        });
-    });
-
-    parser.once('terminar_envio_datos', () => {
-        puerto.write(
-            EVENTOS_GUARDADO_DATOS_TARJETA.TERMINAR_GUARDADO_DATOS,
-            'ascii'
-        );
-
-        puerto.end();
-        puerto.drain();
-    });
-
-    parser.on("close", () => {
-        console.log('puerto cerrado');
-    });
-});
+ipcMain.on('guardar_datos_tarjeta', guardarDatosTarjeta);
 
 ipcMain.on('guardar_configuracion_IoT', async (
     evento,

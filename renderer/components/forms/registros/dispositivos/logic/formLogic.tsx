@@ -1,4 +1,4 @@
-import { ModificarIoT, RegistrarIoT } from "../../../../../utils/API/interface/IoT";
+import { ModificarDispositivo, RegistrarDispositivo } from "../../../../../utils/API/interface/dispositivo";
 
 
 function guardarRegistro(evento) {
@@ -12,7 +12,7 @@ function guardarRegistro(evento) {
     datosRegistro.append('idZonaVinculada', evento.target[1].value);
     datosRegistro.append('idTipoDispositivoVinculado', evento.target[2].value);
 
-    RegistrarIoT(datosRegistro);
+    RegistrarDispositivo(datosRegistro);
 };
 
 function modificarRegistro(evento, idRegistro: number) {
@@ -26,7 +26,7 @@ function modificarRegistro(evento, idRegistro: number) {
     datosModificaion.append('idZonaVinculada', evento.target[1].value);
     datosModificaion.append('idTipoDispositivoVinculado', evento.target[2].value);
 
-    ModificarIoT(idRegistro, datosModificaion);
+    ModificarDispositivo(idRegistro, datosModificaion);
 };
 
 export {

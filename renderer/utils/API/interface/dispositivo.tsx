@@ -1,13 +1,13 @@
 // Importamos los request.
 import {
-    GetIoT,
-    PostIoT,
-    DeleteIoT,
-    PutIoT,
-    GetTokenIoT
-} from "../request/IoT";
+    GetDispositivo,
+    PostDispositivo,
+    DeleteDispositivo,
+    PutDispositivo,
+    GetTokenDispositivo
+} from "../request/dispositivo";
 
-function ConsultaIoT(
+function ConsultaDispositivo(
     limit: number,
     offset: number,
     id: number,
@@ -32,8 +32,8 @@ function ConsultaIoT(
     }
 
     // Realizamos el request.
-    GetIoT(parametrosBusqueda).then((respuesta) => {
-        // Guardamos los registros en la IoT.
+    GetDispositivo(parametrosBusqueda).then((respuesta) => {
+        // Guardamos los registros en la Dispositivo.
         setListaRegistros(respuesta.data.registros);
 
         if(setTotalPaginas) {
@@ -53,11 +53,11 @@ function ConsultaIoT(
     });
 };
 
-function RegistrarIoT(
+function RegistrarDispositivo(
     formRegistro: FormData
 ) {
     // Realizamos el request.
-    PostIoT(formRegistro).then((respuesta) => {
+    PostDispositivo(formRegistro).then((respuesta) => {
 
     }).catch((error) => {
         // Ocurrio un errr al realizar el request.
@@ -67,7 +67,7 @@ function RegistrarIoT(
     });
 };
 
-function ModificarIoT(
+function ModificarDispositivo(
     idRegistro: number,
     formRegistro: FormData
 ) {
@@ -77,7 +77,7 @@ function ModificarIoT(
     }
 
     // Realizamos el request.
-    PutIoT(parametrosBusqueda, formRegistro).then((respuesta) => {
+    PutDispositivo(parametrosBusqueda, formRegistro).then((respuesta) => {
 
     }).catch((error) => {
         // Ocurrio un errr al realizar el request.
@@ -87,7 +87,7 @@ function ModificarIoT(
     });
 };
 
-function RemoverIoT(
+function RemoverDispositivo(
     idRegistro: number
 ) {
     // Creamos los parametros de busqueda de la consulta.
@@ -96,7 +96,7 @@ function RemoverIoT(
     }
 
     // Realizamos el request.
-    DeleteIoT(parametrosBusqueda).then((respuesta) => {
+    DeleteDispositivo(parametrosBusqueda).then((respuesta) => {
 
     }).catch((error) => {
         // Ocurrio un errr al realizar el request.
@@ -106,9 +106,9 @@ function RemoverIoT(
     });
 };
 
-function GenerarTokenIoT(
+function GenerarTokenDispositivo(
     idRegistro: number,
-    setTokenIoT: Function
+    setTokenDispositivo: Function
 ) {
     // Creamos los parametros de busqueda de la consulta.
     const parametrosBusqueda = {
@@ -116,8 +116,8 @@ function GenerarTokenIoT(
     }
 
     // Realizamos el request.
-    GetTokenIoT(parametrosBusqueda).then((respuesta) => {
-        setTokenIoT(respuesta.data.authorization);
+    GetTokenDispositivo(parametrosBusqueda).then((respuesta) => {
+        setTokenDispositivo(respuesta.data.authorization);
     }).catch((error) => {
         // Ocurrio un errr al realizar el request.
         console.log(error);
@@ -128,9 +128,9 @@ function GenerarTokenIoT(
 
 
 export {
-    ConsultaIoT,
-    RegistrarIoT,
-    RemoverIoT,
-    ModificarIoT,
-    GenerarTokenIoT
+    ConsultaDispositivo,
+    RegistrarDispositivo,
+    RemoverDispositivo,
+    ModificarDispositivo,
+    GenerarTokenDispositivo
 };

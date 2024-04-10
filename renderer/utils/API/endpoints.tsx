@@ -25,7 +25,8 @@ const URL_GENERALES = {
     DASHBOARD: 'dashboard/',
     USUARIO: 'usuario/',
     RECURSO: 'recurso/',
-    TIPO_DISPOSITIVO: 'tipoDispositivo/'
+    TIPO_DISPOSITIVO: 'tipoDispositivo/',
+    DISPOSITIVO: 'dispositivo/'
 };
 
 var REQUEST_HANDLER = axios.create({
@@ -80,11 +81,11 @@ const ENDPOINTS = {
         }
     },
 
-    IOT: {
+    DISPOSITIVO: {
         CONSULTA: (parametros: any) => {
             return REQUEST_HANDLER({
                 method: 'get',
-                url: URL_GENERALES.IOT + 'consultar',
+                url: URL_GENERALES.DISPOSITIVO + 'consultar',
                 params: parametros,
                 headers: { 'authorization': sessionStorage.getItem('token') }
             });
@@ -93,7 +94,7 @@ const ENDPOINTS = {
         REGISTRAR: (datos: FormData) => {
             return REQUEST_HANDLER({
                 method: 'post',
-                url: URL_GENERALES.IOT + 'registrar/dispositivo',
+                url: URL_GENERALES.DISPOSITIVO + 'registrar/dispositivo',
                 data: datos,
                 headers: { 'authorization': sessionStorage.getItem('token') }
             });
@@ -102,7 +103,7 @@ const ENDPOINTS = {
         MODIFICAR: (parametros: any, datos: FormData) => {
             return REQUEST_HANDLER({
                 method: 'put',
-                url: URL_GENERALES.IOT + 'modificar',
+                url: URL_GENERALES.DISPOSITIVO + 'modificar',
                 params: parametros,
                 data: datos,
                 headers: { 'authorization': sessionStorage.getItem('token') }
@@ -112,7 +113,7 @@ const ENDPOINTS = {
         ELIMINAR: (parametros: any) => {
             return REQUEST_HANDLER({
                 method: 'delete',
-                url: URL_GENERALES.IOT + 'eliminar',
+                url: URL_GENERALES.DISPOSITIVO + 'eliminar',
                 params: parametros,
                 headers: { 'authorization': sessionStorage.getItem('token') }
             });
@@ -121,7 +122,7 @@ const ENDPOINTS = {
         GENERAR_TOKEN: (parametros: any) => {
             return REQUEST_HANDLER({
                 method: 'get',
-                url: URL_GENERALES.IOT + 'generar/token',
+                url: URL_GENERALES.DISPOSITIVO + 'generar/token',
                 params: parametros,
                 headers: { 'authorization': sessionStorage.getItem('token') }
             });
@@ -468,6 +469,10 @@ const ENDPOINTS = {
             });
         }
     },
+
+    IOT: {
+
+    }
 };
 
 export {

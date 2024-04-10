@@ -39,8 +39,11 @@ export enum EVENTOS_GUARDADO_DATOS_TARJETA {
     // Envia el dato de los permisos del empleado.
     AUTORIZACION_ENVIADO = '2\r',
 
+    // Envia el dato del rol  del empleado.
+    ROL_ENVIADO = '3\r',
+
     // Termina el grabado de datos.
-    TERMINAR_GUARDADO_DATOS = '3\r',
+    TERMINAR_GUARDADO_DATOS = '4\r',
 };
 
 export enum EVENTOS_GUARDADO_CONFIGURACION_IOT {
