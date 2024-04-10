@@ -121,6 +121,7 @@ export const guardarDatosTarjeta = async (
 
         // Si recivimos datos, los mostramos.
         parser.on('data', (respuesta: any) => {
+            console.log(respuesta);
             alRecivirDatos(
                 respuesta,
                 parser,
