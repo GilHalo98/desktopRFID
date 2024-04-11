@@ -13,30 +13,23 @@ import {
 // Para la conexion al servidor socket.
 import { io } from 'socket.io-client';
 
-// Enumeradores.
-import {
-    FLAGS_DISPOSITIVO,
-    EVENTOS_GUARDADO_DATOS_TARJETA,
-    EVENTOS_GUARDADO_CONFIGURACION_IOT
-} from './enums';
-
 // Controladores de IPC.
 import {
     explorarPuertos,
+    guardarConfiguracionDispositivoChecador,
+    guardarConfiguracionDispositivoControlador,
+    guardarConfiguracionDispositivoControladorPuerta,
+    guardarConfiguracionDispositivoLector,
     guardarDatosTarjeta
 } from './controladores/controladorSerial';
 
 const isProd = process.env.NODE_ENV === 'production'
-
-const colaOperaciones = [];
 
 let clienteSocket = undefined;
 
 let socket = undefined;
 
 let listaClientes = [];
-
-let puertoSerial = null;
 
 if (isProd) {
     serve({ directory: 'app' });
@@ -68,168 +61,35 @@ app.on('window-all-closed', () => {
 });
 
 // Exploramos los puertos seriales disponibles.
-ipcMain.on('explorar_puertos_serial', explorarPuertos);
+ipcMain.on(
+    'explorar_puertos_serial',
+    explorarPuertos
+);
 
-ipcMain.on('guardar_datos_tarjeta', guardarDatosTarjeta);
+ipcMain.on(
+    'guardar_datos_tarjeta',
+    guardarDatosTarjeta
+);
 
-ipcMain.on('guardar_configuracion_IoT', async (
-    evento,
-    args
-) => {
-    console.log(args.datosDispositivo);
-    console.log(args.configuracion);
+ipcMain.on(
+    'guardar_configuracion_lector',
+    guardarConfiguracionDispositivoLector
+);
 
-    // Se maneja por contexto
-    const puerto = new SerialPort(args.datosDispositivo, (callback) => {
-        console.log('Conexión a puerto establecido');
+ipcMain.on(
+    'guardar_configuracion_checador',
+    guardarConfiguracionDispositivoChecador
+);
 
-        console.log(callback);
-    });
+ipcMain.on(
+    'guardar_configuracion_controlador',
+    guardarConfiguracionDispositivoControlador
+);
 
-    const parser = puerto.pipe(new ReadlineParser({ delimiter: '\r\n' }));
-
-    // Esperamos por el evento del puerto abierto.
-    puerto.on("open", () => {
-        console.log("Conexion establecida, porfavor reinicie el dispositivo para almacenar la configuracion de este.");
-    });
-
-    // Si recivimos datos, los mostramos.
-    parser.on('data', (respuesta) => {
-        puerto.flush();
-        console.log(respuesta);
-
-        if(respuesta == FLAGS_DISPOSITIVO.INICIALIZACION_TERMINADA) {
-            console.log('inicializacion del dispositivo terminada');
-            parser.emit('iniciar_envio_configuracion');
-        }
-
-        if(respuesta == FLAGS_DISPOSITIVO.ESCRITURA_TERMINADA) {
-            console.log('escritura de datos terminada');
-            /**
-             * En este caso se mandara el evento a la cola de
-             * operaciones desde el handler del evento se extraera de la
-             * cola y se llamara al handler.
-             */
-            const operacion = colaOperaciones.shift();
-            parser.emit(operacion);
-        }
-
-        if(respuesta == FLAGS_DISPOSITIVO.OPERACION_TERMINADA) {
-            console.log('puerto cerrado');
-            puerto.close();
-        }
-    });
-
-    parser.once('iniciar_envio_configuracion', () => {
-        puerto.write(
-            EVENTOS_GUARDADO_CONFIGURACION_IOT.INICIAR_GUARDADO_DATOS,
-            'ascii'
-        );
-        puerto.drain((error) => {    
-            colaOperaciones.push('enviar_permiso');
-        });
-    });
-
-    parser.once('enviar_permiso', () => {
-        puerto.write(
-            EVENTOS_GUARDADO_CONFIGURACION_IOT.CAMBIAR_PERMISO_PEDIDO,
-            'ascii'
-        );
-        puerto.write(args.configuracion.bitPermiso, 'ascii');
-
-        puerto.drain((error) => {
-            colaOperaciones.push('enviar_ssid');
-        });
-    });
-
-    parser.once('enviar_ssid', () => {
-        puerto.write(
-            EVENTOS_GUARDADO_CONFIGURACION_IOT.CAMBIAR_SSID,
-            'ascii'
-        );
-        puerto.write(args.configuracion.ssid, 'ascii');
-
-        puerto.drain((error) => {
-            colaOperaciones.push('enviar_password');
-        });
-    });
-
-    parser.once('enviar_password', () => {
-        puerto.write(
-            EVENTOS_GUARDADO_CONFIGURACION_IOT.CAMBIAR_PASSWORD,
-            'ascii'
-        );
-        puerto.write(args.configuracion.password, 'ascii');
-
-        puerto.drain((error) => {
-            colaOperaciones.push('enviar_puerto_api');
-        });
-    });
-
-    parser.once('enviar_puerto_api', () => {
-        puerto.write(
-            EVENTOS_GUARDADO_CONFIGURACION_IOT.CAMBIAR_PUERTO_API,
-            'ascii'
-        );
-        puerto.write(args.configuracion.puertoApi, 'ascii');
-
-        puerto.drain((error) => {
-            colaOperaciones.push('enviar_ip_api');
-        });
-    });
-
-    parser.once('enviar_ip_api', () => {
-        puerto.write(
-            EVENTOS_GUARDADO_CONFIGURACION_IOT.CAMBIAR_IP_API,
-            'ascii'
-        );
-        puerto.write(args.configuracion.ipApi, 'ascii');
-
-        puerto.drain((error) => {
-            colaOperaciones.push('enviar_version_api');
-        });
-    });
-
-    parser.once('enviar_version_api', () => {
-        puerto.write(
-            EVENTOS_GUARDADO_CONFIGURACION_IOT.CAMBIAR_VERSION_API,
-            'ascii'
-        );
-        puerto.write(args.configuracion.versionApi, 'ascii');
-
-        puerto.drain((error) => {
-            colaOperaciones.push('enviar_access_token');
-        });
-    });
-
-    parser.on('enviar_access_token', () => {
-        puerto.write(
-            EVENTOS_GUARDADO_CONFIGURACION_IOT.CAMBIAR_ACCESS_TOKEN,
-            'ascii'
-        );
-        puerto.write(args.configuracion.apiKey, 'ascii');
-
-        puerto.drain((error) => {
-            colaOperaciones.push('terminar_configuracion');
-        });
-    });
-
-    parser.once('terminar_configuracion', () => {
-        parser.removeListener('enviar_access_token', () => {});
-
-        puerto.write(
-            EVENTOS_GUARDADO_CONFIGURACION_IOT.TERMINAR_GUARDADO_DATOS,
-            'ascii'
-        );
-
-        puerto.end();
-        puerto.drain();
-    });
-
-    parser.on("close", () => {
-        console.log('puerto cerrado');
-    });
-});
+ipcMain.on(
+    'guardar_configuracion_controlador_puerta',
+    guardarConfiguracionDispositivoControladorPuerta
+);
 
 ipcMain.on('sesion_iniciada', async (
     evento,

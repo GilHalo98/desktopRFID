@@ -8,16 +8,23 @@ import { formatearDatos } from '../../../utils/formatDataTabla';
 import { funcionRefresh } from '../../../utils/refresh';
 
 // Interfaz de API.
+import { ConsultaRol } from '../../../utils/API/interface/rol';
 import { ConsultaZona } from '../../../utils/API/interface/zona';
 import { ConsultaDispositivo, RemoverDispositivo } from '../../../utils/API/interface/dispositivo';
 import { ConsultaTipoDispositivo } from '../../../utils/API/interface/tipoDispositivo';
 
 // Componentes propios.
-import FormRegistroDispositivos from '../../forms/registros/dispositivos/formRegistroDispositivos';
+import ModalGuardarConfiguracionControladorPuerta from '../../modals/modalOpciones/modalGuardarConfiguracionControladorPuerta';
+import MenuGuardarConfiguracionControladorPuerta from '../../forms/menus/menuGuardarConfiguracionControladorPuerta';
+import ModalGuardarConfiguracionControlador from '../../modals/modalOpciones/modalGuardarConfiguracionControlador';
+import ModalGuardarConfiguracionChecador from '../../modals/modalOpciones/modalGuardarConfiguracionChecador';
+import ModalGuardarConfiguracionLector from '../../modals/modalOpciones/modalGuardarConfiguracionLector';
+import MenuGuardarConfiguracionControlador from '../../forms/menus/menuGuardarConfiguracionControlador';
 import FormModificarDispositivos from '../../forms/registros/dispositivos/formModificarDispositivos';
-import ModalGuardarConfiguracionIoT from '../../modals/modalOpciones/modalGuardarConfiguracionIoT';
+import FormRegistroDispositivos from '../../forms/registros/dispositivos/formRegistroDispositivos';
+import MenuGuardarConfiguracionChecador from '../../forms/menus/menuGuardarConfiguracionChecador';
+import MenuGuardarConfiguracionLector from '../../forms/menus/menuGuardarConfiguracionLector';
 import ModalVisualizarRegistro from '../../modals/modalOpciones/modalVisualizarRegistro';
-import MenuGuardarConfiguracionIoT from '../../forms/menus/menuGuardarConfiguracionIoT';
 import ModalModificarRegistro from '../../modals/modalOpciones/modalModificarRegistro';
 import FormBusquedaDispositivo from '../../forms/busqueda/formBusquedaDispositivo';
 import ModalAgregarRegistro from '../../modals/modalOpciones/modalAgregarRegistro';
@@ -49,11 +56,27 @@ export default function TablaDispositivos(
     const [tiempoRefresh, setTiempoRefresh] = React.useState(60);
 
     // Hooks del modal.
-    const [estadoModalGuardarConfiguracionIoT, setEstadoModalGuardarConfiguracionIoT] = React.useState(false);
     const [estadoModalVisualizarRegistro, setEstadoModalVisualizarRegistro] = React.useState(false);
     const [estadoModalModificarRegistro, setEstadoModalModificarRegistro] = React.useState(false);
     const [estadoModalRemoverRegistro, setEstadoModalRemoverRegistro] = React.useState(false);
     const [estadoModalAgregarRegistro, setEstadoModalAgregarRegistro] = React.useState(false);
+
+    const [
+        estadoModalGuardarConfiguracionChecador,
+        setEstadoModalGuardarConfiguracionChecador
+    ] = React.useState(false);
+    const [
+        estadoModalGuardarConfiguracionLector,
+        setEstadoModalGuardarConfiguracionLector
+    ] = React.useState(false);
+    const [
+        estadoModalGuardarConfiguracionControlador,
+        setEstadoModalGuardarConfiguracionControlador
+    ] = React.useState(false);
+    const [
+        estadoModalGuardarConfiguracionControladorPuerta,
+        setEstadoModalGuardarConfiguracionControladorPuerta
+    ] = React.useState(false);
 
     // Hook del id del registro para operaciones
     const [idRegistroOperacion, setIdRegistroOperacion] = React.useState(undefined);
@@ -61,6 +84,7 @@ export default function TablaDispositivos(
 
     // Hook para los forms de registro, modificacion y la barra de busqueda.
     const [listaZonas, setLisaZonas] = React.useState([]);
+    const [listaRoles, setListaRoles] = React.useState([]);
     const [listaTiposDispositivos, setListaTiposDispositivos] = React.useState([]);
 
     // Declaramos el useEffect de react para actualizar el contenido de la vista.
@@ -100,6 +124,18 @@ export default function TablaDispositivos(
             setListaTiposDispositivos,
             () => {},
             undefined
+        );
+
+        ConsultaRol(
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            setListaRoles,
+            () => {},
+            () => {}
         );
 
     }, [
@@ -165,7 +201,39 @@ export default function TablaDispositivos(
         onGuardarConfiguracion: (idRegistro: number, indexRegistro: number) => {
             setIdRegistroOperacion(idRegistro);
             setRegistroOperacion(listaRegistros[indexRegistro]);
-            setEstadoModalGuardarConfiguracionIoT(!estadoModalGuardarConfiguracionIoT);
+
+            const tipoDispositivo = listaRegistros[
+                indexRegistro
+            ].tipoDispositivo.id;
+
+            switch(tipoDispositivo) {
+                case 1:
+                    setEstadoModalGuardarConfiguracionChecador(
+                        !estadoModalGuardarConfiguracionChecador
+                    );
+                    break;
+
+                case 2:
+                    setEstadoModalGuardarConfiguracionLector(
+                        !estadoModalGuardarConfiguracionLector
+                    );
+                    break;
+
+                case 3:
+                    setEstadoModalGuardarConfiguracionControlador(
+                        !estadoModalGuardarConfiguracionControlador
+                    );
+                    break;
+
+                case 4:
+                    setEstadoModalGuardarConfiguracionControladorPuerta(
+                        !estadoModalGuardarConfiguracionControladorPuerta
+                    );
+                    break;
+            
+                default:
+                    break;
+            }
         }
     };
 
@@ -314,25 +382,110 @@ export default function TablaDispositivos(
             </ModalRemoverRegistro>
 
             {/*Modal de guardado de configuracion de dispositivo*/}
-            <ModalGuardarConfiguracionIoT
+            <ModalGuardarConfiguracionChecador
                 registro={registroOperacion}
                 headerModal={'Guardar Configuracion'}
                 tituloModal={'Guardar la configuracion del dispositivo IoT en este'}
-                modalActivo={estadoModalGuardarConfiguracionIoT}
+                modalActivo={estadoModalGuardarConfiguracionChecador}
                 toggleModal={() => {
-                    setEstadoModalGuardarConfiguracionIoT(!estadoModalGuardarConfiguracionIoT)
+                    setEstadoModalGuardarConfiguracionChecador(
+                        !estadoModalGuardarConfiguracionChecador
+                    );
                 }}
                 onOk={() => {}}
                 onRechazar={() => {}}
             >
-                <MenuGuardarConfiguracionIoT
+                <MenuGuardarConfiguracionChecador
                     registro={registroOperacion}
                     toggleModal={() => {
-                        setEstadoModalGuardarConfiguracionIoT(!setEstadoModalGuardarConfiguracionIoT);
+                        setEstadoModalGuardarConfiguracionChecador(
+                            !estadoModalGuardarConfiguracionChecador
+                        );
                     }}
                 />
 
-            </ModalGuardarConfiguracionIoT>
+            </ModalGuardarConfiguracionChecador>
+
+            {/*Modal de guardado de configuracion de dispositivo*/}
+            <ModalGuardarConfiguracionLector
+                registro={registroOperacion}
+                headerModal={'Guardar Configuracion'}
+                tituloModal={'Guardar la configuracion del dispositivo IoT en este'}
+                modalActivo={estadoModalGuardarConfiguracionLector}
+                toggleModal={() => {
+                    setEstadoModalGuardarConfiguracionLector(
+                        !estadoModalGuardarConfiguracionLector
+                    );
+                }}
+                onOk={() => {}}
+                onRechazar={() => {}}
+            >
+                <MenuGuardarConfiguracionLector
+                    elementosOpciones={{
+                        listaZonas: listaZonas
+                    }}
+                    registro={registroOperacion}
+                    toggleModal={() => {
+                        setEstadoModalGuardarConfiguracionLector(
+                            !estadoModalGuardarConfiguracionLector
+                        );
+                    }}
+                />
+
+            </ModalGuardarConfiguracionLector>
+
+            {/*Modal de guardado de configuracion de dispositivo*/}
+            <ModalGuardarConfiguracionControlador
+                registro={registroOperacion}
+                headerModal={'Guardar Configuracion'}
+                tituloModal={'Guardar la configuracion del dispositivo IoT en este'}
+                modalActivo={estadoModalGuardarConfiguracionControlador}
+                toggleModal={() => {
+                    setEstadoModalGuardarConfiguracionControlador(
+                        !estadoModalGuardarConfiguracionControlador
+                    );
+                }}
+                onOk={() => {}}
+                onRechazar={() => {}}
+            >
+                <MenuGuardarConfiguracionControlador
+                    elementosOpciones={{
+                        listaRoles: listaRoles
+                    }}
+                    registro={registroOperacion}
+                    toggleModal={() => {
+                        setEstadoModalGuardarConfiguracionControlador(
+                            !estadoModalGuardarConfiguracionControlador
+                        );
+                    }}
+                />
+
+            </ModalGuardarConfiguracionControlador>
+
+            {/*Modal de guardado de configuracion de dispositivo*/}
+            <ModalGuardarConfiguracionControladorPuerta
+                registro={registroOperacion}
+                headerModal={'Guardar Configuracion'}
+                tituloModal={'Guardar la configuracion del dispositivo IoT en este'}
+                modalActivo={estadoModalGuardarConfiguracionControladorPuerta}
+                toggleModal={() => {
+                    setEstadoModalGuardarConfiguracionControladorPuerta(
+                        !estadoModalGuardarConfiguracionControladorPuerta
+                    );
+                }}
+                onOk={() => {}}
+                onRechazar={() => {}}
+            >
+                <MenuGuardarConfiguracionControladorPuerta
+                    registro={registroOperacion}
+                    toggleModal={() => {
+                        setEstadoModalGuardarConfiguracionControladorPuerta(
+                            !estadoModalGuardarConfiguracionControladorPuerta
+                        );
+                    }}
+                />
+
+            </ModalGuardarConfiguracionControladorPuerta>
 
             { /*Barra de busqueda del TipoReporte*/ }
             <FormBusquedaDispositivo

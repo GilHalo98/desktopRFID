@@ -7,9 +7,11 @@ import {
     Card, CardBody, CardHeader, CardFooter, CardTitle, CardText, Table
 } from 'reactstrap';
 import Display from '../../displays/display';
-import { RespuestaConsultaDispositivos } from '../../../utils/API/respuestas/consultaDispositivo';
+import {
+    RespuestaConsultaDispositivos
+} from '../../../utils/API/respuestas/consultaDispositivo';
 
-export default function ModalGuardarConfiguracionIoT(
+export default function ModalGuardarConfiguracionControladorPuerta(
     props: {
         registro: RespuestaConsultaDispositivos,
         headerModal: string,
@@ -45,14 +47,12 @@ export default function ModalGuardarConfiguracionIoT(
                             ['id'],
                             ['descripcionDispositivo'],
                             ['zona', 'nombreZona'],
-                            ['zona', 'bitZona'],
                             ['fechaRegistroIoT'],
                         ]}
                         campos={[
                             'ID',
                             'Descripcion',
                             'Zona donde se encuentra el dispositivo',
-                            'Bit de permiso de acceso a la zona',
                             'Fecha de registro'
                         ]}
                     />

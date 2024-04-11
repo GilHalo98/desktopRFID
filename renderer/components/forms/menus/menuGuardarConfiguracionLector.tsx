@@ -20,10 +20,18 @@ import { funcionRefresh } from '../../../utils/refresh';
 import { GenerarTokenDispositivo } from '../../../utils/API/interface/dispositivo';
 
 // Funciones del form.
-import { guardarConfiguracion } from './logic/guardarConfiguracionIoT';
+import {
+    guardarConfiguracionLector
+} from './logic/guardarConfiguracionIoT';
+
+// Modelos de interfaz.
+import { Zona } from '../../../utils/API/modelos/zona';
 
 export default function MenuGuardarConfiguracionIoT(
     props: {
+        elementosOpciones: {
+            listaZonas:  Zona[]
+        },
         registro: RespuestaConsultaDispositivos,
         toggleModal: Function
     }
@@ -97,14 +105,10 @@ export default function MenuGuardarConfiguracionIoT(
         funcionRefresh(refresh, setRefresh);
     }, 500);
 
-    const mostrarParametrosLector = (
-        props.registro.idTipoDispositivoVinculado == 2 ?  {} : {display: 'none'}
-    );
-
     return(
         <Form onSubmit={(evento) => {
             evento.preventDefault();
-            guardarConfiguracion(evento);
+            guardarConfiguracionLector(evento);
             props.toggleModal();
         }}>
             {/*Listamos los puertos serial disponibles al dispositivo*/}
@@ -148,6 +152,7 @@ export default function MenuGuardarConfiguracionIoT(
                 <Input
                     id="baudRate"
                     type="select"
+                    name="campoBaudRate"
                     defaultValue={115200}
                 >
                     {baudRateSoportados.map((baudRate: number) => {
@@ -215,7 +220,7 @@ export default function MenuGuardarConfiguracionIoT(
             </FormGroup>
 
             {/*Version del servidor API esto no se muestra si no es un lector*/}
-            <FormGroup style={mostrarParametrosLector}>
+            <FormGroup>
                 <Label for="apiVersion">
                     Version del API
                 </Label>
@@ -250,17 +255,82 @@ export default function MenuGuardarConfiguracionIoT(
             </FormGroup>
 
             {/*Bit de permiso pedido por el dispositivo esto no se muestra si no es un lector*/}
-            <FormGroup style={mostrarParametrosLector}>
+            <FormGroup>
                 <Label for="bitZona">
-                    Bit de permiso pedido por el dispositivo
+                    Zona a la que da acceso el dispositivo.
                 </Label>
 
                 <Input
                     id="bitZona"
                     name="campoBitZona"
-                    type="text"
+                    type="select"
                     defaultValue={props.registro.zona.bitZona}
-                />
+                >
+                    {props.elementosOpciones.listaZonas.map((zona: Zona) => {
+                        return(
+                            <option value={zona.bitZona}>
+                                {zona.nombreZona}
+                            </option>
+                        );
+                    })}
+                </Input>
+            </FormGroup>
+
+            {/*Indicamos acciones opcionales que puede realizar el dispositivo*/}
+            <Label>
+                Acciones opcionales del lector
+            </Label>
+
+            <FormGroup check>
+                <Container>
+                    <Row>
+                        <Col>
+                            <Label check>
+                                Ninguna
+                            </Label>
+
+                            <Input
+                                id="noAccionOpcional"
+                                name="accionesOpcionales"
+                                type="radio"
+                                defaultChecked
+                                onChange={(input) => {
+                                    setMostrarTodosLosPuertos(input.target.checked);
+                                }}
+                            />
+                        </Col>
+
+                        <Col>
+                            <Label check>
+                                Bloquear puerta al cerrar
+                            </Label>
+
+                            <Input
+                                id="bloquearPuertaAlCerrar"
+                                name="accionesOpcionales"
+                                type="radio"
+                                onChange={(input) => {
+                                    setMostrarTodosLosPuertos(input.target.checked);
+                                }}
+                            />
+                        </Col>
+
+                        <Col>
+                            <Label check>
+                                Desbloquear puerta al abrir
+                            </Label>
+
+                            <Input
+                                id="desbloquearPuertaAlAbrir"
+                                name="accionesOpcionales"
+                                type="radio"
+                                onChange={(input) => {
+                                    setMostrarTodosLosPuertos(input.target.checked);
+                                }}
+                            />
+                        </Col>
+                    </Row>
+                </Container>
             </FormGroup>
 
             <br/>

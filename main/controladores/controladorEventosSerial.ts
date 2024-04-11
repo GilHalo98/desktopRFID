@@ -14,7 +14,10 @@ export const conexionAbierta = async () => {
     try {
         console.log("Conexion iniciada");
 
-    } catch (excepcion) {
+    } catch(excepcion) {
+        // Imprimimos la excepcion.
+        console.log("Ocurrio una excepcion");
+        console.log(excepcion);
     }
 };
 
@@ -45,6 +48,7 @@ export const alRecivirDatos = async (
             console.log('puerto cerrado');
             puertoSerial.close();
         }
+
     } catch(excepcion) {
         // Imprimimos la excepcion.
         console.log("Ocurrio una excepcion");
@@ -55,12 +59,13 @@ export const alRecivirDatos = async (
 export const iniciarEnvioDatos = async (
     puertoSerial: SerialPort,
     colaOperaciones: any[],
+    evento: string
 ) => {
     try {
         console.log("iniciando envio de datos");
 
         puertoSerial.write(
-            EVENTOS_GUARDADO_DATOS_TARJETA.INICIAR_GUARDADO_DATOS,
+            evento,
             'ascii'
         );
 
@@ -107,17 +112,24 @@ export const enviarDato = async (
 };
 
 export const terminarGuardado = (
-    puertoSerial: SerialPort
+    puertoSerial: SerialPort,
+    evento: string
 ) => {
-    console.log("Envio de datos finalizado");
+    try {
+        console.log("Envio de datos finalizado");
 
-    puertoSerial.write(
-        EVENTOS_GUARDADO_DATOS_TARJETA.TERMINAR_GUARDADO_DATOS,
-        'ascii'
-    );
+        puertoSerial.write(
+            evento,
+            'ascii'
+        );
 
-    puertoSerial.end();
-    puertoSerial.drain();
+        puertoSerial.end();
+        puertoSerial.drain();
+    } catch(excepcion) {
+        // Imprimimos la excepcion.
+        console.log("Ocurrio una excepcion");
+        console.log(excepcion);
+    }
 }
 
 export const conexionCerrada = (
