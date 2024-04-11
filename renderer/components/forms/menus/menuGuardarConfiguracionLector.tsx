@@ -175,6 +175,7 @@ export default function MenuGuardarConfiguracionIoT(
                     id="ssid"
                     name="campoSsid"
                     type="text"
+                    defaultValue={"AC Automatizacion 2.4"}
                 />
             </FormGroup>
 
@@ -188,6 +189,7 @@ export default function MenuGuardarConfiguracionIoT(
                     id="password"
                     name="campoPassword"
                     type="password"
+                    defaultValue={"Aau190410ry2@"}
                 />
             </FormGroup>
 

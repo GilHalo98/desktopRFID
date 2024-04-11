@@ -165,12 +165,9 @@ export enum EVENTOS_GUARDADO_CONFIGURACION_CONTROLADOR_PUERTA {
     // Cambia la ip del servidor API.
     CAMBIAR_IP_API = '5\r',
 
-    // Cambia el url de la version del API a usar.
-    CAMBIAR_VERSION_API = '6\r',
-
     // Cambia el access token del dispositvo.
-    CAMBIAR_ACCESS_TOKEN = '7\r',
+    CAMBIAR_ACCESS_TOKEN = '6\r',
 
     // Evento de finalizacion de configuracion
-    FINALIZAR_CONFIGURACIO = '8\r'
+    FINALIZAR_CONFIGURACIO = '7\r'
 };

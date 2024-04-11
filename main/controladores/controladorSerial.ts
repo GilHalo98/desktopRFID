@@ -27,7 +27,9 @@ import {
 } from "../enums";
 
 // Modelos.
-import { RespuestaConsultaEmpleado } from "../../renderer/utils/API/respuestas/consultaEmpleado";
+import {
+    RespuestaConsultaEmpleado
+} from "../../renderer/utils/API/respuestas/consultaEmpleado";
 
 // Instancia del puerto serial.
 let puertoSerial: SerialPort = null;
@@ -115,6 +117,10 @@ export const guardarDatosTarjeta = async (
         puertoSerial = new SerialPort(args.datosDispositivo, (callback) => {
             console.log('Conexión a puerto establecido');
             console.log(callback);
+            puertoSerial.set({
+                rts: false,
+                dtr: false
+            });
         });
 
         // Inicializamos un parser para mandar y leer datos del serial.
@@ -189,6 +195,14 @@ export const guardarConfiguracionDispositivoLector = async (
     }
 ) => {
     try {
+        // Si el puerto serial esta iniciado.
+        if(puertoSerial) {
+            if(puertoSerial.isOpen) {
+                // Lo terminamos.
+                puertoSerial.close();
+            }
+        }
+
         // Vaciamos la cola de operaciones.
         colaOperaciones = [];
 
@@ -224,10 +238,14 @@ export const guardarConfiguracionDispositivoLector = async (
             args.configuracion.accionOpcional.toString()
         ]];
 
-        // Inicaliamos el puerto serial.
+        // Inicalizamos el puerto serial.
         puertoSerial = new SerialPort(args.datosDispositivo, (callback) => {
             console.log('Conexión a puerto establecido');
             console.log(callback);
+            puertoSerial.set({
+                rts: false,
+                dtr: false
+            });
         });
 
         // Inicializamos un parser para mandar y leer datos del serial.
@@ -237,7 +255,7 @@ export const guardarConfiguracionDispositivoLector = async (
 
         // Esperamos por el evento del puerto abierto.
         puertoSerial.on("open", () => {
-            conexionAbierta();
+            conexionAbierta();            
         });
 
         // Si recivimos datos, los mostramos.
@@ -276,7 +294,6 @@ export const guardarConfiguracionDispositivoLector = async (
         });
 
         parser.on("close", conexionCerrada);
-
     } catch(excepcion) {
         // Imprimimos la excepcion.
         console.log("Ocurrio una excepcion");
@@ -304,15 +321,17 @@ export const guardarConfiguracionDispositivoChecador = async (
     try {
         // Si el puerto serial esta iniciado.
         if(puertoSerial) {
-            // Lo terminamos.
-            puertoSerial.close();
-
-            // Vaciamos la cola de operaciones.
-            colaOperaciones = [];
-
-            // Vaciamos la cola de datos.
-            colaDatos = [];
+            if(puertoSerial.isOpen) {
+                // Lo terminamos.
+                puertoSerial.close();
+            }
         }
+
+        // Vaciamos la cola de operaciones.
+        colaOperaciones = [];
+
+        // Vaciamos la cola de datos.
+        colaDatos = [];
 
         // Descomponemos los datos que se guardaran en la tarjeta.
         colaDatos = [[
@@ -339,6 +358,10 @@ export const guardarConfiguracionDispositivoChecador = async (
         puertoSerial = new SerialPort(args.datosDispositivo, (callback) => {
             console.log('Conexión a puerto establecido');
             console.log(callback);
+            puertoSerial.set({
+                rts: false,
+                dtr: false
+            });
         });
 
         // Inicializamos un parser para mandar y leer datos del serial.
@@ -364,7 +387,7 @@ export const guardarConfiguracionDispositivoChecador = async (
             iniciarEnvioDatos(
                 puertoSerial,
                 colaOperaciones,
-                EVENTOS_GUARDADO_CONFIGURACION_LECTOR.INICIAR_CONFIGURACION
+                EVENTOS_GUARDADO_CONFIGURACION_CHECADOR.INICIAR_CONFIGURACION
             );
         });
 
@@ -380,13 +403,16 @@ export const guardarConfiguracionDispositivoChecador = async (
         parser.once('terminar_envio_datos', () => {
             terminarGuardado(
                 puertoSerial,
-                EVENTOS_GUARDADO_CONFIGURACION_LECTOR.FINALIZAR_CONFIGURACIO
+                EVENTOS_GUARDADO_CONFIGURACION_CHECADOR.FINALIZAR_CONFIGURACIO
             );
         });
 
         parser.on("close", conexionCerrada);
 
     } catch(excepcion) {
+        // Imprimimos la excepcion.
+        console.log("Ocurrio una excepcion");
+        console.log(excepcion);
     }
 };
 
@@ -411,15 +437,17 @@ export const guardarConfiguracionDispositivoControlador = async (
     try {
         // Si el puerto serial esta iniciado.
         if(puertoSerial) {
-            // Lo terminamos.
-            puertoSerial.close();
-
-            // Vaciamos la cola de operaciones.
-            colaOperaciones = [];
-
-            // Vaciamos la cola de datos.
-            colaDatos = [];
+            if(puertoSerial.isOpen) {
+                // Lo terminamos.
+                puertoSerial.close();
+            }
         }
+
+        // Vaciamos la cola de operaciones.
+        colaOperaciones = [];
+
+        // Vaciamos la cola de datos.
+        colaDatos = [];
 
         // Descomponemos los datos que se guardaran en la tarjeta.
         colaDatos = [[
@@ -449,6 +477,10 @@ export const guardarConfiguracionDispositivoControlador = async (
         puertoSerial = new SerialPort(args.datosDispositivo, (callback) => {
             console.log('Conexión a puerto establecido');
             console.log(callback);
+            puertoSerial.set({
+                rts: false,
+                dtr: false
+            });
         });
 
         // Inicializamos un parser para mandar y leer datos del serial.
@@ -474,7 +506,7 @@ export const guardarConfiguracionDispositivoControlador = async (
             iniciarEnvioDatos(
                 puertoSerial,
                 colaOperaciones,
-                EVENTOS_GUARDADO_CONFIGURACION_LECTOR.INICIAR_CONFIGURACION
+                EVENTOS_GUARDADO_CONFIGURACION_CONTROLADOR.INICIAR_CONFIGURACION
             );
         });
 
@@ -490,13 +522,16 @@ export const guardarConfiguracionDispositivoControlador = async (
         parser.once('terminar_envio_datos', () => {
             terminarGuardado(
                 puertoSerial,
-                EVENTOS_GUARDADO_CONFIGURACION_LECTOR.FINALIZAR_CONFIGURACIO
+                EVENTOS_GUARDADO_CONFIGURACION_CONTROLADOR.FINALIZAR_CONFIGURACIO
             );
         });
 
         parser.on("close", conexionCerrada);
 
     } catch(excepcion) {
+        // Imprimimos la excepcion.
+        console.log("Ocurrio una excepcion");
+        console.log(excepcion);
     }
 };
 
@@ -508,7 +543,6 @@ export const guardarConfiguracionDispositivoControladorPuerta = async (
             password: string,
             puertoApi: string,
             ipApi: string,
-            versionApi: string,
             apiKey: string
         },
         datosDispositivo: {
@@ -517,18 +551,25 @@ export const guardarConfiguracionDispositivoControladorPuerta = async (
         }
     }
 ) => {
+
+    console.log(args.configuracion);
+
     try {
         // Si el puerto serial esta iniciado.
         if(puertoSerial) {
-            // Lo terminamos.
-            puertoSerial.close();
-
-            // Vaciamos la cola de operaciones.
-            colaOperaciones = [];
-
-            // Vaciamos la cola de datos.
-            colaDatos = [];
+            if(puertoSerial.isOpen) {
+                // Lo terminamos.
+                puertoSerial.close();
+            }
         }
+
+        // Vaciamos la cola de operaciones.
+        colaOperaciones = [];
+
+        // Vaciamos la cola de datos.
+        colaDatos = [];
+
+        console.clear();
 
         // Descomponemos los datos que se guardaran en la tarjeta.
         colaDatos = [[
@@ -544,9 +585,6 @@ export const guardarConfiguracionDispositivoControladorPuerta = async (
             EVENTOS_GUARDADO_CONFIGURACION_CONTROLADOR_PUERTA.CAMBIAR_IP_API,
             args.configuracion.ipApi.toString()
         ], [
-            EVENTOS_GUARDADO_CONFIGURACION_CONTROLADOR_PUERTA.CAMBIAR_VERSION_API,
-            args.configuracion.versionApi.toString()
-        ], [
             EVENTOS_GUARDADO_CONFIGURACION_CONTROLADOR_PUERTA.CAMBIAR_ACCESS_TOKEN,
             args.configuracion.apiKey.toString()
         ]];
@@ -555,6 +593,10 @@ export const guardarConfiguracionDispositivoControladorPuerta = async (
         puertoSerial = new SerialPort(args.datosDispositivo, (callback) => {
             console.log('Conexión a puerto establecido');
             console.log(callback);
+            puertoSerial.set({
+                rts: false,
+                dtr: false
+            });
         });
 
         // Inicializamos un parser para mandar y leer datos del serial.
@@ -580,7 +622,7 @@ export const guardarConfiguracionDispositivoControladorPuerta = async (
             iniciarEnvioDatos(
                 puertoSerial,
                 colaOperaciones,
-                EVENTOS_GUARDADO_CONFIGURACION_LECTOR.INICIAR_CONFIGURACION
+                EVENTOS_GUARDADO_CONFIGURACION_CONTROLADOR_PUERTA.INICIAR_CONFIGURACION
             );
         });
 
@@ -596,12 +638,15 @@ export const guardarConfiguracionDispositivoControladorPuerta = async (
         parser.once('terminar_envio_datos', () => {
             terminarGuardado(
                 puertoSerial,
-                EVENTOS_GUARDADO_CONFIGURACION_LECTOR.FINALIZAR_CONFIGURACIO
+                EVENTOS_GUARDADO_CONFIGURACION_CONTROLADOR_PUERTA.FINALIZAR_CONFIGURACIO
             );
         });
 
         parser.on("close", conexionCerrada);
 
     } catch(excepcion) {
+        // Imprimimos la excepcion.
+        console.log("Ocurrio una excepcion");
+        console.log(excepcion);
     }
 };
