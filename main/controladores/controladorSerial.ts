@@ -189,17 +189,11 @@ export const guardarConfiguracionDispositivoLector = async (
     }
 ) => {
     try {
-        // Si el puerto serial esta iniciado.
-        if(puertoSerial) {
-            // Lo terminamos.
-            puertoSerial.close();
+        // Vaciamos la cola de operaciones.
+        colaOperaciones = [];
 
-            // Vaciamos la cola de operaciones.
-            colaOperaciones = [];
-
-            // Vaciamos la cola de datos.
-            colaDatos = [];
-        }
+        // Vaciamos la cola de datos.
+        colaDatos = [];
 
         console.clear();
 
@@ -230,8 +224,6 @@ export const guardarConfiguracionDispositivoLector = async (
             args.configuracion.accionOpcional.toString()
         ]];
 
-        console.log(args.datosDispositivo);
-
         // Inicaliamos el puerto serial.
         puertoSerial = new SerialPort(args.datosDispositivo, (callback) => {
             console.log('Conexión a puerto establecido');
@@ -244,10 +236,13 @@ export const guardarConfiguracionDispositivoLector = async (
         }));
 
         // Esperamos por el evento del puerto abierto.
-        puertoSerial.on("open", conexionAbierta);
+        puertoSerial.on("open", () => {
+            conexionAbierta();
+        });
 
         // Si recivimos datos, los mostramos.
-        parser.on('data', (respuesta: any) => {
+        parser.on("data", (respuesta: any) => {
+            console.log(respuesta);
             alRecivirDatos(
                 respuesta,
                 parser,
@@ -256,7 +251,7 @@ export const guardarConfiguracionDispositivoLector = async (
             );
         });
 
-        parser.once('iniciar_envio_datos', () => {
+        parser.once("iniciar_envio_datos", () => {
             iniciarEnvioDatos(
                 puertoSerial,
                 colaOperaciones,
@@ -264,7 +259,7 @@ export const guardarConfiguracionDispositivoLector = async (
             );
         });
 
-        parser.on('enviar_datos', () => {
+        parser.on("enviar_datos", () => {
             enviarDato(
                 colaDatos.shift(),
                 puertoSerial,
@@ -273,7 +268,7 @@ export const guardarConfiguracionDispositivoLector = async (
             );
         });
 
-        parser.once('terminar_envio_datos', () => {
+        parser.once("terminar_envio_datos", () => {
             terminarGuardado(
                 puertoSerial,
                 EVENTOS_GUARDADO_CONFIGURACION_LECTOR.FINALIZAR_CONFIGURACIO

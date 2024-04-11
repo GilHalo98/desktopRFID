@@ -3,7 +3,7 @@
 module.exports = {
     env: {
         API_PORT: '3001',
-        API_HOST: '192.168.0.143',
+        API_HOST: '192.168.0.10',
         API_URL: '/apiv0.1.0/',
     },
 

@@ -133,9 +133,12 @@ export const terminarGuardado = (
 }
 
 export const conexionCerrada = (
+    puertoSerial: SerialPort,
 ) => {
     try {
         console.log("Conexion cerrada");
+        puertoSerial.close();
+        puertoSerial = null;
 
     } catch (excepcion) {
         // Imprimimos la excepcion.
