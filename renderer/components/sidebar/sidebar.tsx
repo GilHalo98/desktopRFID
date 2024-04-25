@@ -1,5 +1,8 @@
 'use client'
 import logo from '../../public/images/logo.png'
+
+import { mdiLogout } from '@mdi/js';
+
 import Image from 'next/image';
 // Datos a usar en el componente.
 import paginas from './logic/poblarSideBar';
@@ -9,7 +12,10 @@ import { useRouter, push } from 'next/router';
 import {
     Nav, NavLink, NavItem,
     Button,
-    UncontrolledCollapse
+    UncontrolledCollapse,
+    Container,
+    Col,
+    Row
 } from 'reactstrap';
 import React from 'react';
 import Icon from '@mdi/react';
@@ -123,6 +129,7 @@ export default function SideBar(
                 }}
                 size='sm'
             >
+                <Icon path={mdiLogout} size={1} />
                 Log-Out
             </Button>
         </div>
