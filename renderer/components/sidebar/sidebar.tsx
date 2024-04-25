@@ -12,6 +12,7 @@ import {
     UncontrolledCollapse
 } from 'reactstrap';
 import React from 'react';
+import Icon from '@mdi/react';
 
 export default function SideBar(
     props: any
@@ -23,7 +24,19 @@ export default function SideBar(
     const paginaActual = ruter.pathname;
 
     return(
-        <div className='sidebar nav nav-pills flex-column bg-dark border-bottom border-body v-pills-tabContent'>
+        <div
+            className='
+                sidebar
+                nav
+                nav-pills
+                flex-column
+                bg-dark
+                border-bottom
+                border-body
+                v-pills-tabContent
+            '
+        >
+            { /* Mostramos el logo de la empresa en el sidebar */ }
             <div>
                 <Image
                     src={logo}
@@ -32,12 +45,15 @@ export default function SideBar(
                 />
             </div>
 
+            { /* Separador del sidebar */ }
             <div className='separacionNavegacion'/>
 
+            { /* Mostramos la lista de navegacion */ }
             <Nav pills fill>
                 {paginas.map((pagina) => {
                     if(!pagina.subdivicion) {
                         return(
+                            <>
                             <NavItem key={pagina.id}>
                                 <NavLink
                                     active={paginaActual == pagina.url ? true : false}
@@ -45,9 +61,11 @@ export default function SideBar(
                                     href={pagina.url}
                                     aria-current="page"
                                 >
+                                    <Icon path={pagina.icono} size={1} />
                                     {pagina.descripcion}
                                 </NavLink>
                             </NavItem>
+                            </>
                         );
                     }
 
@@ -60,6 +78,7 @@ export default function SideBar(
                                 outline
                                 id={pagina.id}
                             >
+                                <Icon path={pagina.icono} size={1} />
                                 {pagina.descripcion}
                             </Button>
 
@@ -73,7 +92,7 @@ export default function SideBar(
                                                 href={subpagina.url}
                                                 aria-current="page"
                                             >
-                                                {subpagina.descripcion}
+                                                <Icon path={subpagina.icono} size={1} /> {subpagina.descripcion}
                                             </NavLink>
                                        </NavItem>
                                     );
@@ -83,7 +102,11 @@ export default function SideBar(
                     );
                 })}
             </Nav>
+
+            { /* Salto de linea */ }
             <br/>
+
+            { /* Mostramos el boton de logout */ }
             <Button
                 className='botonLogout'
                 color='warning'
