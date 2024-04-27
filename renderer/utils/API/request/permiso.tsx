@@ -2,11 +2,11 @@
 import { ENDPOINTS } from "../endpoints";
 
 const GetPermiso = async (
-    parametros: {
-        limit: number,
-        offset: number,
-        id: string,
-        descripcionPermiso: string,
+    parametros?: {
+        limit?: number,
+        offset?: number,
+        id?: string,
+        descripcionPermiso?: string,
     }
 ) => {
     return ENDPOINTS.PERMISO.CONSULTA(parametros);

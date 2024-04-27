@@ -2,15 +2,15 @@
 import { ENDPOINTS } from "../endpoints";
 
 const GetReporte = async (
-    parametros: {
-        limit: number,
-        offset: number,
-        id: number,
-        descripcionReporte: string,
-        idEmpleadoVinculado: number,
-        idRegistroDispositivoIoTVinculado: number,
-        idTipoReporteVinculado: number,
-        idRegistroZonaVinculada: number,
+    parametros?: {
+        limit?: number,
+        offset?: number,
+        id?: number,
+        descripcionReporte?: string,
+        idEmpleadoVinculado?: number,
+        idRegistroDispositivoIoTVinculado?: number,
+        idTipoReporteVinculado?: number,
+        idRegistroZonaVinculada?: number,
 
     }
 ) => {

@@ -19,7 +19,7 @@ export default function Paginacion(
         totalPaginas: number,
         paginaActual: number,
         offset: number,
-        elementos: number,
+        registrosPorPagina: number,
         setPaginaActual: Function,
         setOffset: Function
     }
@@ -62,7 +62,7 @@ export default function Paginacion(
                                     anteriorPagina(
                                         props.paginaActual,
                                         props.offset,
-                                        props.elementos,
+                                        props.registrosPorPagina,
                                         props.setPaginaActual,
                                         props.setOffset
                                     );
@@ -81,7 +81,7 @@ export default function Paginacion(
                                         onClick={() => {
                                             haciaPagina(
                                                 pagina,
-                                                props.elementos,
+                                                props.registrosPorPagina,
                                                 props.setPaginaActual,
                                                 props.setOffset
                                             );
@@ -103,7 +103,7 @@ export default function Paginacion(
                                     siguientePagina(
                                         props.paginaActual,
                                         props.offset,
-                                        props.elementos,
+                                        props.registrosPorPagina,
                                         props.setPaginaActual,
                                         props.setOffset
                                     );
@@ -120,7 +120,7 @@ export default function Paginacion(
                                 onClick={() => {
                                     ultimaPagina(
                                         props.totalPaginas,
-                                        props.elementos,
+                                        props.registrosPorPagina,
                                         props.setPaginaActual,
                                         props.setOffset
                                     );

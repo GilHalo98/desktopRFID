@@ -20,13 +20,12 @@ function tdOpciones(
     indexRegistro: number,
     funcionesRegistros: {
         onEliminar: Function,
-        onModificar: Function,
-        onVisualizar: Function,
-        onGuardarConfiguracion: Function | undefined
+        onModificar: Function
     },
 ) {
     if(activarOpciones) {
         const keyTD = idRegistro + '-' + 'opciones';
+
         return(
             <td key={keyTD}>
                 <Container>
@@ -38,8 +37,6 @@ function tdOpciones(
                                 indexRegistro={indexRegistro}
                                 onEliminar={funcionesRegistros.onEliminar}
                                 onModificar={funcionesRegistros.onModificar}
-                                onVisualizar={funcionesRegistros.onVisualizar}
-                                onGuardarConfiguracion={funcionesRegistros.onGuardarConfiguracion}
                             />
                         </Col>
                         <Col/>
@@ -48,6 +45,8 @@ function tdOpciones(
             </td>
         );
     }
+
+    return null;
 };
 
 export {

@@ -12,12 +12,12 @@ const Login = async (
 };
 
 const GetUsuario = async (
-    parametros: {
-        limit: number,
-        offset: number,
-        id: number,
-        nombreUsuario: string
-        idRegistroEmpleadoVinculado: number,
+    parametros?: {
+        limit?: number,
+        offset?: number,
+        id?: number,
+        nombreUsuario?: string
+        idRegistroEmpleadoVinculado?: number,
     }
 ) => {
     return ENDPOINTS.USUARIO.CONSULTA(parametros);

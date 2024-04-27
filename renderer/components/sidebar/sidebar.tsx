@@ -1,7 +1,11 @@
 'use client'
 import logo from '../../public/images/logo.png'
 
-import { mdiLogout } from '@mdi/js';
+import {
+    mdiLogout,
+    mdiMenuClose,
+    mdiMenuOpen
+} from '@mdi/js';
 
 import Image from 'next/image';
 // Datos a usar en el componente.
@@ -10,128 +14,105 @@ import { useRouter, push } from 'next/router';
 
 // Componentes de React.
 import {
-    Nav, NavLink, NavItem,
     Button,
-    UncontrolledCollapse,
-    Container,
-    Col,
-    Row
+    Nav, NavLink, NavItem,
+    UncontrolledCollapse, UncontrolledTooltip,
+    Container, Col, Row, ButtonGroup
 } from 'reactstrap';
 import React from 'react';
 import Icon from '@mdi/react';
+import renderizarNavegacion from './logic/renderizarNavegacion';
 
 export default function SideBar(
     props: any
 ) {
+    // Hook del menu.
+    const [menuCompacto, setMenuCompacto] = React.useState(false);
+
     // Instanciamos un ruter.
     const ruter = useRouter();
 
     // Consultamos la pagina actual.
     const paginaActual = ruter.pathname;
 
+    const estadoBarra = menuCompacto ? "barraNavegacion-compacto nav nav-pills bg-dark border-bottom border-body v-pills-tabContent" : "barraNavegacion nav nav-pills bg-dark border-bottom border-body v-pills-tabContent";
+
     return(
-        <div
-            className='
-                sidebar
-                nav
-                nav-pills
-                flex-column
-                bg-dark
-                border-bottom
-                border-body
-                v-pills-tabContent
-            '
+        <Nav
+            className={estadoBarra}
         >
             { /* Mostramos el logo de la empresa en el sidebar */ }
-            <div>
-                <Image
-                    src={logo}
-                    height={60}
-                    width={81}
-                />
-            </div>
+            <NavItem>
+                <div>
+                    <Image
+                        src={logo}
+                        height={60}
+                        width={81}
+                    />
+                </div>
 
-            { /* Separador del sidebar */ }
-            <div className='separacionNavegacion'/>
+                { /* Separador del sidebar */ }
+                <div className='separacionNavegacion'/>
+            </NavItem>
 
-            { /* Mostramos la lista de navegacion */ }
-            <Nav pills fill>
-                {paginas.map((pagina) => {
-                    if(!pagina.subdivicion) {
-                        return(
-                            <>
-                            <NavItem key={pagina.id}>
-                                <NavLink
-                                    active={paginaActual == pagina.url ? true : false}
-                                    key={pagina.id}
-                                    href={pagina.url}
-                                    aria-current="page"
-                                >
-                                    <Icon path={pagina.icono} size={1} />
-                                    {pagina.descripcion}
-                                </NavLink>
-                            </NavItem>
-                            </>
-                        );
-                    }
+            { /* Salto del grupo de botones del sidebar */ }
+            <NavItem>
+                <ButtonGroup>
+                    <Button
+                        className='botonLogout'
+                        color='warning'
+                        outline
+                        block
+                        onClick={() => {
+                            // Terminamos la sesion con el socket server.
+                            window.ipc.send(
+                                'sesion_terminada',
+                                undefined
+                            );
+                            
+                            // Eliminamos el token de acceso.
+                            sessionStorage.removeItem('token');
 
-                    return(
-                        <div key={pagina.id} style={{width: '100%'}}>
-                            <Button
-                                className="botonDivicionSubPaginas"
-                                color="primary"
-                                block 
-                                outline
-                                id={pagina.id}
-                            >
-                                <Icon path={pagina.icono} size={1} />
-                                {pagina.descripcion}
-                            </Button>
+                            // Movemos la pagina a la vista login.
+                            push('/');
+                        }}
+                        size='sm'
+                    >
+                        <Icon path={mdiLogout} size={1}/>
+                    </Button>
 
-                            <UncontrolledCollapse toggler={"#" + pagina.id} navbar>
-                                {pagina.subdivicion.map((subpagina) => {
-                                    return(
-                                        <NavItem key={subpagina.id}>
-                                            <NavLink
-                                                active={paginaActual == subpagina.url ? true : false}
-                                                key={subpagina.id}
-                                                href={subpagina.url}
-                                                aria-current="page"
-                                            >
-                                                <Icon path={subpagina.icono} size={1} /> {subpagina.descripcion}
-                                            </NavLink>
-                                       </NavItem>
-                                    );
-                                })}
-                            </UncontrolledCollapse>
-                        </div>
-                    );
-                })}
-            </Nav>
+                    <Button
+                        className='botonLogout'
+                        color='warning'
+                        size='sm'
+                        outline
+                        block
+                        onClick={() => {
+                            setMenuCompacto(!menuCompacto);
+                        }}
+                    >
+                        {menuCompacto ?
+                            <Icon
+                                path={mdiMenuClose}
+                                size={1}
+                            /> : <Icon
+                                path={mdiMenuOpen}
+                                size={1}
+                            />
+                        }
+                    </Button>
+                </ButtonGroup>
+            </NavItem>
 
-            { /* Salto de linea */ }
+            { /* Salto del sidebar */ }
             <br/>
 
-            { /* Mostramos el boton de logout */ }
-            <Button
-                className='botonLogout'
-                color='warning'
-                outline
-                onClick={() => {
-                    // Terminamos la sesion con el socket server.
-                    window.ipc.send('sesion_terminada', undefined);
-                    
-                    // Eliminamos el token de acceso.
-                    sessionStorage.removeItem('token');
-
-                    // Movemos la pagina a la vista login.
-                    push('/');
-                }}
-                size='sm'
-            >
-                <Icon path={mdiLogout} size={1} />
-                Log-Out
-            </Button>
-        </div>
+            {/* Renderizamos la navegación */}
+            {renderizarNavegacion(
+                paginaActual,
+                paginas,
+                menuCompacto
+            )}
+        </Nav>
     );
 };

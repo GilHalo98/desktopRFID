@@ -2,11 +2,11 @@
 import { ENDPOINTS } from "../endpoints";
 
 const GetTipoDispositivo = async (
-    parametros: {
-        limit: number,
-        offset: number,
-        id: number,
-        nombreTipoDispositivo: string
+    parametros?: {
+        limit?: number,
+        offset?: number,
+        id?: number,
+        nombreTipoDispositivo?: string
     }
 ) => {
     return ENDPOINTS.TIPO_DISPOSITIVO.CONSULTA(parametros);

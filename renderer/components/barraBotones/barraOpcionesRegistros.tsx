@@ -9,61 +9,36 @@ import {
 } from 'reactstrap';
 
 // Iconos usados.
-import { MdEditDocument, MdDelete, MdRemoveRedEye } from "react-icons/md";
-import { BiSolidMicrochip } from "react-icons/bi";
+import {
+    mdiDatabaseEdit,
+    mdiDatabaseRemove
+} from '@mdi/js';
+
+// Componente para mostrar los iconos.
+import Icon from '@mdi/react';
 
 export default function BarraOpcionesRegistros(
     props: {
         idRegistro: number,
         indexRegistro: number,
         onEliminar: Function,
-        onModificar: Function,
-        onVisualizar: Function,
-        onGuardarConfiguracion: Function | undefined
+        onModificar: Function
     }
 ) {
-    // Renderiza el boton de exportar archivo.
-    function renderizarGuardarConfiguracion() {
-        if(!props.onGuardarConfiguracion) {
-            return(<></>);
-        }
-
-        return(
-            <Button
-                className='botonIcono'
-                color='primary'
-                outline
-                onClick={() => {
-                    props.onGuardarConfiguracion(props.idRegistro, props.indexRegistro);
-                }}
-            >
-                <BiSolidMicrochip/>
-            </Button>
-        );
-    };
-
     return (
         <ButtonGroup size="sm">
-            <Button
-                className='botonIcono'
-                color='info'
-                outline
-                onClick={() => {
-                    props.onVisualizar(props.idRegistro, props.indexRegistro);
-                }}
-            >
-                <MdRemoveRedEye/>
-            </Button>
-
             <Button
                 className='botonIcono'
                 color='warning'
                 outline
                 onClick={() => {
-                    props.onModificar(props.idRegistro, props.indexRegistro);
+                    props.onModificar(
+                        props.idRegistro,
+                        props.indexRegistro
+                    );
                 }}
             >
-                <MdEditDocument/>
+                <Icon path={mdiDatabaseEdit} size={1} />
             </Button>
 
             <Button
@@ -71,13 +46,14 @@ export default function BarraOpcionesRegistros(
                 color='danger'
                 outline
                 onClick={() => {
-                    props.onEliminar(props.idRegistro, props.indexRegistro);
+                    props.onEliminar(
+                        props.idRegistro,
+                        props.indexRegistro
+                    );
                 }}
             >
-                <MdDelete/>
+                <Icon path={mdiDatabaseRemove} size={1} />
             </Button>
-
-            {renderizarGuardarConfiguracion()}
         </ButtonGroup>
     );
 };

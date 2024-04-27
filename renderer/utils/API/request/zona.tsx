@@ -2,13 +2,13 @@
 import { ENDPOINTS } from "../endpoints";
 
 const GetZona = async (
-    parametros: {
-        limit: number,
-        offset: number,
-        id: number,
-        nombreZona: string
-        descripcionZona: string,
-        bitZona: number
+    parametros?: {
+        limit?: number,
+        offset?: number,
+        id?: number,
+        nombreZona?: string
+        descripcionZona?: string,
+        bitZona?: number
     }
 ) => {
     return ENDPOINTS.ZONA.CONSULTA(parametros);

@@ -1,43 +1,33 @@
+import React from 'react';
+
 import {
     Container, Row, Col,
     Input, Label,
-    Form, FormGroup
+    Form, FormGroup, Button
 } from 'reactstrap';
 
 export default function MenuOpcionesRegistros(
     props: {
-        registrosPorPagina: number,
-        setRegistrosPorPagina: Function,
-        opcionesRegistros: boolean,
-        setOpcionesRegistros: Function
-        tiempoRefresh: number,
-        setTiempoRefresh: Function,
-        ocultarOpcionesRegistros: boolean
+        registrosPorPagina?: number,
+        opcionesRegistros?: boolean,
+        tiempoRefrescamiento?: number,
+        guardarConfiguracion: Function,
+        toggleModal: Function
     }
 ) {
-    function mostrarOpciones() {
-        if(!props.ocultarOpcionesRegistros) {
-            return(
-                <FormGroup switch>
-                    <Input
-                        type="switch"
-                        role="switch"
-                        checked={props.opcionesRegistros}
-                        onChange={() => {
-                            props.setOpcionesRegistros(!props.opcionesRegistros);
-                        }}
-                    />
-    
-                    <Label check>
-                        Mostrar opciones de registros
-                    </Label>
-                </FormGroup>
-            );
-        }
-    };
+    // Hook del tiempo de refrescamiento.
+    const [
+        tiempoRefrescamiento,
+        setTiempoRefrescamiento
+    ] = React.useState(props.tiempoRefrescamiento);
 
-    return(
-        <Form>
+    // Renderizamos la opcion de registros por pagina.
+    const renderRegistrosPorPagina = () => {
+        if(typeof props.registrosPorPagina == 'undefined') {
+            return null;
+        }
+
+        return(
             <FormGroup>
                 <Label for="registrosPagina">
                     Cantidad de registros por pagina
@@ -46,30 +36,113 @@ export default function MenuOpcionesRegistros(
                 <Input
                     id="registrosPagina"
                     name="registrosPorPagina"
-                    value={props.registrosPorPagina}
+                    defaultValue={props.registrosPorPagina}
                     type="number"
-                    onChange={(input) => {
-                        props.setRegistrosPorPagina(input.target.value);
-                    }}
                 />
             </FormGroup>
+        );
+    };
 
+    // Renderizamos la opcion de registros por pagina.
+    const renderTiempoRefrescamiento = () => {
+        if(typeof props.tiempoRefrescamiento == 'undefined') {
+            return null;
+        }
+
+        return(
             <FormGroup>
                 <Label for="tiempoRefrescamiento">
-                    Tiempo de refrescamiento de la pagina: {props.tiempoRefresh} segundos
+                    Tiempo de refrescamiento de la pagina: {
+                        tiempoRefrescamiento
+                    } segundos
                 </Label>
 
                 <Input
                     id="tiempoRefrescamiento"
                     name="tiempoDeRefrescamiento"
                     type="range"
-                    value={props.tiempoRefresh}
-                    onChange={(input) => {
-                        props.setTiempoRefresh(input.target.value);
+                    defaultValue={props.tiempoRefrescamiento}
+                    onChange={(evento) => {
+                        // Convertimos el tipo de dato a number.
+                        const valor = (
+                            !evento.target.value ?
+                                0 : parseInt(
+                                    evento.target.value
+                                )
+                        );
+
+                        setTiempoRefrescamiento(
+                            valor
+                        );
                     }}
                 />
             </FormGroup>
-            {mostrarOpciones()}
+        );
+    };
+
+    // Renderizamos la opcion de registros por pagina.
+    const renderOpcionesRegistros = () => {
+        if(typeof props.opcionesRegistros == 'undefined') {
+            return null;
+        }
+
+        return(
+            <FormGroup
+                switch
+                style={{color: 'white'}}
+            >
+                <Input
+                    id="opcionesRegistros"
+                    name="opcionesDeRegistros"
+                    type="switch"
+                    defaultChecked={props.opcionesRegistros}
+                />
+
+                <Label switch>
+                    Mostrar las opciones de los registros
+                </Label>
+            </FormGroup>
+        );
+    };
+
+    return(
+        <Form onSubmit={(evento) => {
+            evento.preventDefault();
+            props.guardarConfiguracion(evento);
+            props.toggleModal();
+        }}>
+            {renderRegistrosPorPagina()}
+            {renderTiempoRefrescamiento()}
+            {renderOpcionesRegistros()}
+
+            <br/>
+
+            <Container>
+                <Row>
+                    <Col>
+                        <Button
+                            active
+                            outline
+                            block
+                            onClick={() => {
+                                props.toggleModal();
+                            }}>
+                            Cancelar
+                        </Button>
+                    </Col>
+
+                    <Col>
+                        <Button
+                            active
+                            outline
+                            block
+                            color='success'
+                        >
+                            Guardar Configuracion
+                        </Button>
+                    </Col>
+                </Row>
+            </Container>
         </Form>
     );
 };

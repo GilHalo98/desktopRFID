@@ -2,12 +2,12 @@
 import { ENDPOINTS } from "../endpoints";
 
 const GetDispositivo = async (
-    parametros: {
-        limit: number,
-        offset: number,
-        id: number,
-        idZonaVinculada: number,
-        idTipoDispositivoVinculado: number
+    parametros?: {
+        limit?: number,
+        offset?: number,
+        id?: number,
+        idZonaVinculada?: number,
+        idTipoDispositivoVinculado?: number
     }
 ) => {
     return ENDPOINTS.DISPOSITIVO.CONSULTA(parametros);

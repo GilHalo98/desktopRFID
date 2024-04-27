@@ -9,44 +9,44 @@ function primeraPagina(
 function anteriorPagina(
     paginaActual: number,
     offset: number,
-    elementos: number,
+    registrosPorPagina: number,
     setPaginaActual: Function,
     setOffset: Function
 ) {
     setPaginaActual(paginaActual - 1);
-    setOffset(offset - elementos);
+    setOffset(offset - registrosPorPagina);
 };
 
 function siguientePagina(
     paginaActual: number,
     offset: number,
-    elementos: number,
+    registrosPorPagina: number,
     setPaginaActual: Function,
     setOffset: Function
 ) {
     setPaginaActual(paginaActual + 1);
-    setOffset(offset + elementos);
+    setOffset(offset + registrosPorPagina);
 };
 
 function ultimaPagina(
     totalPaginas: number,
-    elementos: number,
+    registrosPorPagina: number,
     setPaginaActual: Function,
     setOffset: Function
 ) {
     setPaginaActual(totalPaginas);
-    setOffset(elementos*(totalPaginas - 1));
+    setOffset(registrosPorPagina*(totalPaginas - 1));
 };
 
 
 function haciaPagina(
     pagina: number,
-    elementos: number,
+    registrosPorPagina: number,
     setPaginaActual: Function,
     setOffset: Function
 ) {
     setPaginaActual(pagina);
-    setOffset((pagina - 1) * elementos);
+    setOffset((pagina - 1) * registrosPorPagina);
 };
 
 export {

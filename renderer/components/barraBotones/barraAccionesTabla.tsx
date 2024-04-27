@@ -9,83 +9,88 @@ import {
 } from 'reactstrap';
 
 // Iconos usados.
-import { FaGear } from "react-icons/fa6";
-import { BsDatabaseFillAdd } from "react-icons/bs";
-import { TbReportAnalytics } from "react-icons/tb";
-import { FaFileExport } from "react-icons/fa6";
+import {
+    mdiCog,
+    mdiDatabaseSync,
+    mdiDatabasePlus,
+    mdiDatabaseExport
+} from '@mdi/js';
+
+// Componente para mostrar los iconos.
+import Icon from '@mdi/react';
 
 export default function BarraAccionesTabla(
     props: {
-        onExportarArchivo: Function | undefined,
-        onGenerarReporte: Function | undefined,
-        onAddRegistro: Function | undefined,
-        onOpciones: Function | undefined
+        onAgregarRegistro?: Function,
+        onRefrescarTabla?: Function,
+        onExportarDatos?: Function,
+        onOpciones?: Function,
     }
 ) {
-    // Renderiza el boton de exportar archivo.
-    function renderizarExportarArchivo() {
-        if(!props.onExportarArchivo) {
-            return(<></>);
+    // Renderiza el boton de agregar registros.
+    const renderizarAgregarRegistro = () => {
+        if(typeof props.onAgregarRegistro == 'undefined') {
+            return null;
         }
 
         return(
             <Button
                 className='botonIcono'
                 outline
-                color='warning'
+                color='success'
                 onClick={() => {
-                    props.onExportarArchivo();
+                    props.onAgregarRegistro();
                 }}
             >
-                <FaFileExport/>
+                <Icon path={mdiDatabasePlus} size={1} />
             </Button>
         );
     };
 
-    // Renderiza el boton de generar reportes.
-    function renderizarGenerarReporte() {
-        if(!props.onGenerarReporte) {
-            return(<></>);
+    // Renderiza el boton de refrescar tabla.
+    const renderizarRefrescarTabla = () => {
+        if(typeof props.onRefrescarTabla == 'undefined') {
+            return null;
         }
 
         return(
             <Button
                 className='botonIcono'
                 outline
-                color='warning'
+                color='primary'
                 onClick={() => {
-                    props.onGenerarReporte()
+                    props.onRefrescarTabla();
                 }}
             >
-                <TbReportAnalytics/>
+                <Icon path={mdiDatabaseSync} size={1} />
             </Button>
         );
     };
 
-    // Renderiza el boton de agrear registro.
-    function renderizarAddRegistro() {
-        if(!props.onAddRegistro) {
-            return(<></>);
+    // Renderiza el boton de exportar datos.
+    const renderizarExportarDatos = () => {
+        if(typeof props.onExportarDatos == 'undefined') {
+            return null;
         }
 
         return(
             <Button
                 className='botonIcono'
                 outline
-                color='warning'
+                color='primary'
                 onClick={() => {
-                    props.onAddRegistro();
+                    props.onExportarDatos();
                 }}
             >
-                <BsDatabaseFillAdd/>
+                <Icon path={mdiDatabaseExport} size={1} />
             </Button>
         );
     };
 
-    // Renderiza el boton de opciones de la tabla.
-    function renderizarOpciones() {
-        if(!props.onOpciones) {
-            return(<></>);
+    // Renderiza el boton de opciones
+    const renderizarOpciones = () => {
+        if(typeof props.onOpciones == 'undefined') {
+            return null;
         }
 
         return(
@@ -97,19 +102,16 @@ export default function BarraAccionesTabla(
                     props.onOpciones();
                 }}
             >
-                <FaGear/>
+                <Icon path={mdiCog} size={1} />
             </Button>
         );
     };
 
     return (
         <ButtonGroup size="sm">
-            {renderizarExportarArchivo()}
-
-            {renderizarGenerarReporte()}
-
-            {renderizarAddRegistro()}
-
+            {renderizarAgregarRegistro()}
+            {renderizarRefrescarTabla()}
+            {renderizarExportarDatos()}
             {renderizarOpciones()}
         </ButtonGroup>
     );

@@ -2,15 +2,15 @@
 import { ENDPOINTS } from "../endpoints";
 
 const GetEmpleado = async (
-    parametros: {
-        limit: number,
-        offset: number,
-        id: string,
-        numeroTelefonico: string,
-        nombres: string,
-        apellidoPaterno: string,
-        apellidoMaterno: string,
-        idRolVinculado: number,
+    parametros?: {
+        limit?: number,
+        offset?: number,
+        id?: string,
+        numeroTelefonico?: string,
+        nombres?: string,
+        apellidoPaterno?: string,
+        apellidoMaterno?: string,
+        idRolVinculado?: number,
     }
 ) => {
     return ENDPOINTS.EMPLEADO.CONSULTA(parametros);

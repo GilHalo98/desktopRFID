@@ -18,13 +18,16 @@
     "bootstrap": "^5.3.2",
     "electron-serve": "^1.1.0",
     "electron-store": "^8.1.0",
+    "file-saver": "^2.0.5",
     "mdi-react": "^9.4.0",
+    "react-csv": "^2.2.2",
     "react-icons": "^4.12.0",
     "react-pro-sidebar": "^1.1.0-alpha.1",
     "reactstrap": "^9.2.0",
     "serialport": "^12.0.0",
     "socket.io-client": "^4.7.5",
-    "tremor": "^0.0.1"
+    "tremor": "^0.0.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",

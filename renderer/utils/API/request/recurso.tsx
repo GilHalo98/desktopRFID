@@ -2,12 +2,12 @@
 import { ENDPOINTS } from "../endpoints";
 
 const GetRecurso = async (
-    parametros: {
-        limit: number,
-        offset: number,
-        id: number,
-        tipo: string,
-        nombre: string
+    parametros?: {
+        limit?: number,
+        offset?: number,
+        id?: number,
+        tipo?: string,
+        nombre?: string
     }
 ) => {
     return ENDPOINTS.RECURSO.CONSULTA(parametros);

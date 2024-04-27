@@ -2,13 +2,13 @@
 import { ENDPOINTS } from "../endpoints";
 
 const GetRol = async (
-    parametros: {
-        limit: number,
-        offset: number,
-        id: number,
-        rolTrabajador: string,
-        descripcionRol: string,
-        idPermisoVinculado: number
+    parametros?: {
+        limit?: number,
+        offset?: number,
+        id?: number,
+        rolTrabajador?: string,
+        descripcionRol?: string,
+        idPermisoVinculado?: number
     }
 ) => {
     return ENDPOINTS.ROL.CONSULTA(parametros);

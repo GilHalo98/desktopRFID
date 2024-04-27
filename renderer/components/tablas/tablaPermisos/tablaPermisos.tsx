@@ -15,7 +15,7 @@ import Display from '../../displays/display';
 import Tabla from '../tabla';
 
 // Funciones propias.
-import { formatearDatos } from '../../../utils/formatDataTabla';
+import { exportarDatosTabla, formatearDatos } from '../../../utils/formatDataTabla';
 import { funcionRefresh } from '../../../utils/refresh';
 
 // Interfaz de API.
@@ -24,6 +24,7 @@ import {
     RemoverPermiso
 } from '../../../utils/API/interface/permiso';
 import { ConsultaZona } from '../../../utils/API/interface/zona';
+import { Permiso } from '../../../utils/API/modelos/permiso';
 
 export default function TablaReportes(
     props: {}
@@ -42,17 +43,15 @@ export default function TablaReportes(
     const [idPermiso, setIdPermiso] = React.useState(undefined);
 
     // Hooks de las opciones de la tabla.
-    const [elementos, setElementos] = React.useState(12);
+    const [registrosPorPagina, setRegistrosPorPagina] = React.useState(12);
     const [opcionesRegistros, setOpcionesRegistros] = React.useState(false);
     const [refresh, setRefresh] = React.useState(true);
-    const [tiempoRefresh, setTiempoRefresh] = React.useState(60);
 
     // Hooks del modal.
     const [estadoModalRemoverRegistro, setEstadoModalRemoverRegistro] = React.useState(false);
     const [estadoModalModificarRegistro, setEstadoModalModificarRegistro] = React.useState(false);
 
     const [estadoModalAgregarRegistro, setEstadoModalAgregarRegistro] = React.useState(false);
-    const [estadoModalVisualizarRegistro, setEstadoModalVisualizarRegistro] = React.useState(false);
 
     // Hook del id del registro para operaciones
     const [idRegistroOperacion, setIdRegistroOperacion] = React.useState(undefined);
@@ -65,17 +64,30 @@ export default function TablaReportes(
     React.useEffect(() => {
         console.log('refresh');
 
-        setListaRegistros([]);
-        // setListaZonas([]);
-
         ConsultaPermiso(
-            elementos,
-            offset,
-            idPermiso,
-            descripcionPermiso,
-            setListaRegistros,
-            setTotalPaginas,
-            setEnCarga
+            (respuesta) => {
+                setListaRegistros(respuesta.registros);
+                setTotalPaginas(Math.ceil(
+                    respuesta.totalRegistros / registrosPorPagina
+                ));
+            },
+            {
+                limit: registrosPorPagina,
+                offset: offset,
+                id: idPermiso,
+                descripcionPermiso: descripcionPermiso
+            },
+            (error) => {
+                console.log(error);
+                setEnCarga(false);
+            },
+            () => {
+                setListaRegistros([]);
+                setEnCarga(true);
+            },
+            () => {
+                setEnCarga(false);
+            }
         );
 
         ConsultaZona(
@@ -90,17 +102,12 @@ export default function TablaReportes(
             undefined
         );
     }, [
-        elementos, 
+        registrosPorPagina, 
         paginaActual,
         idPermiso,
         descripcionPermiso,
         refresh
     ]);
-
-    // El componente se refresca cada tiempo dado.
-    setTimeout(() => {
-        funcionRefresh(refresh, setRefresh);
-    }, tiempoRefresh*1000);
 
     // Titulo de la tabla.
     const tituloTabla = 'Tabla de Permisos';
@@ -140,31 +147,32 @@ export default function TablaReportes(
             setIdRegistroOperacion(idRegistro);
             setRegistroOperacion(listaRegistros[indexRegistro]);
             setEstadoModalModificarRegistro(!estadoModalModificarRegistro);
-        },
-        onVisualizar: (idRegistro: number, indexRegistro: number) => {
-            setIdRegistroOperacion(idRegistro);
-            setRegistroOperacion(listaRegistros[indexRegistro]);
-            setEstadoModalVisualizarRegistro(!estadoModalVisualizarRegistro);
-        },
-        onGuardarConfiguracion: undefined
+        }
     };
 
     // Opciones de la tabla.
     const opcionesTabla = {
-        elementos: elementos,
+        registrosPorPagina: registrosPorPagina,
         opcionesRegistros: opcionesRegistros,
-        tiempoRefresh: tiempoRefresh,
-        setElementos: setElementos,
-        setOpcionesRegistros: setOpcionesRegistros,
-        setTiempoRefresh: setTiempoRefresh
+        guardarConfiguracion: (evento: any) => {
+            setRegistrosPorPagina(evento.target[0].value);
+            setOpcionesRegistros(evento.target[1].checked);
+        }
     };
 
     // Funciones de las opciones de la tabla.
     const funcionesOpciones = {
-        onExportarArchivo: undefined,
-        onGenerarReporte: undefined,
-        onAddRegistro: () => {
+        onAgregarRegistro: () => {
             setEstadoModalAgregarRegistro(!estadoModalAgregarRegistro);
+        },
+        onRefrescarTabla: () => {
+            setRefresh(!refresh);
+        },
+        onExportarDatos: () => {
+            console.log("datos exportados");
+        },
+        onCambiarConfiguracion: () => {
+            console.log("configuracion cambiada");
         }
     };
 
@@ -172,7 +180,7 @@ export default function TablaReportes(
     const paginacion = {
         paginaActual: paginaActual,
         offset: offset,
-        elementos: elementos,
+        registrosPorPagina: registrosPorPagina,
         totalPaginas: totalPaginas,
         setPaginaActual: setPaginaActual,
         setOffset: setOffset,
@@ -183,16 +191,63 @@ export default function TablaReportes(
         setDescripcionPermiso: setDescripcionPermiso
     }
 
+    // Formato especial de datos.
+    const formatoEspecial = {
+        "Fecha de registro": (fechaRegistro?: string) => {
+            if(!fechaRegistro) {
+                return "";
+            }
+
+            return fechaRegistro.replace("T", " ").slice(0, 19);
+        },
+        "Ultima modificacion": (fechaModificacion?: string) => {
+            if(!fechaModificacion) {
+                return "";
+            }
+            return fechaModificacion.replace("T", " ").slice(0, 19);
+        }
+    };
+
+    // Exportamos los datos a formato excel.
+    const exportarDatos = (exportarDatosEnVista: boolean) => {
+        if(exportarDatosEnVista) {
+            exportarDatosTabla(
+                listaRegistros,
+                cabeceras,
+                formatearRegistros
+            );
+
+        } else {
+            ConsultaPermiso(
+                (respuesta) => {
+                    exportarDatosTabla(
+                        respuesta.registros,
+                        cabeceras,
+                        formatearRegistros
+                    );
+                },
+                {},
+                (error) => {
+                    console.log(error);
+                    setEnCarga(false);
+                }
+            );
+        }
+    };
+
     return(
         <Tabla
             tituloTabla={tituloTabla}
-            funcionesRegistros={funcionesRegistros}
-            opcionesTabla={opcionesTabla}
-            funcionesOpciones={funcionesOpciones}
-            paginacion={paginacion}
             cabeceras={cabeceras}
             registros={formatearRegistros(listaRegistros)}
             enCarga={enCarga}
+            setEnCarga={setEnCarga}
+            exportarDatos={exportarDatos}
+            formatoEspecial={formatoEspecial}
+            funcionesOpciones={funcionesOpciones}
+            opcionesTabla={opcionesTabla}
+            funcionesRegistros={funcionesRegistros}
+            paginacion={paginacion}
         >
             {/*Modal de agregar registro*/}
             <ModalAgregarRegistro
@@ -212,33 +267,6 @@ export default function TablaReportes(
                     }}
                 />
             </ModalAgregarRegistro>
-
-            {/*Modal de visualizar datos del registro*/}
-            <ModalVisualizarRegistro
-                idRegistro={idRegistroOperacion}
-                modalActivo={estadoModalVisualizarRegistro}
-                toggleModal={() => {
-                    setEstadoModalVisualizarRegistro(!estadoModalVisualizarRegistro);
-                }}
-                onOk={() => {}}
-                onRechazar={() => {}}
-            >
-                <Display
-                    registro={registroOperacion}
-                    propiedades={[
-                        ['id'],
-                        ['descripcionPermiso'],
-                        ['autorizacion'],
-                        ['fechaRegistroPermiso'],
-                    ]}
-                    campos={[
-                        'id',
-                        'descripcion del permiso',
-                        'autorizacion del permiso',
-                        'fecha de registro'
-                    ]}
-                />
-            </ModalVisualizarRegistro>
 
             {/*Modal de modificar registro*/}
             <ModalModificarRegistro

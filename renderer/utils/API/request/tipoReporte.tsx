@@ -2,11 +2,11 @@
 import { ENDPOINTS } from "../endpoints";
 
 const GetTipoReporte = async (
-    parametros: {
-        limit: number,
-        offset: number,
-        id: number,
-        clasificacionReporte: string
+    parametros?: {
+        limit?: number,
+        offset?: number,
+        id?: number,
+        clasificacionReporte?: string
     }
 ) => {
     return ENDPOINTS.TIPO_REPORTE.CONSULTA(parametros);

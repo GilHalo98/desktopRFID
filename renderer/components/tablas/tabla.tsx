@@ -20,83 +20,269 @@ import {
 } from './logic/columnaOpciones';
 
 // Componentes usados.
-import ModalOpcionesTabla from '../modals/modalOpciones/modalOpcionesTabla';
+import ModalOpcionesTabla from '../modals/modalTabla/modalOpcionesTabla';
 import BarraAccionesTabla from '../barraBotones/barraAccionesTabla';
+import ModalExportarDatosTabla from '../modals/modalTabla/modalExportarDatosTabla';
 
 export default function Tabla(
     props: {
         tituloTabla: string,
-        paginacion: {
+        cabeceras: string[],
+        registros: any[],
+        enCarga?: boolean,
+        setEnCarga?: Function,
+        exportarDatos?: Function,
+        formatoEspecial?: Object,
+        paginacion?: {
             paginaActual: number,
             offset: number,
-            elementos: number,
+            registrosPorPagina: number,
             totalPaginas: number,
             setPaginaActual: Function,
             setOffset: Function
         },
-        funcionesOpciones: {
-            onExportarArchivo: Function | undefined,
-            onGenerarReporte: Function | undefined,
-            onAddRegistro: Function | undefined
+        funcionesOpciones?: {
+            onAgregarRegistro?: Function,
+            onRefrescarTabla?: Function,
+            onExportarDatos?: Function,
+            onCambiarConfiguracion?: Function
         },
-        funcionesRegistros: {
+        funcionesRegistros?: {
             onEliminar: Function,
             onModificar: Function,
-            onVisualizar: Function,
-            onGuardarConfiguracion: Function | undefined
         },
-        opcionesTabla: {
-            elementos: number,
-            opcionesRegistros: boolean,
-            tiempoRefresh: number,
-            setElementos: Function,
-            setOpcionesRegistros: Function,
-            setTiempoRefresh: Function
+        opcionesTabla?: {
+            registrosPorPagina?: number,
+            opcionesRegistros?: boolean,
+            tiempoRefrescamiento?: number,
+            guardarConfiguracion: Function
         },
-        enCarga: boolean,
-        cabeceras: any,
-        registros: any,
-        formatoEspecial: any | undefined,
-        children: any
+        children?: any
     }
 ) {
     // Estado del modal de opciones de la tabla.
-    const [estadoModalOpcionesTabla, setEstadoModalOpcionesTabla] = React.useState(false);
+    const [
+        estadoModalOpcionesTabla,
+        setEstadoModalOpcionesTabla
+    ] = React.useState(false);
+
+    // Estado del modal de exportar datos de la tabla.
+    const [
+        estadoModalExportarDatosTabla,
+        setEstadoModalExportarDatosTabla
+    ] = React.useState(false);
 
     // Renderiza la barra de opciones de la tabla.
-    function renderBarraOpciones() {
-        if(!props.funcionesOpciones) {
-            return(<></>);
+    const renderBarraOpciones = () => {
+        if(typeof props.funcionesOpciones == 'undefined') {
+            return null;
+        }
+
+        if(typeof props.opcionesTabla == 'undefined') {
+            return(
+                <BarraAccionesTabla
+                    onAgregarRegistro={
+                        props.funcionesOpciones.onAgregarRegistro
+                    }
+                    onRefrescarTabla={
+                        props.funcionesOpciones.onRefrescarTabla
+                    }
+                />
+            );
         }
 
         return(
             <BarraAccionesTabla
-                onExportarArchivo={props.funcionesOpciones.onExportarArchivo}
-                onGenerarReporte={props.funcionesOpciones.onGenerarReporte}
-                onAddRegistro={props.funcionesOpciones.onAddRegistro}
+                onAgregarRegistro={
+                    props.funcionesOpciones.onAgregarRegistro
+                }
+                onRefrescarTabla={() => {
+                    if(typeof props.setEnCarga != 'undefined') {
+                        props.setEnCarga(!props.enCarga);
+                    }
+
+                    props.funcionesOpciones.onRefrescarTabla()
+                }}
+                onExportarDatos={() => {
+                    props.funcionesOpciones.onExportarDatos();
+                    setEstadoModalExportarDatosTabla(!estadoModalExportarDatosTabla);
+                }}
                 onOpciones={() => {
+                    props.funcionesOpciones.onCambiarConfiguracion();
                     setEstadoModalOpcionesTabla(!estadoModalOpcionesTabla);
+                }}
+            />
+        );
+    };
+
+    // Renderiza la paginacion del la tabla.
+    const renderPaginacion = () => {
+        if(typeof props.paginacion == 'undefined') {
+            return null;
+        }
+
+        if(props.paginacion.totalPaginas <= 1) {
+            return null;
+        }
+
+        return(
+            <Paginacion
+                paginaActual={props.paginacion.paginaActual}
+                offset={props.paginacion.offset}
+                registrosPorPagina={props.paginacion.registrosPorPagina}
+                setPaginaActual={props.paginacion.setPaginaActual}
+                setOffset={props.paginacion.setOffset}
+                totalPaginas={props.paginacion.totalPaginas}
+            />
+        );
+    };
+
+    // Renderizamos la cabecera de las opciones de la tabla.
+    const renderHeaderOpciones = () => {
+        if(typeof props.opcionesTabla == 'undefined') {
+            return null;
+        }
+
+        if(typeof props.opcionesTabla.opcionesRegistros == 'undefined') {
+            return null;
+        }
+
+        if(typeof props.funcionesRegistros == 'undefined') {
+            return null;
+        }
+
+        return thOpciones(props.opcionesTabla.opcionesRegistros);
+    };
+
+    // Renderizamos las opciones por registro.
+    const renderOpcionesRegistro = (registro: {
+        data: any[],
+        metadata: any
+    }) => {
+        if(typeof props.opcionesTabla == 'undefined') {
+            return null;
+        }
+
+        if(typeof props.opcionesTabla.opcionesRegistros == 'undefined') {
+            return null;
+        }
+
+        if(typeof props.funcionesRegistros == 'undefined') {
+            return null;
+        }
+
+        return tdOpciones(
+            props.opcionesTabla.opcionesRegistros,
+            parseInt(registro.metadata.id),
+            registro.metadata.indexRegistro,
+            props.funcionesRegistros
+        );
+    };
+
+    // Renderizamos el modal con las opciones de la tabla.
+    const renderModalOpcionesTabla = () => {
+        if(typeof props.funcionesOpciones == 'undefined') {
+            return null;
+        }
+
+        if(typeof props.opcionesTabla == 'undefined') {
+            return null;
+        }
+
+        return(
+            <ModalOpcionesTabla
+                nombreTabla={props.tituloTabla}
+                propiedadesTabla={props.opcionesTabla}
+                modalActivo={estadoModalOpcionesTabla}
+                toggleModal={() => {
+                    setEstadoModalOpcionesTabla(!estadoModalOpcionesTabla);
+                }}
+            />
+        );
+    };
+
+    // Renderizamos el modal de exportar datos de la tabla.
+    const renderModalExportarDatosTabla = () => {
+        if(typeof props.exportarDatos == 'undefined') {
+            return null;
+        }
+
+        return(
+            <ModalExportarDatosTabla
+                nombreTabla={props.tituloTabla}
+                exportarDatos={props.exportarDatos}
+                modalActivo={estadoModalExportarDatosTabla}
+                toggleModal={() => {
+                    setEstadoModalExportarDatosTabla(
+                        !estadoModalExportarDatosTabla
+                    );
                 }}
             />
         )
     };
 
-    // Renderiza la paginacion del la tabla.
-    function renderPaginacion() {
-        if(props.paginacion.totalPaginas > 1) {
-            return(
-                <Paginacion
-                    paginaActual={props.paginacion.paginaActual}
-                    offset={props.paginacion.offset}
-                    elementos={props.paginacion.elementos}
-                    setPaginaActual={props.paginacion.setPaginaActual}
-                    setOffset={props.paginacion.setOffset}
-                    totalPaginas={props.paginacion.totalPaginas}
-                />
-            );
-        }
+    // Poblamos el cuerpo de la tabla.
+    const poblarTabla = () => {
+        return props.registros.map((registro: any) => {
+            const keyTR = registro.metadata.id;
 
-        return(<></>);
+            return(
+                <tr key={keyTR}>
+                    {registro.data.map((dato: any, index: number) => {
+                        const keyTD = registro.metadata.id
+                            + '-'
+                            + props.cabeceras[index];
+
+                        if(typeof props.formatoEspecial != 'undefined') {
+                            if(typeof props.formatoEspecial[
+                                props.cabeceras[index]
+                            ] != 'undefined') {
+                                return aplicarFormatoEspecial(
+                                    dato,
+                                    index,
+                                    keyTD
+                                );
+                            }
+                        }
+
+                        return(
+                            <td key={keyTD}>
+                                {dato}
+                            </td>
+                        );
+
+                    })}
+
+                    {renderOpcionesRegistro(registro)}
+                </tr>
+            );
+        });
+    };
+
+    // Funcion que aplica el formato especial al registro.
+    const aplicarFormatoEspecial = (
+        dato: any,
+        index: number,
+        keyTD: string
+    ) => {
+        return(
+            <td key={keyTD}>
+                {props.formatoEspecial[
+                    props.cabeceras[index]
+                ](dato)}
+            </td>
+        )
+    };
+
+    // Poblamos la cabecera de la tabla.
+    const poblarCabecera = () => {
+        return props.cabeceras.map((cabecera: string) => {
+            return(
+                <th key={cabecera}>
+                    {cabecera}
+                </th>
+            );
+        });
     };
 
     const controlTabla = {
@@ -139,52 +325,14 @@ export default function Tabla(
                         <Table hover dark responsive>
                             <thead className='cabeceraTablaRegistros'>
                                 <tr key="header">
-                                    {props.cabeceras.map((cabecera: string) => {
-                                        return(
-                                            <th key={cabecera}>
-                                                {cabecera}
-                                            </th>
-                                        );
-                                    })}
+                                    {poblarCabecera()}
 
-                                    {thOpciones(props.opcionesTabla.opcionesRegistros)}
+                                    {renderHeaderOpciones()}
                                 </tr>
                             </thead>
 
                             <tbody>
-                                {props.registros.map((registro: any) => {
-                                    const keyTR = registro.metadata.id;
-
-                                    return(
-                                        <tr key={keyTR}>
-                                            {registro.data.map((dato: any, index: number) => {
-                                                const keyTD = registro.metadata.id + '-' + props.cabeceras[index];
-                                                if(props.formatoEspecial) {
-                                                    if(props.formatoEspecial[props.cabeceras[index]]) {
-                                                        return(
-                                                            <td key={keyTD}>
-                                                                {props.formatoEspecial[props.cabeceras[index]](registro)}
-                                                            </td>
-                                                        )
-                                                    }
-                                                }
-
-                                                return(
-                                                    <td key={keyTD}>
-                                                        {dato}
-                                                    </td>
-                                                );
-                                            })}
-
-                                            {tdOpciones(
-                                                props.opcionesTabla.opcionesRegistros,
-                                                parseInt(registro.metadata.id),
-                                                registro.metadata.indexRegistro,
-                                                props.funcionesRegistros
-                                            )}
-                                        </tr>
-                                    );
-                                })}
+                                {poblarTabla()}
                             </tbody>
                         </Table>
                     </Row>
@@ -204,30 +352,18 @@ export default function Tabla(
                     </Row>
                 </Container>
 
-                {/*Modal de opciones de tabla*/}
-                <ModalOpcionesTabla
-                    nombreTabla={props.tituloTabla}
-                    propiedadesTabla={{
-                        elementos: props.opcionesTabla.elementos,
-                        opcionesRegistros: props.opcionesTabla.opcionesRegistros,
-                        tiempoRefresh: props.opcionesTabla.tiempoRefresh
-                    }}
-                    modalActivo={estadoModalOpcionesTabla}
-                    toggleModal={() => {setEstadoModalOpcionesTabla(!estadoModalOpcionesTabla)}}
-                    onOk={(
-                        elementos: number,
-                        opcionesRegistros: boolean,
-                        tiempoRefresh: number
-                    ) => {
-                        props.opcionesTabla.setElementos(elementos);
-                        props.opcionesTabla.setOpcionesRegistros(opcionesRegistros);
-                        props.opcionesTabla.setTiempoRefresh(tiempoRefresh);
-                    }}
-                    onRechazar={() => {}}
-                />
+                {   /*Modal de opciones de tabla*/
+                    renderModalOpcionesTabla()
+                }
 
-                {/*Paginación de la tabla.*/}
-                {renderPaginacion()}
+                {   /*Modal de opciones de tabla*/
+                    renderModalExportarDatosTabla()
+                }
+
+
+                {   /*Paginación de la tabla.*/
+                    renderPaginacion()
+                }
             </CardBody>
         </Card>
     );
