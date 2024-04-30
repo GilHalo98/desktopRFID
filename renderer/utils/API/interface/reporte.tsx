@@ -7,107 +7,156 @@ import {
 } from "../request/reporte";
 
 function ConsultaReporte(
-    limit: number,
-    offset: number,
-    id: number,
-    descripcionReporte: string,
-    idEmpleadoVinculado: number,
-    idRegistroDispositivoIoTVinculado: number,
-    idTipoReporteVinculado: number,
-    idRegistroZonaVinculada: number,
-    setListaRegistros: Function,
-    setTotalPaginas: Function,
-    setEnCarga: Function | undefined
+    onOk: Function,
+    parametrosBusqueda?: {
+        limit?: number,
+        offset?: number,
+        id?: number,
+        descripcionReporte?: string,
+        idTipoReporteVinculado?: number,
+    },
+    onError?: Function,
+    onAntes?: Function,
+    onFinalizar?: Function
 ) {
-    // Creamos los parametros de busqueda de la consulta.
-    const parametrosBusqueda = {
-        limit: limit,
-        offset: offset,
-        id: id,
-        descripcionReporte: descripcionReporte,
-        idEmpleadoVinculado: idEmpleadoVinculado,
-        idRegistroDispositivoIoTVinculado: idRegistroDispositivoIoTVinculado,
-        idTipoReporteVinculado: idTipoReporteVinculado,
-        idRegistroZonaVinculada: idRegistroZonaVinculada,
-    };
-
-    // Mostramos la pantalla en carga.
-    if(setEnCarga) {
-        setEnCarga(true);
+    if(typeof onAntes != 'undefined') {
+        // Ejecutamos la funcion de antes de realizar el request.
+        onAntes();
     }
 
     // Realizamos el request.
     GetReporte(parametrosBusqueda).then((respuesta) => {
-        // Guardamos los registros en la Reporte.
-        setListaRegistros(respuesta.data.registros);
-
-        if(setTotalPaginas) {
-            // Guardamos el total de paginas en la variable.
-            setTotalPaginas(Math.ceil(respuesta.data.totalRegistros / limit));
-        }
+        // Al cumplirse el request, se ejecuta la función.
+        onOk(respuesta.data);
 
     }).catch((error) => {
-        // Ocurrio un errr al realizar el request.
-        console.log(error);
+        if(typeof onError != 'undefined') {
+            // Al ocurrir un error con el reques, ejecutamos la función.
+            onError(error);
+        }
 
     }).finally(() => {
-        // Marcamos que la carga de datos termino.
-        if(setEnCarga) {
-            setEnCarga(false);
+        if(typeof onFinalizar != 'undefined') {
+            // Al terminar el request, se ejecuta la función.
+            onFinalizar();
         }
+
     });
 };
 
 function RegistrarReporte(
-    formRegistro: FormData
+    formRegistro: FormData,
+    onOk?: Function,
+    onError?: Function,
+    onAntes?: Function,
+    onFinalizar?: Function
 ) {
+    if(typeof onAntes != 'undefined') {
+        // Ejecutamos la funcion de onAntes.
+        onAntes();
+    }
+
     // Realizamos el request.
     PostReporte(formRegistro).then((respuesta) => {
+        if(typeof onOk != 'undefined') {
+            // Ejecutamos la funcion de onOk.
+            onOk(respuesta.data);
+        }
 
     }).catch((error) => {
         // Ocurrio un errr al realizar el request.
-        console.log(error);
+        if(typeof onError != 'undefined') {
+            // Ejecutamos la funcion de onError.
+            onError(error);
+        }
 
     }).finally(() => {
+        if(typeof onFinalizar != 'undefined') {
+            // Ejecutamos la funcion de onFinalizar.
+            onFinalizar();
+        }
+
     });
 };
 
 function ModificarReporte(
     idRegistro: number,
-    formRegistro: FormData
+    formRegistro: FormData,
+    onOk?: Function,
+    onError?: Function,
+    onAntes?: Function,
+    onFinalizar?: Function
 ) {
     // Creamos el cuerpo del registro.
     const parametrosBusqueda = {
         id: idRegistro,
     };
 
+    if(typeof onAntes != 'undefined') {
+        // Ejecutamos la funcion de onAntes.
+        onAntes();
+    }
+
     // Realizamos el request.
     PutReporte(parametrosBusqueda, formRegistro).then((respuesta) => {
+        if(typeof onOk != 'undefined') {
+            // Ejecutamos la funcion de onOk.
+            onOk(respuesta.data);
+        }
 
     }).catch((error) => {
         // Ocurrio un errr al realizar el request.
-        console.log(error);
+        if(typeof onError != 'undefined') {
+            // Ejecutamos la funcion de onError.
+            onError(error);
+        }
 
     }).finally(() => {
+        if(typeof onFinalizar != 'undefined') {
+            // Ejecutamos la funcion de onFinalizar.
+            onFinalizar();
+        }
+
     });
 };
 
 function RemoverReporte(
-    idRegistro: number
+    idRegistro: number,
+    onOk?: Function,
+    onError?: Function,
+    onAntes?: Function,
+    onFinalizar?: Function
 ) {
     // Creamos los parametros de busqueda de la consulta.
     const parametrosBusqueda = {
         id: idRegistro
     }
 
+    if(typeof onAntes != 'undefined') {
+        // Ejecutamos la funcion de onAntes.
+        onAntes();
+    }
+
     // Realizamos el request.
     DeleteReporte(parametrosBusqueda).then((respuesta) => {
+        if(typeof onOk != 'undefined') {
+            // Ejecutamos la funcion de onOk.
+            onOk(respuesta.data);
+        }
 
     }).catch((error) => {
         // Ocurrio un errr al realizar el request.
-        console.log(error);
+        if(typeof onError != 'undefined') {
+            // Ejecutamos la funcion de onError.
+            onError(error);
+        }
 
     }).finally(() => {
+        if(typeof onFinalizar != 'undefined') {
+            // Ejecutamos la funcion de onFinalizar.
+            onFinalizar();
+        }
+
     });
 };
 

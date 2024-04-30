@@ -7,108 +7,158 @@ import {
 } from "../request/empleado";
 
 function ConsultaEmpleado(
-    limit: number,
-    offset: number,
-    id: string,
-    numeroTelefonico: string,
-    nombres: string,
-    apellidoPaterno: string,
-    apellidoMaterno: string,
-    idRolVinculado: number,
-    setListaRegistros: Function,
-    setTotalPaginas: Function,
-    setEnCarga: Function | undefined
+    onOk: Function,
+    parametrosBusqueda?: {
+        limit?: number,
+        offset?: number,
+        id?: string,
+        numeroTelefonico?: string,
+        nombres?: string,
+        apellidoPaterno?: string,
+        apellidoMaterno?: string,
+        idRolVinculado?: number
+    },
+    onError?: Function,
+    onAntes?: Function,
+    onFinalizar?: Function
 ) {
-    // Creamos los parametros de busqueda de la consulta.
-    const parametrosBusqueda = {
-        limit: limit,
-        offset: offset,
-        id: id,
-        numeroTelefonico: numeroTelefonico,
-        nombres: nombres,
-        apellidoPaterno: apellidoPaterno,
-        apellidoMaterno: apellidoMaterno,
-        idRolVinculado: idRolVinculado,
-    };
-
-    // Mostramos la pantalla en carga.
-    if(setEnCarga) {
-        setEnCarga(true);
+    if(typeof onAntes != 'undefined') {
+        // Ejecutamos la funcion de antes de realizar el request.
+        onAntes();
     }
 
     // Realizamos el request.
     GetEmpleado(parametrosBusqueda).then((respuesta) => {
-        // Guardamos los registros en la Empleado.
-        setListaRegistros(respuesta.data.registros);
-
-        if(setTotalPaginas) {
-            // Guardamos el total de paginas en la variable.
-            setTotalPaginas(Math.ceil(respuesta.data.totalRegistros / limit));
-        }
+        // Al cumplirse el request, se ejecuta la función.
+        onOk(respuesta.data);
 
     }).catch((error) => {
-        // Ocurrio un errr al realizar el request.
-        console.log(error);
+        if(typeof onError != 'undefined') {
+            // Al ocurrir un error con el reques, ejecutamos la función.
+            onError(error);
+        }
 
     }).finally(() => {
-        // Mostramos la pantalla en carga.
-        if(setEnCarga) {
-            setEnCarga(false);
+        if(typeof onFinalizar != 'undefined') {
+            // Al terminar el request, se ejecuta la función.
+            onFinalizar();
         }
+
     });
 };
 
 function RegistrarEmpleado(
-    formRegistro: FormData
+    formRegistro: FormData,
+    onOk?: Function,
+    onError?: Function,
+    onAntes?: Function,
+    onFinalizar?: Function
 ) {
+    if(typeof onAntes != 'undefined') {
+        // Ejecutamos la funcion de onAntes.
+        onAntes();
+    }
+
     // Realizamos el request.
     PostEmpleado(formRegistro).then((respuesta) => {
+        if(typeof onOk != 'undefined') {
+            // Ejecutamos la funcion de onOk.
+            onOk(respuesta.data);
+        }
 
     }).catch((error) => {
-        // Ocurrio un errr al realizar el request.
-        console.log(error);
+       // Ocurrio un errr al realizar el request.
+        if(typeof onError != 'undefined') {
+            // Ejecutamos la funcion de onError.
+            onError(error);
+        }
 
     }).finally(() => {
+        if(typeof onFinalizar != 'undefined') {
+            // Ejecutamos la funcion de onFinalizar.
+            onFinalizar();
+        }
+
     });
 };
 
 function ModificarEmpleado(
     idRegistro: number,
-    formRegistro: FormData
+    formRegistro: FormData,
+    onOk?: Function,
+    onError?: Function,
+    onAntes?: Function,
+    onFinalizar?: Function
 ) {
     // Creamos los parametros de busqueda de la consulta.
     const parametrosBusqueda = {
         id: idRegistro
     };
 
+    if(typeof onAntes != 'undefined') {
+        // Ejecutamos la funcion de onAntes.
+        onAntes();
+    }
+
     // Realizamos el request.
     PutEmpleado(parametrosBusqueda, formRegistro).then((respuesta) => {
-        console.log(respuesta.data.codigoRespuesta);
+        if(typeof onOk != 'undefined') {
+            // Ejecutamos la funcion de onOk.
+            onOk(respuesta.data);
+        }
 
     }).catch((error) => {
-        // Ocurrio un errr al realizar el request.
-        console.log(error);
+       // Ocurrio un errr al realizar el request.
+        if(typeof onError != 'undefined') {
+            // Ejecutamos la funcion de onError.
+            onError(error);
+        }
 
     }).finally(() => {
+        if(typeof onFinalizar != 'undefined') {
+            // Ejecutamos la funcion de onFinalizar.
+            onFinalizar();
+        }
+
     });
 };
 
 function RemoverEmpleado(
-    idRegistro: number
+    idRegistro: number,
+    onOk?: Function,
+    onError?: Function,
+    onAntes?: Function,
+    onFinalizar?: Function
 ) {
     // Creamos los parametros de busqueda de la consulta.
     const parametrosBusqueda = {
         id: idRegistro
     }
+    if(typeof onAntes != 'undefined') {
+        // Ejecutamos la funcion de onAntes.
+        onAntes();
+    }
 
     // Realizamos el request.
     DeleteEmpleado(parametrosBusqueda).then((respuesta) => {
+        if(typeof onOk != 'undefined') {
+            // Ejecutamos la funcion de onOk.
+            onOk(respuesta.data);
+        }
 
     }).catch((error) => {
-        // Ocurrio un errr al realizar el request.
-        console.log(error);
+       // Ocurrio un errr al realizar el request.
+        if(typeof onError != 'undefined') {
+            // Ejecutamos la funcion de onError.
+            onError(error);
+        }
 
     }).finally(() => {
+        if(typeof onFinalizar != 'undefined') {
+            // Ejecutamos la funcion de onFinalizar.
+            onFinalizar();
+        }
+
     });
 };
 

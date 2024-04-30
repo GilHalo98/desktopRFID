@@ -1,5 +1,4 @@
 // Importamos los request.
-import { BASE_URL } from "../endpoints";
 import {
     DeleteUsuario,
     GetUsuario,
@@ -14,148 +13,189 @@ function LoginUsuario(
         password: string,
         alwaysOn: boolean,
     },
-    cambioPagina: Function,
-    setEnCarga: Function | undefined
+    onOk?: Function,
+    onError?: Function,
+    onAntes?: Function,
+    onFinalizar?: Function
 ) {
-    // Mostramos la pantalla en carga.
-    if(setEnCarga) {
-        setEnCarga(true);
+    if(typeof onAntes != 'undefined') {
+        // Ejecutamos la funcion de onAntes.
+        onAntes();
     }
-
-    // Flag que indica si la sesion fue aceptada.
-    let tokenRecivido = false;
 
     // Realizamos el request.
     Login(datosLogin).then((respuesta) => {
-        // Si se respondico con el token.
-        if(respuesta.data.authorization) {
-            // Indicamos que la sesion fue aceptada.
-            tokenRecivido = true;
-
-            // Guardamos el token de acceso.
-            sessionStorage.setItem('token', respuesta.data.authorization);
+        if(typeof onOk != 'undefined') {
+            // Ejecutamos la funcion de onOk.
+            onOk(respuesta.data);
         }
 
     }).catch((error) => {
         // Ocurrio un errr al realizar el request.
-        console.log(error);
-
-    }).finally(() => {
-        // Si la sesion se inicio.
-        if(tokenRecivido) {
-            // Terminamos la sesion con el socket server.
-            window.ipc.send('sesion_iniciada', {
-                ipServer: BASE_URL,
-                token: window.sessionStorage.getItem('token')
-            });
-
-            // Se hace el cambio de pagina.
-            cambioPagina();
+        if(typeof onError != 'undefined') {
+            // Ejecutamos la funcion de onError.
+            onError(error);
         }
 
-        // Marcamos que la carga de datos termino.
-        if(setEnCarga) {
-            setEnCarga(false);
+    }).finally(() => {
+        if(typeof onFinalizar != 'undefined') {
+            // Ejecutamos la funcion de onFinalizar.
+            onFinalizar();
         }
     });
 };
 
 function ConsultaUsuario(
-    limit: number,
-    offset: number,
-    id: number,
-    nombreUsuario: string,
-    idRegistroEmpleadoVinculado: number,
-    setListaRegistros: Function,
-    setTotalPaginas: Function,
-    setEnCarga: Function | undefined
+    onOk: Function,
+    parametrosBusqueda?: {
+        limit?: number,
+        offset?: number,
+        id?: number,
+        nombreUsuario?: string,
+        idRegistroEmpleadoVinculado?: number
+    },
+    onError?: Function,
+    onAntes?: Function,
+    onFinalizar?: Function
 ) {
-    // Creamos los parametros de busqueda de la consulta.
-    const parametrosBusqueda = {
-        limit: limit,
-        offset: offset,
-        id : id,
-        nombreUsuario: nombreUsuario,
-        idRegistroEmpleadoVinculado: idRegistroEmpleadoVinculado,
-    };
-
-    // Mostramos la pantalla en carga.
-    if(setEnCarga) {
-        setEnCarga(true);
+    if(typeof onAntes != 'undefined') {
+        // Ejecutamos la funcion de antes de realizar el request.
+        onAntes();
     }
 
     // Realizamos el request.
     GetUsuario(parametrosBusqueda).then((respuesta) => {
-        // Guardamos los registros en la TipoReporte.
-        setListaRegistros(respuesta.data.registros);
-
-        if(setTotalPaginas) {
-            // Guardamos el total de paginas en la variable.
-            setTotalPaginas(Math.ceil(respuesta.data.totalRegistros / limit));
-        }
+        // Al cumplirse el request, se ejecuta la función.
+        onOk(respuesta.data);
 
     }).catch((error) => {
-        // Ocurrio un errr al realizar el request.
-        console.log(error);
+        if(typeof onError != 'undefined') {
+            // Al ocurrir un error con el reques, ejecutamos la función.
+            onError(error);
+        }
 
     }).finally(() => {
-        // Marcamos que la carga de datos termino.
-        if(setEnCarga) {
-            setEnCarga(false);
+        if(typeof onFinalizar != 'undefined') {
+            // Al terminar el request, se ejecuta la función.
+            onFinalizar();
         }
+
     });
 };
 
 function RegistrarUsuario(
-    formRegistro: FormData
+    formRegistro: FormData,
+    onOk?: Function,
+    onError?: Function,
+    onAntes?: Function,
+    onFinalizar?: Function
 ) {
+    if(typeof onAntes != 'undefined') {
+        // Ejecutamos la funcion de onAntes.
+        onAntes();
+    }
+
     // Realizamos el request.
     PostUsuario(formRegistro).then((respuesta) => {
+        if(typeof onOk != 'undefined') {
+            // Ejecutamos la funcion de onOk.
+            onOk(respuesta.data);
+        }
 
     }).catch((error) => {
         // Ocurrio un errr al realizar el request.
-        console.log(error);
+        if(typeof onError != 'undefined') {
+            // Ejecutamos la funcion de onError.
+            onError(error);
+        }
 
     }).finally(() => {
+        if(typeof onFinalizar != 'undefined') {
+            // Ejecutamos la funcion de onFinalizar.
+            onFinalizar();
+        }
+
     });
 };
 
 function ModificarUsuario(
     idRegistro: number,
-    formRegistro: FormData
+    formRegistro: FormData,
+    onOk?: Function,
+    onError?: Function,
+    onAntes?: Function,
+    onFinalizar?: Function
 ) {
     // Creamos los parametros de busqueda de la consulta.
     const parametrosBusqueda = {
         id: idRegistro,
     }
 
+    if(typeof onAntes != 'undefined') {
+        // Ejecutamos la funcion de onAntes.
+        onAntes();
+    }
+
     // Realizamos el request.
     PutUsuario(parametrosBusqueda, formRegistro).then((respuesta) => {
+        if(typeof onOk != 'undefined') {
+            // Ejecutamos la funcion de onOk.
+            onOk(respuesta.data);
+        }
 
     }).catch((error) => {
         // Ocurrio un errr al realizar el request.
-        console.log(error);
+        if(typeof onError != 'undefined') {
+            // Ejecutamos la funcion de onError.
+            onError(error);
+        }
 
     }).finally(() => {
+        if(typeof onFinalizar != 'undefined') {
+            // Ejecutamos la funcion de onFinalizar.
+            onFinalizar();
+        }
+
     });
 };
 
 function RemoverUsuario(
-    idRegistro: number
+    idRegistro: number,
+    onOk?: Function,
+    onError?: Function,
+    onAntes?: Function,
+    onFinalizar?: Function
 ) {
     // Creamos los parametros de busqueda de la consulta.
     const parametrosBusqueda = {
         id: idRegistro
     }
 
+    if(typeof onAntes != 'undefined') {
+        // Ejecutamos la funcion de onAntes.
+        onAntes();
+    }
+
     // Realizamos el request.
     DeleteUsuario(parametrosBusqueda).then((respuesta) => {
+        if(typeof onOk != 'undefined') {
+            // Ejecutamos la funcion de onOk.
+            onOk(respuesta.data);
+        }
 
     }).catch((error) => {
         // Ocurrio un errr al realizar el request.
-        console.log(error);
+        if(typeof onError != 'undefined') {
+            // Ejecutamos la funcion de onError.
+            onError(error);
+        }
 
     }).finally(() => {
+        if(typeof onFinalizar != 'undefined') {
+            // Ejecutamos la funcion de onFinalizar.
+            onFinalizar();
+        }
+
     });
 }
 

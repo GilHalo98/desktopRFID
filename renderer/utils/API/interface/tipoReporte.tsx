@@ -7,99 +7,155 @@ import {
 } from "../request/tipoReporte";
 
 function ConsultaTipoReporte(
-    limit: number,
-    offset: number,
-    id: number,
-    clasificacionReporte: string,
-    setListaRegistros: Function,
-    setTotalPaginas: Function,
-    setEnCarga: Function | undefined
+    onOk: Function,
+    parametrosBusqueda?: {
+        limit?: number,
+        offset?: number,
+        id?: number,
+        clasificacionReporte?: string
+    },
+    onError?: Function,
+    onAntes?: Function,
+    onFinalizar?: Function
 ) {
-    // Creamos los parametros de busqueda de la consulta.
-    const parametrosBusqueda = {
-        limit: limit,
-        offset: offset,
-        id: id,
-        clasificacionReporte: clasificacionReporte
-    };
-
-    // Mostramos la pantalla en carga.
-    if(setEnCarga) {
-        setEnCarga(true);
+    if(typeof onAntes != 'undefined') {
+        // Ejecutamos la funcion de antes de realizar el request.
+        onAntes();
     }
 
     // Realizamos el request.
     GetTipoReporte(parametrosBusqueda).then((respuesta) => {
-        // Guardamos los registros en la TipoReporte.
-        setListaRegistros(respuesta.data.registros);
-
-        if(setTotalPaginas) {
-            // Guardamos el total de paginas en la variable.
-            setTotalPaginas(Math.ceil(respuesta.data.totalRegistros / limit));
-        }
+        // Al cumplirse el request, se ejecuta la función.
+        onOk(respuesta.data);
 
     }).catch((error) => {
-        // Ocurrio un errr al realizar el request.
-        console.log(error);
+        if(typeof onError != 'undefined') {
+            // Al ocurrir un error con el reques, ejecutamos la función.
+            onError(error);
+        }
 
     }).finally(() => {
-        // Marcamos que la carga de datos termino.
-        if(setEnCarga) {
-            setEnCarga(false);
+        if(typeof onFinalizar != 'undefined') {
+            // Al terminar el request, se ejecuta la función.
+            onFinalizar();
         }
+
     });
 };
 
 function RegistrarTipoReporte(
-    formRegistro: FormData
+    formRegistro: FormData,
+    onOk?: Function,
+    onError?: Function,
+    onAntes?: Function,
+    onFinalizar?: Function
 ) {
+    if(typeof onAntes != 'undefined') {
+        // Ejecutamos la funcion de onAntes.
+        onAntes();
+    }
+
     // Realizamos el request.
     PostTipoReporte(formRegistro).then((respuesta) => {
+        if(typeof onOk != 'undefined') {
+            // Ejecutamos la funcion de onOk.
+            onOk(respuesta.data);
+        }
 
     }).catch((error) => {
         // Ocurrio un errr al realizar el request.
-        console.log(error);
+        if(typeof onError != 'undefined') {
+            // Ejecutamos la funcion de onError.
+            onError(error);
+        }
 
     }).finally(() => {
+        if(typeof onFinalizar != 'undefined') {
+            // Ejecutamos la funcion de onFinalizar.
+            onFinalizar();
+        }
+
     });
 };
 
 function ModificarTipoReporte(
     idRegistro: number,
-    formRegistro: FormData
+    formRegistro: FormData,
+    onOk?: Function,
+    onError?: Function,
+    onAntes?: Function,
+    onFinalizar?: Function
 ) {
     // Creamos los parametros de busqueda de la consulta.
     const parametrosBusqueda = {
         id: idRegistro
+    }
+
+    if(typeof onAntes != 'undefined') {
+        // Ejecutamos la funcion de onAntes.
+        onAntes();
     }
 
     // Realizamos el request.
     PutTipoReporte(parametrosBusqueda, formRegistro).then((respuesta) => {
+        if(typeof onOk != 'undefined') {
+            // Ejecutamos la funcion de onOk.
+            onOk(respuesta.data);
+        }
 
     }).catch((error) => {
         // Ocurrio un errr al realizar el request.
-        console.log(error);
+        if(typeof onError != 'undefined') {
+            // Ejecutamos la funcion de onError.
+            onError(error);
+        }
 
     }).finally(() => {
+        if(typeof onFinalizar != 'undefined') {
+            // Ejecutamos la funcion de onFinalizar.
+            onFinalizar();
+        }
+
     });
 };
 
 function RemoverTipoReporte(
-    idRegistro: number
+    idRegistro: number,
+    onOk?: Function,
+    onError?: Function,
+    onAntes?: Function,
+    onFinalizar?: Function
 ) {
     // Creamos los parametros de busqueda de la consulta.
     const parametrosBusqueda = {
         id: idRegistro
     }
+    
+    if(typeof onAntes != 'undefined') {
+        // Ejecutamos la funcion de onAntes.
+        onAntes();
+    }
 
     // Realizamos el request.
     DeleteTipoReporte(parametrosBusqueda).then((respuesta) => {
+        if(typeof onOk != 'undefined') {
+            // Ejecutamos la funcion de onOk.
+            onOk(respuesta.data);
+        }
 
     }).catch((error) => {
         // Ocurrio un errr al realizar el request.
-        console.log(error);
+        if(typeof onError != 'undefined') {
+            // Ejecutamos la funcion de onError.
+            onError(error);
+        }
 
     }).finally(() => {
+        if(typeof onFinalizar != 'undefined') {
+            // Ejecutamos la funcion de onFinalizar.
+            onFinalizar();
+        }
+
     });
 };
 
