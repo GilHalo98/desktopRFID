@@ -7,10 +7,7 @@ const GetReporte = async (
         offset?: number,
         id?: number,
         descripcionReporte?: string,
-        idEmpleadoVinculado?: number,
-        idRegistroDispositivoIoTVinculado?: number,
         idTipoReporteVinculado?: number,
-        idRegistroZonaVinculada?: number,
 
     }
 ) => {
