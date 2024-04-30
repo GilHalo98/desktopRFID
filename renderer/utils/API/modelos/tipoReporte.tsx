@@ -1,6 +1,6 @@
 export interface TipoReporte {
     id: number
-    clasificacionReporte: string
+    nombreTipoReporte: string
     descripcionTipoReporte: string
     fechaRegistroTipoReporte: string
     fechaModificacionTipoReporte: string
