@@ -12,8 +12,8 @@ export default function ModalRemoverRegistro(
         modalActivo: boolean,
         toggleModal: Function,
         onOk: Function,
-        onRechazar: Function,
-        children: any
+        onRechazar?: Function,
+        children?: any
     }
 ) {
     return(
@@ -54,7 +54,10 @@ export default function ModalRemoverRegistro(
                                     block
                                     color="primary"
                                     onClick={() => {
-                                        props.onRechazar();
+                                        if(typeof props.onRechazar != 'undefined') {
+                                            props.onRechazar();
+                                        }
+
                                         props.toggleModal();
                                 }}>
                                     Cancelar

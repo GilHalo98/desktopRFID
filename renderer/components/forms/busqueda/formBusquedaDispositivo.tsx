@@ -1,10 +1,13 @@
 'use client'
 
+import React from "react";
 
 import {
     Container, Row, Col,
     Input, Label
 } from 'reactstrap';
+
+// Modelo de datos.
 import { Zona } from '../../../utils/API/modelos/zona';
 import { TipoDispositivo } from '../../../utils/API/modelos/tipoDispositivo';
 
@@ -12,7 +15,7 @@ export default function FormBusquedaDispositivo(
     props: {
         parametrosBusqueda: {
             setIdDispositivo: Function,
-            setIdZona: Function
+            setIdZona: Function,
             setIdTipoDispositivo: Function
         },
         elementosOpciones: {
@@ -21,6 +24,28 @@ export default function FormBusquedaDispositivo(
         }
     }
 ) {
+    const [
+        idZona,
+        setIdZona
+    ] = React.useState("");
+
+    const [
+        idTipoDispositivo,
+        setIdTipoDispositivo
+    ] = React.useState("");
+
+    React.useEffect(() => {
+        props.parametrosBusqueda.setIdZona(idZona);
+    }, [
+        idZona
+    ]);
+
+    React.useEffect(() => {
+        props.parametrosBusqueda.setIdTipoDispositivo(idTipoDispositivo);
+    }, [
+        idTipoDispositivo
+    ]);
+    
     return(
         <Container>
             <Row>
@@ -44,21 +69,26 @@ export default function FormBusquedaDispositivo(
                     <Input
                         id="idZona"
                         type="select"
+                        value={idZona}
                         onChange={(input) => {
-                            props.parametrosBusqueda.setIdZona(input.target.value);
+                            setIdZona(
+                                input.target.value
+                            );
                         }}
                     >
                         <option value={''}>
                             Todas las Zonas
                         </option>
 
-                        {props.elementosOpciones.listaZonas.map((registro: Zona) => {
-                            return(
-                                <option value={registro.id}>
-                                    {registro.nombreZona}
-                                </option>
-                            );
-                        })}
+                        {props.elementosOpciones.listaZonas.map(
+                            (registro: Zona) => {
+                                return(
+                                    <option value={registro.id}>
+                                        {registro.nombreZona}
+                                    </option>
+                                );
+                            }
+                        )}
                     </Input>
                 </Col>
 
@@ -67,8 +97,9 @@ export default function FormBusquedaDispositivo(
                     <Input
                         id="idTipoDispositivo"
                         type="select"
+                        value={idTipoDispositivo}
                         onChange={(input) => {
-                            props.parametrosBusqueda.setIdTipoDispositivo(
+                            setIdTipoDispositivo(
                                 input.target.value
                             );
                         }}
@@ -77,13 +108,15 @@ export default function FormBusquedaDispositivo(
                             Todas los tipos de dispositivos
                         </option>
 
-                        {props.elementosOpciones.listaTiposDispositivos.map((registro: TipoDispositivo) => {
-                            return(
-                                <option value={registro.id}>
-                                    {registro.nombreTipoDispositivo}
-                                </option>
-                            );
-                        })}
+                        {props.elementosOpciones.listaTiposDispositivos.map(
+                            (registro: TipoDispositivo) => {
+                                return(
+                                    <option value={registro.id}>
+                                        {registro.nombreTipoDispositivo}
+                                    </option>
+                                );
+                            }
+                        )}
                     </Input>
                 </Col>
             </Row>

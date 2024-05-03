@@ -1,63 +1,120 @@
+// funcionalidad de React.
 import React from 'react';
 
+// Componentes de reacstrap
 import {
     Input, Label,
     Form, FormGroup,
     Container, Row, Col, Button
 } from 'reactstrap';
-import { guardarRegistro } from './logic/formLogic';
-import { Empleado } from '../../../../utils/API/modelos/empleado';
-import { generarNombreUsuario, generarPassword } from './logic/utils';
+
+// Interfaz con api-
+import {
+    Empleado
+} from '../../../../utils/API/modelos/empleado';
 
 export default function FormRegistroUsuario(
     props: {
+        elementosOpciones: Empleado[],
+        onGuardarRegistro: Function,
         toggleModal: Function,
-        toggleRefresh: Function,
-        elementosOpciones: {
-            listaEmpleados: Empleado[],
-        }
+        onAutogenerarPassword: Function,
+        onAutogenerarUsername: Function
     }
 ) {
-    const [autoGenerarUsername, setAutoGenerarUsername] = React.useState(false);
-    const [autoGenerarPassword, setAutoGenerarPassword] = React.useState(false);
-    const [mostrarContra, setMostrarContra] = React.useState(false);
-    const [password, setPassword] = React.useState(undefined);
-    const [userName, setUserName] = React.useState(undefined);
-    const [registro, setRegistro] = React.useState(undefined);
+    // Hooks para autogenerar datos.
+    const [
+        autoGenerarUsername,
+        setAutoGenerarUsername
+    ] = React.useState(false);
 
-    // Declaramos el useEffect de react para actualizar el contenido de la vista.
+    const [
+        autoGenerarPassword,
+        setAutoGenerarPassword
+    ] = React.useState(false);
+
+    // Hook para mostrar la contraseña.
+    const [
+        mostrarContra,
+        setMostrarContra
+    ] = React.useState(false);
+
+    // Hooks de los datos ingresados por el usuario.
+    const [
+        indexRegistro,
+        setIndexRegistro
+    ] = React.useState(1);
+
+    const [
+        username,
+        setUsername
+    ] = React.useState(undefined);
+
+    const [
+        password,
+        setPassword
+    ] = React.useState(undefined);
+
+    // Hooks de valores auxiliares de datos ingresados.
+    const [
+        auxUsername,
+        setAuxUsername
+    ] = React.useState(undefined);
+
+    const [
+        auxPassword,
+        setAuxPassword
+    ] = React.useState(undefined);
+
+    // Use Effect de la autogeneracion del username.
     React.useEffect(() => {
-        console.log('refresh');
-
-        setPassword(undefined);
-        setUserName(undefined);
-
         if(autoGenerarUsername) {
-            // Se concatena su nombre completo.
-            const nombreCompleto = registro.nombres
-                + ' ' + registro.apellidoPaterno
-                + ' ' + registro.apellidoMaterno;
+            props.onAutogenerarUsername(
+                props.elementosOpciones[indexRegistro],
+                setUsername
+            );
 
-            setUserName(generarNombreUsuario(nombreCompleto));
+            setAuxUsername(username);
+
+        } else {
+            setUsername(auxUsername);
         }
 
+    }, [
+        autoGenerarUsername
+    ]);
 
+    // Use Effect de la autogeneracion del password.
+    React.useEffect(() => {
         if(autoGenerarPassword) {
-            setPassword(generarPassword(registro.fechaRegistroEmpleado));
+            props.onAutogenerarPassword(
+                props.elementosOpciones[indexRegistro],
+                setPassword
+            );
+            setAuxPassword(password);
+        } else {
+            setPassword(auxPassword);
         }
 
-    }, [autoGenerarUsername, autoGenerarPassword, registro]);
+    }, [
+        autoGenerarPassword
+    ]);
 
-    const mostrarPassword = (mostrar: boolean) => {
-        return mostrar ? "text" : "password";
+    // Control para mostrar la contraseña.
+    const mostrarPassword = (
+        mostrar: boolean
+    ) => {return mostrar ?
+        "text" : "password";
     };
 
     return(
         <Form onSubmit={(evento) => {
             evento.preventDefault();
-            guardarRegistro(evento);
+            props.onGuardarRegistro(
+                evento,
+                props.elementosOpciones[indexRegistro]
+            );
             props.toggleModal();
-            props.toggleRefresh();
         }}>
             {/*Input de id de empleado*/}
             <FormGroup>
@@ -66,19 +123,19 @@ export default function FormRegistroUsuario(
                 </Label>
 
                 <Input
+                    name="seleccionIdEmpleado"
                     id="idEmpleado"
                     type="select"
-                    onChange={(evento) => {
-                        props.elementosOpciones.listaEmpleados.map((elemento: Empleado) => {
-                            if(parseInt(evento.target.value) == elemento.id) {
-                                setRegistro(elemento);
-                            }
-                        });
-                    }}
+                    onChange={(evento) => {setIndexRegistro(parseInt(
+                        evento.target.value
+                    ))}}
                 >
-                    {props.elementosOpciones.listaEmpleados.map((registro: Empleado) => {
+                    {props.elementosOpciones.map((
+                        registro: Empleado,
+                        index: number
+                    ) => {
                         return(
-                            <option value={registro.id}>
+                            <option value={index}>
                                 {   
                                     registro.nombres
                                     + ' ' + registro.apellidoPaterno
@@ -90,6 +147,7 @@ export default function FormRegistroUsuario(
                 </Input>
             </FormGroup>
 
+            {/*Input de nombre de usuario.*/}
             <FormGroup>
                 <Label for="nombreUsuario">
                     Nombre de usuario
@@ -100,16 +158,21 @@ export default function FormRegistroUsuario(
                     name="campoDeNombreUsuario"
                     type="text"
                     disabled={autoGenerarUsername}
-                    defaultValue={userName}
+                    value={username}
+                    onChange={(evento) => {setUsername(
+                        evento.target.value
+                    )}}
                 />
             </FormGroup>
 
+            {/*Input de autogenerar nombre de usuario.*/}
             <FormGroup switch>
                 <Input
+                    name="checkAutoGenerarUsername"
                     type="switch"
-                    onClick={(evento) => {
-                        setAutoGenerarUsername(evento.target.checked);
-                    }}
+                    onClick={(evento) => {setAutoGenerarUsername(
+                        evento.target.checked
+                    )}}
                 />
 
                 <Label switch>
@@ -117,6 +180,7 @@ export default function FormRegistroUsuario(
                 </Label>
             </FormGroup>
 
+            {/*Input de contraseña de usuario.*/}
             <FormGroup>
                 <Label for="password">
                     Password de usuario
@@ -127,19 +191,27 @@ export default function FormRegistroUsuario(
                     name="campoDePassword"
                     type={mostrarPassword(mostrarContra)}
                     disabled={autoGenerarPassword}
-                    defaultValue={password}
+                    value={password}
+                    onChange={(evento) => {setPassword(
+                        evento.target.value
+                    )}}
                 />
             </FormGroup>
 
+            {/*
+                Switch de autogenerar contraseña y
+                checkbox de mostrar contraseña.
+            */}
             <Container>
                 <Row>
                     <Col>
                         <FormGroup switch>
                             <Input
+                                name="checkAutoGenerarPassword"
                                 type="switch"
-                                onClick={(evento) => {
-                                    setAutoGenerarPassword(evento.target.checked);
-                                }}
+                                onClick={(evento) => {setAutoGenerarPassword(
+                                    evento.target.checked
+                                )}}
                             />
 
                             <Label switch>
@@ -152,9 +224,9 @@ export default function FormRegistroUsuario(
                         <FormGroup check>
                             <Input
                                 type="checkbox"
-                                onClick={(evento) => {
-                                    setMostrarContra(evento.target.checked);
-                                }}
+                                onClick={(evento) => {setMostrarContra(
+                                    evento.target.checked
+                                )}}
                             />
 
                             <Label check>

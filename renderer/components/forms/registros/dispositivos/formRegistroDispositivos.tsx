@@ -6,9 +6,14 @@ import {
     Container, Row, Col, Button
 } from 'reactstrap';
 
-import { Zona } from '../../../../utils/API/modelos/zona';
-import { guardarRegistro } from './logic/formLogic';
-import { TipoDispositivo } from '../../../../utils/API/modelos/tipoDispositivo';
+// Modelos de datos.
+import {
+    Zona
+} from '../../../../utils/API/modelos/zona';
+
+import {
+    TipoDispositivo
+} from '../../../../utils/API/modelos/tipoDispositivo';
 
 export default function FormRegistroDispositivos(
     props: {
@@ -16,16 +21,15 @@ export default function FormRegistroDispositivos(
             listaZonas: Zona[]
             listaTiposDispositivos: TipoDispositivo[]
         },
-        toggleModal: Function,
-        toggleRefresh: Function
+        onGuardarRegistro: Function,
+        toggleModal: Function
     }
 ) {
     return(
         <Form onSubmit={(evento) => {
             evento.preventDefault();
-            guardarRegistro(evento);
+            props.onGuardarRegistro(evento);
             props.toggleModal();
-            props.toggleRefresh();
         }}>
             <FormGroup>
                 <Label for="descripcionDispositivo">

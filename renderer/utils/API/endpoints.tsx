@@ -26,7 +26,13 @@ const URL_GENERALES = {
     USUARIO: 'usuario/',
     RECURSO: 'recurso/',
     TIPO_DISPOSITIVO: 'tipoDispositivo/',
-    DISPOSITIVO: 'dispositivo/'
+    DISPOSITIVO: 'dispositivo/',
+    DIAS_LABORALES: 'diaLaboral/',
+    HORARIO: 'horario/',
+    REPORTE_ACTIVIDAD: 'reporteActividad/',
+    REPORTE_DISPOSITIVO: 'reporteDispositivo/',
+    REPORTE_ACCESO: 'reporteAcceso/',
+    REPORTE_CHEQUEO: 'reporteChequeo/'
 };
 
 var REQUEST_HANDLER = axios.create({
@@ -405,7 +411,7 @@ const ENDPOINTS = {
         REGISTRAR: (datos: FormData) => {
             return REQUEST_HANDLER({
                 method: 'post',
-                url: URL_GENERALES.ZONA + 'registrar',
+                url: URL_GENERALES.RECURSO + 'registrar',
                 data: datos,
                 headers: { 'authorization': sessionStorage.getItem('token') }
             });
@@ -464,6 +470,240 @@ const ENDPOINTS = {
             return REQUEST_HANDLER({
                 method: 'delete',
                 url: URL_GENERALES.TIPO_DISPOSITIVO + 'eliminar',
+                params: parametros,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        }
+    },
+
+    DIA_LABORAL: {
+        CONSULTA: (parametros: any) => {
+            return REQUEST_HANDLER({
+                method: 'get',
+                url: URL_GENERALES.DIAS_LABORALES + 'consultar',
+                params: parametros,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
+        REGISTRAR: (datos: FormData) => {
+            return REQUEST_HANDLER({
+                method: 'post',
+                url: URL_GENERALES.DIAS_LABORALES + 'registrar',
+                data: datos,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
+        MODIFICAR: (parametros: any, datos: FormData) => {
+            return REQUEST_HANDLER({
+                method: 'put',
+                url: URL_GENERALES.DIAS_LABORALES + 'modificar',
+                params: parametros,
+                data: datos,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
+        ELIMINAR: (parametros: any) => {
+            return REQUEST_HANDLER({
+                method: 'delete',
+                url: URL_GENERALES.DIAS_LABORALES + 'eliminar',
+                params: parametros,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        }
+    },
+
+    HORARIO: {
+        CONSULTA: (parametros: any) => {
+            return REQUEST_HANDLER({
+                method: 'get',
+                url: URL_GENERALES.HORARIO + 'consultar',
+                params: parametros,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
+        REGISTRAR: (datos: FormData) => {
+            return REQUEST_HANDLER({
+                method: 'post',
+                url: URL_GENERALES.HORARIO + 'registrar',
+                data: datos,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
+        MODIFICAR: (parametros: any, datos: FormData) => {
+            return REQUEST_HANDLER({
+                method: 'put',
+                url: URL_GENERALES.HORARIO + 'modificar',
+                params: parametros,
+                data: datos,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
+        ELIMINAR: (parametros: any) => {
+            return REQUEST_HANDLER({
+                method: 'delete',
+                url: URL_GENERALES.HORARIO + 'eliminar',
+                params: parametros,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        }
+    },
+
+    REPORTE_ACTIVIDAD: {
+        CONSULTA: (parametros: any) => {
+            return REQUEST_HANDLER({
+                method: 'get',
+                url: URL_GENERALES.REPORTE_ACTIVIDAD + 'consultar',
+                params: parametros,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
+        REGISTRAR: (datos: FormData) => {
+            return REQUEST_HANDLER({
+                method: 'post',
+                url: URL_GENERALES.REPORTE_ACTIVIDAD + 'registrar',
+                data: datos,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
+        MODIFICAR: (parametros: any, datos: FormData) => {
+            return REQUEST_HANDLER({
+                method: 'put',
+                url: URL_GENERALES.REPORTE_ACTIVIDAD + 'modificar',
+                params: parametros,
+                data: datos,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
+        ELIMINAR: (parametros: any) => {
+            return REQUEST_HANDLER({
+                method: 'delete',
+                url: URL_GENERALES.REPORTE_ACTIVIDAD + 'eliminar',
+                params: parametros,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        }
+    },
+
+    REPORTE_DISPOSITIVO: {
+        CONSULTA: (parametros: any) => {
+            return REQUEST_HANDLER({
+                method: 'get',
+                url: URL_GENERALES.REPORTE_DISPOSITIVO + 'consultar',
+                params: parametros,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
+        REGISTRAR: (datos: FormData) => {
+            return REQUEST_HANDLER({
+                method: 'post',
+                url: URL_GENERALES.REPORTE_DISPOSITIVO + 'registrar',
+                data: datos,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
+        MODIFICAR: (parametros: any, datos: FormData) => {
+            return REQUEST_HANDLER({
+                method: 'put',
+                url: URL_GENERALES.REPORTE_DISPOSITIVO + 'modificar',
+                params: parametros,
+                data: datos,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
+        ELIMINAR: (parametros: any) => {
+            return REQUEST_HANDLER({
+                method: 'delete',
+                url: URL_GENERALES.REPORTE_DISPOSITIVO + 'eliminar',
+                params: parametros,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        }
+    },
+
+    REPORTE_ACCESO: {
+        CONSULTA: (parametros: any) => {
+            return REQUEST_HANDLER({
+                method: 'get',
+                url: URL_GENERALES.REPORTE_ACCESO + 'consultar',
+                params: parametros,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
+        REGISTRAR: (datos: FormData) => {
+            return REQUEST_HANDLER({
+                method: 'post',
+                url: URL_GENERALES.REPORTE_ACCESO + 'registrar',
+                data: datos,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
+        MODIFICAR: (parametros: any, datos: FormData) => {
+            return REQUEST_HANDLER({
+                method: 'put',
+                url: URL_GENERALES.REPORTE_ACCESO + 'modificar',
+                params: parametros,
+                data: datos,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
+        ELIMINAR: (parametros: any) => {
+            return REQUEST_HANDLER({
+                method: 'delete',
+                url: URL_GENERALES.REPORTE_ACCESO + 'eliminar',
+                params: parametros,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        }
+    },
+
+    REPORTE_CHEQUEO: {
+        CONSULTA: (parametros: any) => {
+            return REQUEST_HANDLER({
+                method: 'get',
+                url: URL_GENERALES.REPORTE_CHEQUEO + 'consultar',
+                params: parametros,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
+        REGISTRAR: (datos: FormData) => {
+            return REQUEST_HANDLER({
+                method: 'post',
+                url: URL_GENERALES.REPORTE_CHEQUEO + 'registrar',
+                data: datos,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
+        MODIFICAR: (parametros: any, datos: FormData) => {
+            return REQUEST_HANDLER({
+                method: 'put',
+                url: URL_GENERALES.REPORTE_CHEQUEO + 'modificar',
+                params: parametros,
+                data: datos,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
+        ELIMINAR: (parametros: any) => {
+            return REQUEST_HANDLER({
+                method: 'delete',
+                url: URL_GENERALES.REPORTE_CHEQUEO + 'eliminar',
                 params: parametros,
                 headers: { 'authorization': sessionStorage.getItem('token') }
             });

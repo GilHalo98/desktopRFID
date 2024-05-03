@@ -35,7 +35,7 @@ const paginas = [{
         icono: mdiViewDashboard,
         subdivicion: [{
             id: "1.1",
-            url: "/home/dashboard/actividadMaquinas",
+            url: "/home/dashboard/historialActividadMaquinas",
             descripcion: "Actividad de maquinas",
             icono: mdiListStatus
         }, {
@@ -148,7 +148,7 @@ const paginas = [{
         }, {
             id: "3.2",
             url: "/home/reportes/actividadMaquinas",
-            descripcion: "Actividad de maquinas",
+            descripcion: "Historial de actividad de maquinas",
             icono: mdiArchiveCog
         }]
     }, {
@@ -157,12 +157,12 @@ const paginas = [{
         icono: mdiAccountGroup,
         subdivicion: [{
             id: "4.1",
-            url: "/home/empleados/registros",
+            url: "/home/empleados/registrosEmpleados",
             descripcion: "Registros de empleados",
             icono: mdiAccountDetails
         }, {
             id: "4.2",
-            url: "/home/empleados/horarios",
+            url: "/home/empleados/horariosEmpleados",
             descripcion: "Horarios de empleados",
             icono: mdiCalendarAccount
         }]

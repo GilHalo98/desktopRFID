@@ -3,8 +3,5 @@ export interface Reporte {
     descripcionReporte: string
     fechaRegistroReporte: string
     fechaModificacionReporte: string
-    idEmpleadoVinculado: number
-    idRegistroDispositivoIoTVinculado: number
     idTipoReporteVinculado: number
-    idRegistroZonaVinculada: number
 };

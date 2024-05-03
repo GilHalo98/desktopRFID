@@ -9,11 +9,11 @@ import {
 function ConsultaRecurso(
     onOk: Function,
     parametrosBusqueda?: {
-        limit: number,
-        offset: number,
-        id: number,
-        tipo: string,
-        nombre: string
+        limit?: number,
+        offset?: number,
+        id?: number,
+        tipo?: string,
+        nombre?: string
     },
     onError?: Function,
     onAntes?: Function,

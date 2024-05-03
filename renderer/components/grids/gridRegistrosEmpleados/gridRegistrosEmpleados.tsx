@@ -21,9 +21,9 @@ import {
 } from '../../../utils/API/interface/empleado';
 
 // Componentes de la vista.
-import FormModificarEmpleado from '../../forms/registros/empleados/formModificarEmpleado';
+import FormModificarEmpleado from '../../forms/registros/empleados/formModificarEmpleados';
 import ModalVisualizarRegistro from '../../modals/modalOpciones/modalVisualizarRegistro';
-import FormRegistroEmpleado from '../../forms/registros/empleados/formRegistroEmpleado';
+import FormRegistroEmpleado from '../../forms/registros/empleados/formRegistroEmpleados';
 import ModalModificarRegistro from '../../modals/modalOpciones/modalModificarRegistro';
 import ModalAgregarRegistro from '../../modals/modalOpciones/modalAgregarRegistro';
 import CardRegistroEmpleado from '../../cards/cardsRegistros/cardRegistroEmpleado';

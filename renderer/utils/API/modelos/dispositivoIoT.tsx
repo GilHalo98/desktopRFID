@@ -4,5 +4,6 @@ export interface DispositivoIoT {
     fechaRegistroIoT: string
     fechaModificacionIoT: string
     idZonaVinculada: number
+    idTipoDispositivoVinculado: number
 };
   

@@ -18,18 +18,69 @@ import FormLogin from '../components/forms/login/formLogin';
 
 import RootLayout from '../components/Layout/rootLayout';
 import { LoginUsuario } from '../utils/API/interface/usuarios';
+import { BASE_URL } from '../utils/API/endpoints';
 
 export default function Login() {
     // Hooks para los datos del login.
     const [userName, setUserName] = React.useState(undefined);
     const [password, setPassword] = React.useState(undefined);
-    const [recordarSesion, setRecordarSesion] = React.useState(undefined);
+    const [
+        recordarSesion,
+        setRecordarSesion
+    ] = React.useState(undefined);
 
     // Hook para el estado del indicador de carga.
     const [enCarga, setEnCarga] = React.useState(false);
 
     // Hook para la alerta temporal.
     const [mostrarAlerta, setMostrarAlerta] = React.useState(false);
+
+    // Funcion de inicio de sesion.
+    const iniciarSesion = () => {
+        LoginUsuario(
+            {
+                nombreUsuario: userName,
+                password: password,
+                alwaysOn: recordarSesion
+            },
+            (respuesta: any) => {
+                if(respuesta.authorization) {
+                    // Guardamos el token de acceso.
+                    sessionStorage.setItem(
+                        'token',
+                        respuesta.authorization
+                    );
+                }
+
+            },
+            (error: any) => {
+                console.log(error);
+                // Terminamos la pantalla de carga.
+                setEnCarga(false);
+            },
+            () => {
+                // Iniciamos la pantalla de carga.
+                setEnCarga(true);
+            },
+            () => {
+                // Si existe un token guardado.
+                if(window.sessionStorage.getItem('token')) {
+                    // Iniciamos la sesion con el servidor socket.
+                    window.ipc.send('sesion_iniciada', {
+                        ipServer: BASE_URL,
+                        token: window.sessionStorage.getItem('token')
+                    });
+
+                    // Se hace el cambio de pagina a
+                    // la pagina principal.
+                    Router.push('/home');
+                }
+
+                // Terminamos la pantalla de carga.
+                setEnCarga(false);
+            },
+        );
+    };
 
     return (
         <React.Fragment>
@@ -68,21 +119,7 @@ export default function Login() {
                                 block
                                 outline
                                 color='success'
-                                onClick={() => {
-                                    const cambioPagina = () => {
-                                        Router.push('/home');
-                                    };
-
-                                    LoginUsuario(
-                                        {
-                                            nombreUsuario: userName,
-                                            password: password,
-                                            alwaysOn: recordarSesion
-                                        },
-                                        cambioPagina,
-                                        setEnCarga
-                                    );
-                                }}
+                                onClick={iniciarSesion}
                             >
                                 Iniciar sesión
                             </Button>

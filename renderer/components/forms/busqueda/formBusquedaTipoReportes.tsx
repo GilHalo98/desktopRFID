@@ -21,11 +21,11 @@ export default function FormBusquedaTipoReportes(
                     <Input
                         id="idTipoReporte"
                         placeholder="ID del tipo de reporte"
-                        type="number"
+                        type="text"
                         onChange={(input) => {
                             var id = null;
                             if(input.target.value) {
-                                id = parseInt(input.target.value)
+                                id = parseInt(input.target.value);
                             }
                             props.parametrosBusqueda.setIdTipoReporte(id);
                         }}

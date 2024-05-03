@@ -5,29 +5,27 @@ import {
     Form, FormGroup,
     Container, Row, Col, Button
 } from 'reactstrap';
-import { guardarRegistro } from './logic/formLogic';
 
 export default function FormRegistroTipoReporte(
     props: {
-        toggleModal: Function,
-        toggleRefresh: Function
+        onGuardarRegistro: Function,
+        toggleModal: Function
     }
 ) {
     return(
         <Form onSubmit={(evento) => {
             evento.preventDefault();
-            guardarRegistro(evento);
+            props.onGuardarRegistro(evento);
             props.toggleModal();
-            props.toggleRefresh();
         }}>
             <FormGroup>
-                <Label for="classificacionTipoReporte">
-                    Clasificación del tipo de reporte
+                <Label for="nombreTipoReporte">
+                    Nombre del tipo de reporte
                 </Label>
 
                 <Input
-                    id="classificacionTipoReporte"
-                    name="campoClassificacionTipoReporte"
+                    id="nombreTipoReporte"
+                    name="campoNombreTipoReporte"
                     type="text"
                 />
             </FormGroup>

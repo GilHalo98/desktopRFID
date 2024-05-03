@@ -1,21 +1,23 @@
 'use client'
 
-import React from "react";
+import 'bootstrap/dist/css/bootstrap.css';
 
-// Componentes de reactstrap.
-import { Container, Row, Col } from "reactstrap";
+import React from 'react';
 
-// Componentes propios.
-import SideBarLayout from "../../../../components/Layout/sideBarLayout";
-import GridRegistrosEmpleados from "../../../../components/grids/gridRegistrosEmpleados/gridRegistrosEmpleados";
+import {
+    Container, Row, Col
+} from 'reactstrap';
 
-export default function ListaEmpleados() {
+import SideBarLayout from '../../../../components/Layout/sideBarLayout';
+import TablaEmpleados from '../../../../components/tablas/tablaEmpleados/tablaEmpleados';
+
+export default function ListaReportes() {
     return (
         <React.Fragment>
             <Container fluid>
                 <Row>
                     <Col>
-                        <GridRegistrosEmpleados/>
+                        <TablaEmpleados/>
                     </Col>
                 </Row>
             </Container>
@@ -23,6 +25,6 @@ export default function ListaEmpleados() {
     );
 };
 
-ListaEmpleados.getLayout = function(page) {
+ListaReportes.getLayout = function(page) {
     return <SideBarLayout>{page}</SideBarLayout>;
 };

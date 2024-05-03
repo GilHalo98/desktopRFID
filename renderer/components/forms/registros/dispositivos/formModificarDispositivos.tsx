@@ -6,29 +6,36 @@ import {
     Container, Row, Col, Button
 } from 'reactstrap';
 
-import { modificarRegistro } from './logic/formLogic';
-import { Zona } from '../../../../utils/API/modelos/zona';
-import { RespuestaConsultaDispositivos } from '../../../../utils/API/respuestas/consultaDispositivo';
-import { TipoDispositivo } from '../../../../utils/API/modelos/tipoDispositivo';
+// Modelo de datos.
+import {
+    Zona
+} from '../../../../utils/API/modelos/zona';
+
+import {
+    DispositivoIoT
+} from '../../../../utils/API/modelos/dispositivoIoT';
+
+import {
+    TipoDispositivo
+} from '../../../../utils/API/modelos/tipoDispositivo';
 
 
 export default function FormModificarDispositivos(
     props: {
-        registro: RespuestaConsultaDispositivos,
+        registro: DispositivoIoT,
         elementosOpciones: {
             listaZonas: Zona[],
             listaTiposDispositivos: TipoDispositivo[]
         },
-        toggleModal: Function,
-        toggleRefresh: Function
+        onModificarRegistro: Function,
+        toggleModal: Function
     }
 ) {
     return(
         <Form onSubmit={(evento) => {
             evento.preventDefault();
-            modificarRegistro(evento, props.registro.id);
+            props.onModificarRegistro(evento, props.registro.id);
             props.toggleModal();
-            props.toggleRefresh();
         }}>
             <FormGroup>
                 <Label for="descripcionDispositivo">
@@ -53,13 +60,15 @@ export default function FormModificarDispositivos(
                     type="select"
                     defaultValue={props.registro.idZonaVinculada}
                 >
-                    {props.elementosOpciones.listaZonas.map((registro: Zona) => {
-                        return(
-                            <option value={registro.id}>
-                                {registro.nombreZona}
-                            </option>
-                        );
-                    })}
+                    {props.elementosOpciones.listaZonas.map(
+                        (registro: Zona) => {
+                            return(
+                                <option value={registro.id}>
+                                    {registro.nombreZona}
+                                </option>
+                            );
+                        }
+                    )}
                 </Input>
             </FormGroup>
 
@@ -71,15 +80,19 @@ export default function FormModificarDispositivos(
                 <Input
                     id="tipoDispositivoVinculado"
                     type="select"
-                    defaultValue={props.registro.idTipoDispositivoVinculado}
+                    defaultValue={
+                        props.registro.id
+                    }
                 >
-                    {props.elementosOpciones.listaTiposDispositivos.map((registro: TipoDispositivo) => {
-                        return(
-                            <option value={registro.id}>
-                                {registro.nombreTipoDispositivo}
-                            </option>
-                        );
-                    })}
+                    {props.elementosOpciones.listaTiposDispositivos.map(
+                        (registro: TipoDispositivo) => {
+                            return(
+                                <option value={registro.id}>
+                                    {registro.nombreTipoDispositivo}
+                                </option>
+                            );
+                        }
+                    )}
                 </Input>
             </FormGroup>
 

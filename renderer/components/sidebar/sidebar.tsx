@@ -35,11 +35,17 @@ export default function SideBar(
     // Consultamos la pagina actual.
     const paginaActual = ruter.pathname;
 
-    const estadoBarra = menuCompacto ? "barraNavegacion-compacto nav nav-pills bg-dark border-bottom border-body v-pills-tabContent" : "barraNavegacion nav nav-pills bg-dark border-bottom border-body v-pills-tabContent";
+    const estadoBarra = menuCompacto ?
+        "barraNavegacion-compacto"
+        : "barraNavegacion";
 
     return(
         <Nav
-            className={estadoBarra}
+            className={
+                estadoBarra
+                + " nav nav-pills bg-dark border-bottom"
+                + " border-body v-pills-tabContent"
+            }
         >
             { /* Mostramos el logo de la empresa en el sidebar */ }
             <NavItem>

@@ -1,5 +1,7 @@
 'use client'
 
+// React.
+import React from 'react';
 
 import {
     Container, Row, Col,
@@ -14,11 +16,19 @@ export default function FormBusquedaRol(
             setRolTrabajador: Function,
             setIdRol: Function
         },
-        elementosOpciones: {
-            listaPermisos: Permiso[]
-        }
+        elementosOpciones: Permiso[]
     }
 ) {
+
+    const [
+        idPermiso,
+        setIdPermiso
+    ] = React.useState("");
+
+    React.useEffect(() => {
+        props.parametrosBusqueda.setIdPermiso(idPermiso);
+    }, [idPermiso]);
+
     return(
         <Container>
             <Row>
@@ -53,15 +63,18 @@ export default function FormBusquedaRol(
                     <Input
                         id="idPermiso"
                         type="select"
+                        value={idPermiso}
                         onChange={(input) => {
-                            props.parametrosBusqueda.setIdPermiso(input.target.value);
+                            setIdPermiso(
+                                input.target.value
+                            );
                         }}
                     >
                         <option value={''}>
                             Todos los permisos
                         </option>
 
-                        {props.elementosOpciones.listaPermisos.map((registro: Permiso) => {
+                        {props.elementosOpciones.map((registro: Permiso) => {
                             return(
                                 <option value={registro.id}>
                                     {registro.descripcionPermiso}

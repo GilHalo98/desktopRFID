@@ -1,11 +1,21 @@
 'use client'
 
+// React.
+import React from 'react';
 
+// Componentes de reacstrap.
 import {
     Container, Row, Col,
     Input, Label
 } from 'reactstrap';
+
+// Modelo de datos.
 import { Empleado } from '../../../utils/API/modelos/empleado';
+
+// Altoritmo de busqueda.
+import {
+    buscarRegistroVinculado
+} from '../../../utils/busquedaAcomodo';
 
 export default function FormBusquedaUsuario(
     props: {
@@ -14,11 +24,19 @@ export default function FormBusquedaUsuario(
             setNombreUsuario: Function,
             setIdEmpleado: Function
         },
-        elementosOpciones: {
-            listaEmpleados: Empleado[],
-        }
+        listaEmpleados: Empleado[]
     }
 ) {
+
+    const [
+        idEmpleado,
+        setIdEmpleado
+    ] = React.useState("");
+
+    React.useEffect(() => {
+        props.parametrosBusqueda.setIdEmpleado(idEmpleado);
+    }, [idEmpleado]);
+
     return(
         <Container>
             <Row>
@@ -27,10 +45,10 @@ export default function FormBusquedaUsuario(
                         id="idUsuario"
                         placeholder="ID del usuario"
                         type="text"
-                        onChange={(input) => {
+                        onChange={(evento) => {
                             var id = null;
-                            if(input.target.value) {
-                                id = parseInt(input.target.value)
+                            if(evento.target.value) {
+                                id = parseInt(evento.target.value)
                             }
                             props.parametrosBusqueda.setIdUsuario(id);
                         }}
@@ -42,9 +60,9 @@ export default function FormBusquedaUsuario(
                         id="nombreUsuario"
                         placeholder="Nombre de usuario"
                         type="text"
-                        onChange={(input) => {
+                        onChange={(evento) => {
                             props.parametrosBusqueda.setNombreUsuario(
-                                input.target.value
+                                evento.target.value
                             );
                         }}
                     />
@@ -55,18 +73,28 @@ export default function FormBusquedaUsuario(
                     <Input
                         id="idEmpleado"
                         type="select"
-                        onChange={(input) => {
-                            props.parametrosBusqueda.setIdEmpleado(input.target.value);
+                        value={idEmpleado}
+                        onChange={(evento) => {
+                            setIdEmpleado(
+                                evento.target.value
+                            );
                         }}
                     >
                         <option value={''}>
                             Todos los empleados
                         </option>
 
-                        {props.elementosOpciones.listaEmpleados.map((registro: any) => {
+                        {props.listaEmpleados.map((
+                            registro: Empleado,
+                            index: number
+                        ) => {
                             return(
                                 <option value={registro.id}>
-                                    {registro.nombres}
+                                    {   
+                                        registro.nombres
+                                        + ' ' + registro.apellidoPaterno
+                                        + ' ' + registro.apellidoMaterno
+                                    }
                                 </option>
                             );
                         })}

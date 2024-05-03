@@ -12,7 +12,7 @@ export default function ModalModificarRegistro(
         idRegistro: string,
         modalActivo: boolean,
         toggleModal: Function,
-        children: any
+        children?: any
     }
 ) {
     return(

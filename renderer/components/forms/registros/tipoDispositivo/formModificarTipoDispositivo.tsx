@@ -6,22 +6,22 @@ import {
     Container, Row, Col, Button
 } from 'reactstrap';
 
-import { modificarRegistro } from './logic/formLogic';
-import { TipoDispositivo } from '../../../../utils/API/modelos/tipoDispositivo';
+import {
+    TipoDispositivo
+} from '../../../../utils/API/modelos/tipoDispositivo';
 
 export default function FormModificarTipoDispositivo(
     props: {
         registro: TipoDispositivo,
-        toggleModal: Function,
-        toggleRefresh: Function
+        onModificarRegistro: Function,
+        toggleModal: Function
     }
 ) {
     return(
         <Form onSubmit={(evento) => {
             evento.preventDefault();
-            modificarRegistro(evento, props.registro.id);
+            props.onModificarRegistro(evento, props.registro.id);
             props.toggleModal();
-            props.toggleRefresh();
         }}>
             <FormGroup>
                 <Label for="nombreTipoReporte">

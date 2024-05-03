@@ -12,7 +12,7 @@ export default function ModalAgregarRegistro(
         nombreTabla: string,
         modalActivo: boolean,
         toggleModal: Function,
-        children: any
+        children?: any
     }
 ) {
     return(

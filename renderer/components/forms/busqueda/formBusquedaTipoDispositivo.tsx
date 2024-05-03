@@ -21,11 +21,11 @@ export default function FormBusquedaTipoDispositivo(
                     <Input
                         id="idTipoDispositivo"
                         placeholder="ID del tipo de dispositivo"
-                        type="number"
+                        type="text"
                         onChange={(input) => {
                             var id = null;
                             if(input.target.value) {
-                                id = parseInt(input.target.value)
+                                id = parseInt(input.target.value);
                             }
                             props.parametrosBusqueda.setIdTipoDispositivo(id);
                         }}

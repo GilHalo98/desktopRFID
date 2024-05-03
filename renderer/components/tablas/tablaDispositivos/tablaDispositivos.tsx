@@ -3,28 +3,9 @@
 // React.
 import React from 'react';
 
-// Funciones propias.
-import { formatearDatos } from '../../../utils/formatDataTabla';
-import { funcionRefresh } from '../../../utils/refresh';
-
-// Interfaz de API.
-import { ConsultaRol } from '../../../utils/API/interface/rol';
-import { ConsultaZona } from '../../../utils/API/interface/zona';
-import { ConsultaDispositivo, RemoverDispositivo } from '../../../utils/API/interface/dispositivo';
-import { ConsultaTipoDispositivo } from '../../../utils/API/interface/tipoDispositivo';
-
 // Componentes propios.
-import ModalGuardarConfiguracionControladorPuerta from '../../modals/modalOpciones/modalGuardarConfiguracionControladorPuerta';
-import MenuGuardarConfiguracionControladorPuerta from '../../forms/menus/menuGuardarConfiguracionControladorPuerta';
-import ModalGuardarConfiguracionControlador from '../../modals/modalOpciones/modalGuardarConfiguracionControlador';
-import ModalGuardarConfiguracionChecador from '../../modals/modalOpciones/modalGuardarConfiguracionChecador';
-import ModalGuardarConfiguracionLector from '../../modals/modalOpciones/modalGuardarConfiguracionLector';
-import MenuGuardarConfiguracionControlador from '../../forms/menus/menuGuardarConfiguracionControlador';
 import FormModificarDispositivos from '../../forms/registros/dispositivos/formModificarDispositivos';
 import FormRegistroDispositivos from '../../forms/registros/dispositivos/formRegistroDispositivos';
-import MenuGuardarConfiguracionChecador from '../../forms/menus/menuGuardarConfiguracionChecador';
-import MenuGuardarConfiguracionLector from '../../forms/menus/menuGuardarConfiguracionLector';
-import ModalVisualizarRegistro from '../../modals/modalOpciones/modalVisualizarRegistro';
 import ModalModificarRegistro from '../../modals/modalOpciones/modalModificarRegistro';
 import FormBusquedaDispositivo from '../../forms/busqueda/formBusquedaDispositivo';
 import ModalAgregarRegistro from '../../modals/modalOpciones/modalAgregarRegistro';
@@ -32,125 +13,156 @@ import ModalRemoverRegistro from '../../modals/modalAlerta/modalRemoverRegistro'
 import Display from '../../displays/display';
 import Tabla from '../tabla';
 
+// Importamos la funcionalidad de la tabla.
+import {
+    formatearRegistros,
+    exportarDatos,
+    guardarRegistro,
+    modificarRegistro,
+    eliminarRegistro,
+    consultarRegistros,
+    consultarRegistrosZonas,
+    consultarRegistrosTiposDispositivos
+} from './logic/registros';
+
+// Modelo de datos.
+import { DispositivoIoT } from '../../../utils/API/modelos/dispositivoIoT';
+
 export default function TablaDispositivos(
     props: {}
 ) {
     // Hook para el estado del indicador de carga.
-    const [enCarga, setEnCarga] = React.useState(false);
+    const [
+        enCarga,
+        setEnCarga
+    ] = React.useState(false);
 
     // Declaramos los hookers que vamos a usar.
-    const [listaRegistros, setListaRegistros] = React.useState([]);
-    const [offset, setOffset] = React.useState(0);
-    const [totalPaginas, setTotalPaginas] = React.useState(1);
-    const [paginaActual, setPaginaActual] = React.useState(1);
+    const [
+        listaRegistros,
+        setListaRegistros
+    ] = React.useState([]);
+
+    const [
+        offset,
+        setOffset
+    ] = React.useState(0);
+
+    const [
+        totalPaginas,
+        setTotalPaginas
+    ] = React.useState(1);
+
+    const [
+        paginaActual,
+        setPaginaActual
+    ] = React.useState(1);
 
     // Hooks de la barra de busqueda.
-    const [idDispositivo, setIdDispositivo] = React.useState(undefined);
-    const [idZona, setIdZona] = React.useState(undefined);
-    const [idTipoDispositivo, setIdTipoDispositivo] = React.useState(undefined);
+    const [
+        idDispositivo,
+        setIdDispositivo
+    ] = React.useState(undefined);
+
+    const [
+        idZona,
+        setIdZona
+    ] = React.useState(undefined);
+
+    const [
+        idTipoDispositivo,
+        setIdTipoDispositivo
+    ] = React.useState(undefined);
 
     // Hooks de las opciones de la tabla.
-    const [elementos, setElementos] = React.useState(12);
-    const [opcionesRegistros, setOpcionesRegistros] = React.useState(false);
-    const [refresh, setRefresh] = React.useState(true);
-    const [tiempoRefresh, setTiempoRefresh] = React.useState(60);
+    const [
+        registrosPorPagina,
+        setRegistrosPorPagina
+    ] = React.useState(12);
+
+    const [
+        opcionesRegistros,
+        setOpcionesRegistros
+    ] = React.useState(false);
+
+    const [
+        refresh,
+        setRefresh
+    ] = React.useState(true);
 
     // Hooks del modal.
-    const [estadoModalVisualizarRegistro, setEstadoModalVisualizarRegistro] = React.useState(false);
-    const [estadoModalModificarRegistro, setEstadoModalModificarRegistro] = React.useState(false);
-    const [estadoModalRemoverRegistro, setEstadoModalRemoverRegistro] = React.useState(false);
-    const [estadoModalAgregarRegistro, setEstadoModalAgregarRegistro] = React.useState(false);
+    const [
+        estadoModalModificarRegistro,
+        setEstadoModalModificarRegistro
+    ] = React.useState(false);
 
     const [
-        estadoModalGuardarConfiguracionChecador,
-        setEstadoModalGuardarConfiguracionChecador
+        estadoModalRemoverRegistro,
+        setEstadoModalRemoverRegistro
     ] = React.useState(false);
+
     const [
-        estadoModalGuardarConfiguracionLector,
-        setEstadoModalGuardarConfiguracionLector
-    ] = React.useState(false);
-    const [
-        estadoModalGuardarConfiguracionControlador,
-        setEstadoModalGuardarConfiguracionControlador
-    ] = React.useState(false);
-    const [
-        estadoModalGuardarConfiguracionControladorPuerta,
-        setEstadoModalGuardarConfiguracionControladorPuerta
+        estadoModalAgregarRegistro,
+        setEstadoModalAgregarRegistro
     ] = React.useState(false);
 
     // Hook del id del registro para operaciones
-    const [idRegistroOperacion, setIdRegistroOperacion] = React.useState(undefined);
-    const [registroOperacion, setRegistroOperacion] = React.useState(undefined);
+    const [
+        idRegistroOperacion,
+        setIdRegistroOperacion
+    ] = React.useState(undefined);
+
+    const [
+        registroOperacion,
+        setRegistroOperacion
+    ] = React.useState(undefined);
 
     // Hook para los forms de registro, modificacion y la barra de busqueda.
-    const [listaZonas, setLisaZonas] = React.useState([]);
-    const [listaRoles, setListaRoles] = React.useState([]);
-    const [listaTiposDispositivos, setListaTiposDispositivos] = React.useState([]);
+    const [
+        listaZonas,
+        setListaZonas
+    ] = React.useState([]);
+
+    const [
+        listaTiposDispositivos,
+        setListaTiposDispositivos
+    ] = React.useState([]);
 
     // Declaramos el useEffect de react para actualizar el contenido de la vista.
     React.useEffect(() => {
         console.log('refresh');
 
-        setListaRegistros([]);
-
-        ConsultaDispositivo(
-            elementos,
-            offset,
-            idDispositivo,
-            idZona,
-            idTipoDispositivo,
+        consultarRegistros(
             setListaRegistros,
             setTotalPaginas,
+            setEnCarga,
+            {
+                limit: registrosPorPagina,
+                offset: offset,
+                id: idDispositivo ,
+                idZonaVinculada: idZona ,
+                idTipoDispositivoVinculado: idTipoDispositivo 
+            }
+        );
+
+        consultarRegistrosZonas(
+            setListaZonas,
             setEnCarga
         );
 
-        ConsultaZona(
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            setLisaZonas,
-            () => {},
-            undefined
-        );
-
-        ConsultaTipoDispositivo(
-            null,
-            null,
-            null,
-            null,
+        consultarRegistrosTiposDispositivos(
             setListaTiposDispositivos,
-            () => {},
-            undefined
-        );
-
-        ConsultaRol(
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            setListaRoles,
-            () => {},
-            () => {}
+            setEnCarga
         );
 
     }, [
-        elementos, 
+        registrosPorPagina, 
         paginaActual,
         idDispositivo,
         idZona,
         idTipoDispositivo,
         refresh
     ]);
-
-    // El componente se refresca cada tiempo dado.
-    setTimeout(() => {
-        funcionRefresh(refresh, setRefresh);
-    }, tiempoRefresh*1000);
 
     // Titulo de la tabla.
     const tituloTabla = 'Tabla de Dispositivos IoT';
@@ -162,105 +174,82 @@ export default function TablaDispositivos(
         'Tipo de dispositivo',
         'Zona donde se encuentra el dispositivo',
         'Fecha de registro',
-        'Última modificación'
+        'Ultima modificacion'
     ];
-
-    // Registros que se mostraran en la tabla.
-    const formatearRegistros = (listaRegistros: any[]) => {
-        return formatearDatos(
-            listaRegistros,
-            [
-                ['id'],
-                ['descripcionDispositivo'],
-                ['tipoDispositivo', 'nombreTipoDispositivo'],
-                ['zona', 'nombreZona'],
-                ['fechaRegistroIoT'],
-                ['fechaModificacionIoT'],
-            ],
-            ['id', 'indexRegistro']
-        );
-    };
 
     // Funciones de las opciones de los registros.
     const funcionesRegistros = {
-        onEliminar: (idRegistro: number, indexRegistro: number) => {
-            setIdRegistroOperacion(idRegistro);
-            setRegistroOperacion(listaRegistros[indexRegistro]);
-            setEstadoModalRemoverRegistro(!estadoModalRemoverRegistro);
+        onEliminar: (
+            idRegistro: number,
+            indexRegistro: number
+        ) => {
+            setIdRegistroOperacion(
+                idRegistro
+            );
+
+            setRegistroOperacion(
+                listaRegistros[indexRegistro]
+            );
+
+            setEstadoModalRemoverRegistro(
+                !estadoModalRemoverRegistro
+            );
         },
-        onModificar: (idRegistro: number, indexRegistro: number) => {
-            setIdRegistroOperacion(idRegistro);
-            setRegistroOperacion(listaRegistros[indexRegistro]);
-            setEstadoModalModificarRegistro(!estadoModalModificarRegistro);
-        },
-        onVisualizar: (idRegistro: number, indexRegistro: number) => {
-            setIdRegistroOperacion(idRegistro);
-            setRegistroOperacion(listaRegistros[indexRegistro]);
-            setEstadoModalVisualizarRegistro(!estadoModalVisualizarRegistro);
-        },
-        onGuardarConfiguracion: (idRegistro: number, indexRegistro: number) => {
-            setIdRegistroOperacion(idRegistro);
-            setRegistroOperacion(listaRegistros[indexRegistro]);
+        onModificar: (
+            idRegistro: number,
+            indexRegistro: number
+        ) => {
+            setIdRegistroOperacion(
+                idRegistro
+            );
 
-            const tipoDispositivo = listaRegistros[
-                indexRegistro
-            ].tipoDispositivo.id;
+            setRegistroOperacion(
+                listaRegistros[indexRegistro]
+            );
 
-            switch(tipoDispositivo) {
-                case 1:
-                    setEstadoModalGuardarConfiguracionChecador(
-                        !estadoModalGuardarConfiguracionChecador
-                    );
-                    break;
-
-                case 2:
-                    setEstadoModalGuardarConfiguracionLector(
-                        !estadoModalGuardarConfiguracionLector
-                    );
-                    break;
-
-                case 3:
-                    setEstadoModalGuardarConfiguracionControlador(
-                        !estadoModalGuardarConfiguracionControlador
-                    );
-                    break;
-
-                case 4:
-                    setEstadoModalGuardarConfiguracionControladorPuerta(
-                        !estadoModalGuardarConfiguracionControladorPuerta
-                    );
-                    break;
-            
-                default:
-                    break;
-            }
+            setEstadoModalModificarRegistro(
+                !estadoModalModificarRegistro
+            );
         }
     };
 
     // Opciones de la tabla.
     const opcionesTabla = {
-        elementos: elementos,
+        registrosPorPagina: registrosPorPagina,
         opcionesRegistros: opcionesRegistros,
-        tiempoRefresh: tiempoRefresh,
-        setElementos: setElementos,
-        setOpcionesRegistros: setOpcionesRegistros,
-        setTiempoRefresh: setTiempoRefresh
+        guardarConfiguracion: (evento: any) => {
+            setRegistrosPorPagina(evento.target[0].value ?
+                parseInt(evento.target[0].value) : 0
+            );
+
+            setOpcionesRegistros(evento.target[1].checked);
+
+            setPaginaActual(1);
+            setOffset(0);
+        }
     };
 
     // Funciones de las opciones de la tabla.
     const funcionesOpciones = {
-        onExportarArchivo: undefined,
-        onGenerarReporte: undefined,
-        onAddRegistro: () => {
-            setEstadoModalAgregarRegistro(!estadoModalAgregarRegistro);
-        }
+        onAgregarRegistro: () => {setEstadoModalAgregarRegistro(
+            !estadoModalAgregarRegistro
+        )},
+        onRefrescarTabla: () => {setRefresh(
+            !refresh
+        )},
+        onExportarDatos: () => {console.log(
+            "datos exportados"
+        )},
+        onCambiarConfiguracion: () => {console.log(
+            "configuracion cambiada"
+        )}
     };
 
     // Propiedades de la paginacion.
     const paginacion = {
         paginaActual: paginaActual,
         offset: offset,
-        elementos: elementos,
+        registrosPorPagina: registrosPorPagina,
         totalPaginas: totalPaginas,
         setPaginaActual: setPaginaActual,
         setOffset: setOffset,
@@ -277,79 +266,91 @@ export default function TablaDispositivos(
         listaTiposDispositivos: listaTiposDispositivos
     };
 
+    // Formato especial de datos.
+    const formatoEspecial = {
+        "Fecha de registro": (fechaRegistro?: string) => {
+            if(!fechaRegistro) {
+                return "";
+            }
+
+            return fechaRegistro.replace("T", " ").slice(0, 19);
+        },
+        "Ultima modificacion": (fechaModificacion?: string) => {
+            if(!fechaModificacion) {
+                return "";
+            }
+            return fechaModificacion.replace("T", " ").slice(0, 19);
+        }
+    };
+
     return(
         <Tabla
             tituloTabla={tituloTabla}
-            funcionesRegistros={funcionesRegistros}
-            opcionesTabla={opcionesTabla}
-            funcionesOpciones={funcionesOpciones}
-            paginacion={paginacion}
             cabeceras={cabeceras}
             registros={formatearRegistros(listaRegistros)}
-            formatoEspecial={undefined}
             enCarga={enCarga}
+            setEnCarga={setEnCarga}
+            exportarDatos={(
+                exportarDatosEnVista: boolean,
+                datosRegistro: DispositivoIoT[]
+            ) => {exportarDatos(
+                exportarDatosEnVista,
+                datosRegistro,
+                cabeceras,
+                setEnCarga
+            )}}
+            formatoEspecial={formatoEspecial}
+            funcionesOpciones={funcionesOpciones}
+            opcionesTabla={opcionesTabla}
+            funcionesRegistros={funcionesRegistros}
+            paginacion={paginacion}
         >
             {/*Modal de agregar registro*/}
             <ModalAgregarRegistro
-                nombreTabla={tituloTabla}
+              nombreTabla={tituloTabla}
                 modalActivo={estadoModalAgregarRegistro}
-                toggleModal={() => {
-                    setEstadoModalAgregarRegistro(!estadoModalAgregarRegistro);
-                }}
+                toggleModal={() => {setEstadoModalAgregarRegistro(
+                    !estadoModalAgregarRegistro
+                )}}
             >
                 <FormRegistroDispositivos
-                    toggleModal={() => {
-                        setEstadoModalAgregarRegistro(!estadoModalAgregarRegistro);
-                    }}
-                    toggleRefresh={() => {
-                        funcionRefresh(refresh, setRefresh);
-                    }}
                     elementosOpciones={elementosOpciones}
+                    toggleModal={() => {setEstadoModalAgregarRegistro(
+                        !estadoModalAgregarRegistro
+                    )}}
+                    onGuardarRegistro={(
+                        evento: any
+                    ) => {guardarRegistro(
+                        evento,
+                        refresh,
+                        setRefresh
+                    )}}
                 />
             </ModalAgregarRegistro>
-
-            {/*Modal de visualizar datos del registro*/}
-            <ModalVisualizarRegistro
-                idRegistro={idRegistroOperacion}
-                modalActivo={estadoModalVisualizarRegistro}
-                toggleModal={() => {
-                    setEstadoModalVisualizarRegistro(!estadoModalVisualizarRegistro);
-                }}
-                onOk={() => {}}
-                onRechazar={() => {}}
-            >
-                <Display
-                    registro={registroOperacion}
-                    propiedades={[
-                        ['id'],
-                        ['descripcionDispositivo'],
-                        ['fechaRegistroIoT'],
-                    ]}
-                    campos={[
-                        'ID',
-                        'Descripcion',
-                        'Fecha de registro'
-                    ]}
-                />
-            </ModalVisualizarRegistro>
 
             {/*Modal de modificar registro*/}
             <ModalModificarRegistro
                 idRegistro={idRegistroOperacion}
                 modalActivo={estadoModalModificarRegistro}
-                toggleModal={() => {
-                    setEstadoModalModificarRegistro(!estadoModalModificarRegistro);
-                }}
+                toggleModal={() => {setEstadoModalModificarRegistro(
+                    !estadoModalModificarRegistro
+                )}}
             >
                 <FormModificarDispositivos
-                    registro={registroOperacion}
-                    toggleModal={() => {
-                        setEstadoModalModificarRegistro(!estadoModalModificarRegistro);
-                    }}
-                    toggleRefresh={() => {
-                        funcionRefresh(refresh, setRefresh);
-                    }}
                     elementosOpciones={elementosOpciones}
+                    registro={registroOperacion}
+                    onModificarRegistro={(
+                        evento: any,
+                        idRegistro: number
+                    ) => {modificarRegistro(
+                        evento,
+                        idRegistro,
+                        refresh,
+                        setRefresh
+                    )}}
+                    toggleModal={() => {setEstadoModalModificarRegistro(
+                        !estadoModalModificarRegistro
+                    )}}
                 />
             </ModalModificarRegistro>
 
@@ -357,14 +358,16 @@ export default function TablaDispositivos(
             <ModalRemoverRegistro
                 idRegistro={idRegistroOperacion}
                 modalActivo={estadoModalRemoverRegistro}
-                toggleModal={() => {
-                    setEstadoModalRemoverRegistro(!estadoModalRemoverRegistro);
-                }}
-                onOk={(idRegistro: number) => {
-                    RemoverDispositivo(idRegistro);
-                    funcionRefresh(refresh, setRefresh);
-                }}
-                onRechazar={() => {}}
+                toggleModal={() => {setEstadoModalRemoverRegistro(
+                    !estadoModalRemoverRegistro
+                )}}
+                onOk={(
+                    idRegistro: number
+                ) => {eliminarRegistro(
+                    idRegistro,
+                    refresh,
+                    setRefresh
+                )}}
             >
                 <Display
                     registro={registroOperacion}
@@ -380,112 +383,6 @@ export default function TablaDispositivos(
                     ]}
                 />
             </ModalRemoverRegistro>
-
-            {/*Modal de guardado de configuracion de dispositivo*/}
-            <ModalGuardarConfiguracionChecador
-                registro={registroOperacion}
-                headerModal={'Guardar Configuracion'}
-                tituloModal={'Guardar la configuracion del dispositivo IoT en este'}
-                modalActivo={estadoModalGuardarConfiguracionChecador}
-                toggleModal={() => {
-                    setEstadoModalGuardarConfiguracionChecador(
-                        !estadoModalGuardarConfiguracionChecador
-                    );
-                }}
-                onOk={() => {}}
-                onRechazar={() => {}}
-            >
-                <MenuGuardarConfiguracionChecador
-                    registro={registroOperacion}
-                    toggleModal={() => {
-                        setEstadoModalGuardarConfiguracionChecador(
-                            !estadoModalGuardarConfiguracionChecador
-                        );
-                    }}
-                />
-
-            </ModalGuardarConfiguracionChecador>
-
-            {/*Modal de guardado de configuracion de dispositivo*/}
-            <ModalGuardarConfiguracionLector
-                registro={registroOperacion}
-                headerModal={'Guardar Configuracion'}
-                tituloModal={'Guardar la configuracion del dispositivo IoT en este'}
-                modalActivo={estadoModalGuardarConfiguracionLector}
-                toggleModal={() => {
-                    setEstadoModalGuardarConfiguracionLector(
-                        !estadoModalGuardarConfiguracionLector
-                    );
-                }}
-                onOk={() => {}}
-                onRechazar={() => {}}
-            >
-                <MenuGuardarConfiguracionLector
-                    elementosOpciones={{
-                        listaZonas: listaZonas
-                    }}
-                    registro={registroOperacion}
-                    toggleModal={() => {
-                        setEstadoModalGuardarConfiguracionLector(
-                            !estadoModalGuardarConfiguracionLector
-                        );
-                    }}
-                />
-
-            </ModalGuardarConfiguracionLector>
-
-            {/*Modal de guardado de configuracion de dispositivo*/}
-            <ModalGuardarConfiguracionControlador
-                registro={registroOperacion}
-                headerModal={'Guardar Configuracion'}
-                tituloModal={'Guardar la configuracion del dispositivo IoT en este'}
-                modalActivo={estadoModalGuardarConfiguracionControlador}
-                toggleModal={() => {
-                    setEstadoModalGuardarConfiguracionControlador(
-                        !estadoModalGuardarConfiguracionControlador
-                    );
-                }}
-                onOk={() => {}}
-                onRechazar={() => {}}
-            >
-                <MenuGuardarConfiguracionControlador
-                    elementosOpciones={{
-                        listaRoles: listaRoles
-                    }}
-                    registro={registroOperacion}
-                    toggleModal={() => {
-                        setEstadoModalGuardarConfiguracionControlador(
-                            !estadoModalGuardarConfiguracionControlador
-                        );
-                    }}
-                />
-
-            </ModalGuardarConfiguracionControlador>
-
-            {/*Modal de guardado de configuracion de dispositivo*/}
-            <ModalGuardarConfiguracionControladorPuerta
-                registro={registroOperacion}
-                headerModal={'Guardar Configuracion'}
-                tituloModal={'Guardar la configuracion del dispositivo IoT en este'}
-                modalActivo={estadoModalGuardarConfiguracionControladorPuerta}
-                toggleModal={() => {
-                    setEstadoModalGuardarConfiguracionControladorPuerta(
-                        !estadoModalGuardarConfiguracionControladorPuerta
-                    );
-                }}
-                onOk={() => {}}
-                onRechazar={() => {}}
-            >
-                <MenuGuardarConfiguracionControladorPuerta
-                    registro={registroOperacion}
-                    toggleModal={() => {
-                        setEstadoModalGuardarConfiguracionControladorPuerta(
-                            !estadoModalGuardarConfiguracionControladorPuerta
-                        );
-                    }}
-                />
-
-            </ModalGuardarConfiguracionControladorPuerta>
 
             { /*Barra de busqueda del TipoReporte*/ }
             <FormBusquedaDispositivo

@@ -5,22 +5,21 @@ import {
     Form, FormGroup,
     Container, Row, Col, Button
 } from 'reactstrap';
+
 import { Zona } from '../../../../utils/API/modelos/zona';
-import { modificarRegistro } from './logic/formLogic';
 
 export default function FormModificarTipoReporte(
     props: {
         registro: Zona,
-        toggleModal: Function,
-        toggleRefresh: Function
+        onModificarRegistro: Function,
+        toggleModal: Function
     }
 ) {
     return(
         <Form onSubmit={(evento) => {
             evento.preventDefault();
-            modificarRegistro(evento, props.registro.id);
+            props.onModificarRegistro(evento, props.registro.id);
             props.toggleModal();
-            props.toggleRefresh();
         }}>
             <FormGroup>
                 <Label for="nombreZona">

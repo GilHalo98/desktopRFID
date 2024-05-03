@@ -88,7 +88,9 @@ const renderizarNavegacion = (
                 <Button
                     id={subPaginaUrl}
                     className="botonBarraNavegacion"
-                    active={paginaActual == subpagina.url ? true : false}
+                    active={paginaActual == subpagina.url ?
+                        true : false
+                    }
                     key={subpagina.id}
                     href={subpagina.url}
                     aria-current="page"
@@ -104,7 +106,7 @@ const renderizarNavegacion = (
                     />
                     {/*
                         * Si el sidebar se encuentra en modo
-                        * compacto mostramo un tooltip
+                        * compacto mostramos un tooltip
                     */}
                     {modoCompacto ?
                         <UncontrolledTooltip

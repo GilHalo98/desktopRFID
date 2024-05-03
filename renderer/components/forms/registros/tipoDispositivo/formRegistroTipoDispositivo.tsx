@@ -5,20 +5,18 @@ import {
     Form, FormGroup,
     Container, Row, Col, Button
 } from 'reactstrap';
-import { guardarRegistro } from './logic/formLogic';
 
 export default function FormRegistroTipoDispositivo(
     props: {
-        toggleModal: Function,
-        toggleRefresh: Function
+        onGuardarRegistro: Function,
+        toggleModal: Function
     }
 ) {
     return(
         <Form onSubmit={(evento) => {
             evento.preventDefault();
-            guardarRegistro(evento);
+            props.onGuardarRegistro(evento);
             props.toggleModal();
-            props.toggleRefresh();
         }}>
             <FormGroup>
                 <Label for="nombreTipoDispositivo">

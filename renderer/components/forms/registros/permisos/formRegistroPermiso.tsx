@@ -5,22 +5,21 @@ import {
     Form, FormGroup,
     Container, Row, Col, Button
 } from 'reactstrap';
+
 import { Zona } from '../../../../utils/API/modelos/zona';
-import { guardarRegistro } from './logic/formLogic';
 
 export default function FormRegistroPermiso(
     props: {
         elementosOpciones: Zona[],
-        toggleModal: Function,
-        toggleRefresh: Function
+        onGuardarRegistro: Function,
+        toggleModal: Function
     }
 ) {
     return(
         <Form onSubmit={(evento) => {
             evento.preventDefault();
-            guardarRegistro(evento);
+            props.onGuardarRegistro(evento);
             props.toggleModal();
-            props.toggleRefresh();
         }}>
             <FormGroup>
                 <Label for="descripcionPermiso">
@@ -40,7 +39,10 @@ export default function FormRegistroPermiso(
 
             <Container>
                 <Row>
-                    {props.elementosOpciones.map((registro: Zona, index: number) => {
+                    {props.elementosOpciones.map((
+                        registro: Zona,
+                        index: number
+                    ) => {
                         return(
                             <Col sm={6}>
                                 <FormGroup check>
