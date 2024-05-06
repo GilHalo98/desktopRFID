@@ -9,7 +9,7 @@ import {
 import ModalExportarDatosTabla from "../../modals/modalTabla/modalExportarDatosTabla";
 import BarraOpcionesRegistros from "../../barraBotones/barraOpcionesRegistros";
 import ModalOpcionesTabla from "../../modals/modalTabla/modalOpcionesTabla";
-import BarraAccionesTabla from "../../barraBotones/barraAccionesTabla";
+import BarraAccionesTabla from "../../barraBotones/barraAcciones/barraAccionesTabla/barraAccionesTabla";
 import Paginacion from "../../paginacion/paginacion";
 
 // Funcion que aplica el formato especial al registro.

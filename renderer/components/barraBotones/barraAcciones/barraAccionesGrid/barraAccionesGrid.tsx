@@ -1,3 +1,7 @@
+/**
+ * TODO: pasar los renders al logic de renders, agregar los renders que faltan
+ */
+
 'use client'
 
 // React.
@@ -9,15 +13,22 @@ import {
 } from 'reactstrap';
 
 // Iconos usados.
-import { FaGear } from "react-icons/fa6";
-import { BsDatabaseFillAdd } from "react-icons/bs";
-import { TbReportAnalytics } from "react-icons/tb";
-import { FaFileExport } from "react-icons/fa6";
+import {
+    mdiCog,
+    mdiDatabaseSync,
+    mdiDatabasePlus,
+    mdiDatabaseExport
+} from '@mdi/js';
+
+// Componente para mostrar los iconos.
+import Icon from '@mdi/react';
 
 export default function BarraAccionesGrid(
-    props: {
-        onAddRegistro: Function,
-        onOpciones: Function
+    funcionesOpciones?: {
+        onAgregarRegistro?: Function,
+        onRefrescarGrid?: Function,
+        onProbarSerial?: Function,
+        onCambiarConfiguracion?: Function
     }
 ) {
 
