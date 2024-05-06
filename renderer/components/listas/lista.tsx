@@ -9,7 +9,7 @@ import {
     Container, Row, Col,
     Card, CardBody, CardTitle, CardSubtitle, CardText, CardHeader, List, ListGroupItem, ListGroup,
 } from 'reactstrap';
-import BarraAccionesLista from '../barraBotones/barraAccionesLista';
+import BarraAccionesLista from '../barraBotones/barraAcciones/barraAccionesLista/barraAccionesLista';
 import ModalOpcionesLista from '../modals/modalOpciones/modalOpcionesLista';
 
 export default function Lista(
