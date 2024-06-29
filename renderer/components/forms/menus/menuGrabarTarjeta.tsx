@@ -8,13 +8,14 @@ import {
 } from 'reactstrap';
 
 // Interfaz con la API.
-import { funcionRefresh } from '../../../utils/refresh';
-import { RespuestaConsultaEmpleado } from '../../../utils/API/respuestas/consultaEmpleado';
 import { guardarDatos } from './logic/guardarDatosTarjeta';
+
+// Importamos los modelos de datos.
+import { Empleado } from '../../../utils/API/modelos/empleado';
 
 export default function MenuGrabarTarjeta(
     props: {
-        registro: RespuestaConsultaEmpleado,
+        registro: Empleado,
         toggleModal: Function
     }
 ) {
@@ -24,9 +25,6 @@ export default function MenuGrabarTarjeta(
 
     // Hooks de menu de opciones.
     const [listaPuertosSeriales, setListaPuertosSeriales] = React.useState([]);
-
-    // Hook para el refrescamiento del componente.
-    const [refresh, setRefresh] = React.useState(false);
 
     // baudRate soportados.
     const baudRateSoportados = [
@@ -66,12 +64,7 @@ export default function MenuGrabarTarjeta(
             }
         }
 
-    }, [mostrarTodosLosPuertos, refresh]);
-
-    // El componente se refresca cada tiempo dado.
-    setTimeout(() => {
-        funcionRefresh(refresh, setRefresh);
-    }, 500);
+    }, [mostrarTodosLosPuertos]);
 
     return(
         <Form onSubmit={(evento) => {

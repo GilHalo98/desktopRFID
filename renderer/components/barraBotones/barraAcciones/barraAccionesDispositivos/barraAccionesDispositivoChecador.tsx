@@ -7,8 +7,12 @@ import React from 'react';
 import { Button, ButtonGroup } from 'reactstrap';
 
 // Iconos de los botones.
-import { IoMdLocate } from "react-icons/io";
+import {
+    mdiMapMarkerRadius
+} from '@mdi/js';
 
+// Componente para mostrar el icono.
+import Icon from '@mdi/react';
 
 export default function BarraAccionesDispositivoChecador(
     props: {
@@ -31,7 +35,7 @@ export default function BarraAccionesDispositivoChecador(
                     });
                 }}
             >
-                <IoMdLocate/>
+                <Icon path={mdiMapMarkerRadius} size={1}/>
             </Button>
         </ButtonGroup>
     );

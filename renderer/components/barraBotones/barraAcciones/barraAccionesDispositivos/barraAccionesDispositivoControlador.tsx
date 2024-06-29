@@ -7,9 +7,14 @@ import React from 'react';
 import { Button, ButtonGroup } from 'reactstrap';
 
 // Iconos de los botones.
-import { IoMdLocate } from "react-icons/io";
-import { FaPauseCircle, FaPlayCircle } from 'react-icons/fa';
+import {
+    mdiMapMarkerRadius,
+    mdiPause,
+    mdiPlay
+} from '@mdi/js';
 
+// Componente para mostrar el icono.
+import Icon from '@mdi/react';
 
 export default function BarraAccionesDispositivoControlador(
     props: {
@@ -32,13 +37,13 @@ export default function BarraAccionesDispositivoControlador(
                     });
                 }}
             >
-                <IoMdLocate/>
+                <Icon path={mdiMapMarkerRadius} size={1}/>
             </Button>
 
             <Button
                 className='botonIcono'
                 outline
-                color='warning'
+                color='success'
                 onClick={() => {
                     window.ipc.send('emitir_evento_socket', {
                         evento: 'forzar_accion',
@@ -49,13 +54,13 @@ export default function BarraAccionesDispositivoControlador(
                     });
                 }}
             >
-                <FaPlayCircle/>
+                <Icon path={mdiPlay} size={1}/>
             </Button>
 
             <Button
                 className='botonIcono'
                 outline
-                color='warning'
+                color='danger'
                 onClick={() => {
                     window.ipc.send('emitir_evento_socket', {
                         evento: 'forzar_accion',
@@ -66,7 +71,7 @@ export default function BarraAccionesDispositivoControlador(
                     });
                 }}
             >
-                <FaPauseCircle/>
+                <Icon path={mdiPause} size={1}/>
             </Button>
         </ButtonGroup>
     );

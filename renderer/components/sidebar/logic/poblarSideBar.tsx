@@ -35,7 +35,7 @@ const paginas = [{
         icono: mdiViewDashboard,
         subdivicion: [{
             id: "1.1",
-            url: "/home/dashboard/historialActividadMaquinas",
+            url: "/home/dashboard/actividadMaquinas",
             descripcion: "Actividad de maquinas",
             icono: mdiListStatus
         }, {
@@ -147,7 +147,7 @@ const paginas = [{
             icono: mdiArchiveClock
         }, {
             id: "3.2",
-            url: "/home/reportes/actividadMaquinas",
+            url: "/home/reportes/historialActividadMaquinas",
             descripcion: "Historial de actividad de maquinas",
             icono: mdiArchiveCog
         }]

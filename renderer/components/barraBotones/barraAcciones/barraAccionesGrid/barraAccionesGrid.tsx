@@ -9,19 +9,16 @@ import React from 'react';
 
 // Componentes de reactstrap.
 import {
-    Button, ButtonGroup
+    ButtonGroup
 } from 'reactstrap';
 
-// Iconos usados.
+// Renders de los botones.
 import {
-    mdiCog,
-    mdiDatabaseSync,
-    mdiDatabasePlus,
-    mdiDatabaseExport
-} from '@mdi/js';
-
-// Componente para mostrar los iconos.
-import Icon from '@mdi/react';
+    renderizarAgregarRegistro,
+    renderizarRefrescarGrid,
+    renderizarProbarSerial,
+    renderizarOpciones
+} from "./logic/renders";
 
 export default function BarraAccionesGrid(
     funcionesOpciones?: {
@@ -31,52 +28,23 @@ export default function BarraAccionesGrid(
         onCambiarConfiguracion?: Function
     }
 ) {
-
-    // Renderiza el boton de agrear registro.
-    function renderizarAddRegistro() {
-        if(!props.onAddRegistro) {
-            return(<></>);
-        }
-
-        return(
-            <Button
-                className='botonIcono'
-                outline
-                color='warning'
-                onClick={() => {
-                    props.onAddRegistro();
-                }}
-            >
-                <BsDatabaseFillAdd/>
-            </Button>
-        );
-    };
-
-    // Renderiza el boton de opciones de la tabla.
-    function renderizarOpciones() {
-        if(!props.onOpciones) {
-            return(<></>);
-        }
-
-        return(
-            <Button
-                className='botonIcono'
-                outline
-                color='warning'
-                onClick={() => {
-                    props.onOpciones();
-                }}
-            >
-                <FaGear/>
-            </Button>
-        );
-    };
-
     return (
         <ButtonGroup size="sm">
-            {renderizarAddRegistro()}
+            {renderizarAgregarRegistro(
+                funcionesOpciones.onAgregarRegistro
+            )}
 
-            {renderizarOpciones()}
+            {renderizarProbarSerial(
+                funcionesOpciones.onProbarSerial
+            )}
+
+            {renderizarRefrescarGrid(
+                funcionesOpciones.onRefrescarGrid
+            )}
+
+            {renderizarOpciones(
+                funcionesOpciones.onCambiarConfiguracion
+            )}
         </ButtonGroup>
     );
 };

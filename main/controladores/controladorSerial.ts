@@ -28,8 +28,8 @@ import {
 
 // Modelos.
 import {
-    RespuestaConsultaEmpleado
-} from "../../renderer/utils/API/respuestas/consultaEmpleado";
+    Empleado
+} from "../../renderer/utils/API/modelos/empleado";
 
 // Instancia del puerto serial.
 let puertoSerial: SerialPort = null;
@@ -81,7 +81,7 @@ export const explorarPuertos = async (
 export const guardarDatosTarjeta = async (
     evento: IpcMainEvent,
     args: {
-        registro: RespuestaConsultaEmpleado,
+        registro: Empleado,
         datosDispositivo: {
             path: string,
             baudRate: number

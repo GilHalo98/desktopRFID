@@ -3,371 +3,424 @@
 // React.
 import React from 'react';
 
-// Componentes de reactstrap.
-import {
-    Card, CardHeader,
-    Container, Row, Col, CardBody, Spinner,
-} from 'reactstrap';
-
-// Funciones propias.
-import { funcionRefresh } from '../../../utils/refresh';
-
-
-// Interfaz de API.
-import { RespuestaConsultaEmpleado } from '../../../utils/API/respuestas/consultaEmpleado';
-import { ConsultaRol } from '../../../utils/API/interface/rol';
-import {
-    ConsultaEmpleado, RemoverEmpleado
-} from '../../../utils/API/interface/empleado';
-
-// Componentes de la vista.
-import FormModificarEmpleado from '../../forms/registros/empleados/formModificarEmpleados';
-import ModalVisualizarRegistro from '../../modals/modalOpciones/modalVisualizarRegistro';
-import FormRegistroEmpleado from '../../forms/registros/empleados/formRegistroEmpleados';
-import ModalModificarRegistro from '../../modals/modalOpciones/modalModificarRegistro';
-import ModalAgregarRegistro from '../../modals/modalOpciones/modalAgregarRegistro';
-import CardRegistroEmpleado from '../../cards/cardsRegistros/cardRegistroEmpleado';
-import ModalRemoverRegistro from '../../modals/modalAlerta/modalRemoverRegistro';
-import ModalGrabarTarjeta from '../../modals/modalOpciones/modalGrabarTarjeta';
-import FormBusquedaEmpleado from '../../forms/busqueda/formBusquedaEmpleado';
-import MenuGrabarTarjeta from '../../forms/menus/menuGrabarTarjeta';
-import Display from '../../displays/display';
+// Componentes propios.
+import FormModificarRegistroEmpleadoCompleto from '../../forms/registros/empleadoCompleto/formModificarRegistroEmpleadoCompleto';
+import ModalModificarRegistroEmpleadoCompleto from '../../modals/modalEmpleadoCompleto/modalModificarRegistroEmpleadoCompleto';
+import FormModificarRegistroHorarioCompleto from '../../forms/registros/empleadoCompleto/formModificarRegistroHorarioCompleto';
+import FormModificarRegistroUsuarioCompleto from '../../forms/registros/empleadoCompleto/formModificarRegistroUsuarioCompleto';
+import FormRegistroEmpleadoCompleto from '../../forms/registros/empleadoCompleto/formRegistroEmpleadoCompleto';
+import ModalRegistroEmpleadoCompleto from '../../modals/modalEmpleadoCompleto/modalRegistroEmpleadoCompleto';
+import FormRegistroHorarioCompleto from '../../forms/registros/empleadoCompleto/formRegistroHorarioCompleto';
+import FormRegistroUsuarioCompleto from '../../forms/registros/empleadoCompleto/formRegistroUsuarioCompleto';
+import ModalVisualizarDatosDetalles from '../../modals/modalGrid/modalVisualizarDatosDetalles';
+import ModalGuardarDatosTarjeta from '../../modals/modalGrid/modalGuardarDatosTarjeta';
+import ModalConexionSerial from '../../modals/modalGrid/modalConexionSerial';
 import Grid from '../grid';
 
-export default function GridRegistrosEmpleados(
-    props: {
-    }
+
+// Importamos la funcionalidad de la tabla.
+import {
+    consultarRegistros,
+    consultarRegistrosRoles
+} from './logic/registros';
+
+import {
+    renderBarraBusqueda,
+    renderizarCardsEmpleados
+} from './logic/renders';
+
+// Modelo de datos.
+
+export default function TablaEmpleados(
+    props: {}
 ) {
     // Hook para el estado del indicador de carga.
-    const [enCarga, setEnCarga] = React.useState(false);
+    const [
+        enCarga,
+        setEnCarga
+    ] = React.useState(false);
 
-    // Declaramos los hooks que vamos a usar.
-    const [listaRegistros, setListaRegistros] = React.useState([]);
-    const [offset, setOffset] = React.useState(0);
-    const [totalPaginas, setTotalPaginas] = React.useState(1);
-    const [paginaActual, setPaginaActual] = React.useState(1);
+    // Declaramos los hookers que vamos a usar.
+    const [
+        listaRegistros,
+        setListaRegistros
+    ] = React.useState([]);
+
+    const [
+        offset,
+        setOffset
+    ] = React.useState(0);
+
+    const [
+        totalPaginas,
+        setTotalPaginas
+    ] = React.useState(1);
+
+    const [
+        paginaActual,
+        setPaginaActual
+    ] = React.useState(1);
+
+    // Hooks de la barra de busqueda.
+    const [
+        idEmpleado,
+        setIdEmpleado
+    ] = React.useState(undefined);
+
+    const [
+        idRol,
+        setIdRol
+    ] = React.useState(undefined);
+
+    const [
+        nombres,
+        setNombres
+    ] = React.useState(undefined);
+    
+    const [
+        apellidoPaterno,
+        setApellidoPaterno
+    ] = React.useState(undefined);
+
+    const [
+        apellidoMaterno,
+        setApellidoMaterno
+    ] = React.useState(undefined);
+
+    const [
+        numeroTelefonico,
+        setNumeroTelefonico
+    ] = React.useState(undefined);
 
     // Hooks de las opciones de la tabla.
-    const [elementos, setElementos] = React.useState(10);
-    const [refresh, setRefresh] = React.useState(true);
-    const [tiempoRefresh, setTiempoRefresh] = React.useState(60);
+    const [
+        registrosPorPagina,
+        setRegistrosPorPagina
+    ] = React.useState(12);
 
-    // Hooks para la busqueda de registros del empleado.
-    const [idEmpleado, setIdEmpleado] = React.useState(undefined);
-    const [numeroTelefonico, setNumeroTelefonico] = React.useState(undefined);
-    const [nombresEmpleado, setNombresEmpleado] = React.useState(undefined);
-    const [apellidoPaterno, setApellidoPaterno] = React.useState(undefined);
-    const [apellidoMaterno, setApellidoMaterno] = React.useState(undefined);
-    const [rolEmpleado, setRolEmpleado] = React.useState(undefined);
+    const [
+        opcionesRegistros,
+        setOpcionesRegistros
+    ] = React.useState(false);
 
-    // Estado de los modals
-    const [estadoModalAgregarRegistro, setEstadoModalAgregarRegistro] = React.useState(false);
-    const [estadoModalRemoverRegistro, setEstadoModalRemoverRegistro] = React.useState(false);
-    const [estadoModalModificarRegistro, setEstadoModalModificarRegistro] = React.useState(false);
-    const [estadoModalVisualizarRegistro, setEstadoModalVisualizarRegistro] = React.useState(false);
-    const [estadoModalGuardarRegistro, setEstadoModalGuardarRegistro] = React.useState(false);
+    const [
+        refresh,
+        setRefresh
+    ] = React.useState(true);
 
-    // Hooks para las operaciones de los registros.
-    const [idRegistroOperacion, setIdRegistroOperacion] = React.useState(undefined);
-    const [registroOperacion, setRegistroOperacion] = React.useState(undefined);
+    // Hooks del modal.
+    const [
+        estadoModalModificarRegistro,
+        setEstadoModalModificarRegistro
+    ] = React.useState(false);
 
-    // Hook para la conexión con el dispositivo grabador de tarjetas.
-    const [datosDispostivo, setDatosDispositivo] = React.useState({ path: undefined, baudRate: undefined});
+    const [
+        estadoModalAgregarRegistro,
+        setEstadoModalAgregarRegistro
+    ] = React.useState(false);
 
-    // Hooks para los forms de registros y modificacion de registros.
-    const [listaRoles, setListaRoles] = React.useState([]);
+    const [
+        estadoModalConexionSerial,
+        setEstadoModalConexionSerial
+    ] = React.useState(false);
 
-    // Declaramos el useEffect de react para actualizar el contenido de la vista.
+    const [
+        estadoModalGuardarDatosTarjeta,
+        setEstadoModalGuardarDatosTarjeta
+    ] = React.useState(false);
+
+    const [
+        estadoModalVisualizarDatosDetalles,
+        setEstadoModalVisualizarDatosDetalles
+    ] = React.useState(false);
+
+    // Hook del id del registro para operaciones
+    const [
+        idRegistroOperacion,
+        setIdRegistroOperacion
+    ] = React.useState(undefined);
+
+    const [
+        registroOperacion,
+        setRegistroOperacion
+    ] = React.useState(undefined);
+
+    // Hook para los forms de registro
+    // modificacion y la barra de busqueda.
+    const [
+        listaRoles,
+        setListaRoles
+    ] = React.useState([]);
+
+    // Declaramos el useEffect de react para
+    // actualizar el contenido de la vista.
     React.useEffect(() => {
         console.log('refresh');
 
-        setListaRegistros([]);
-        // setListaRoles([]);
-
-        ConsultaEmpleado(
-            elementos,
-            offset,
-            idEmpleado,
-            numeroTelefonico,
-            nombresEmpleado,
-            apellidoPaterno,
-            apellidoMaterno,
-            rolEmpleado,
+        consultarRegistros(
             setListaRegistros,
             setTotalPaginas,
+            setEnCarga,
+            {
+                limit: registrosPorPagina,
+                offset: offset,
+                id: idEmpleado ,
+                nombres: nombres,
+                numeroTelefonico: apellidoPaterno,
+                apellidoPaterno: apellidoMaterno,
+                apellidoMaterno: numeroTelefonico,
+                idRolVinculado: idRol
+            }
+        );
+
+        consultarRegistrosRoles(
+            setListaRoles,
             setEnCarga
         );
 
-        ConsultaRol(
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            setListaRoles,
-            () => {},
-            undefined
-        );
     }, [
-        elementos,
+        registrosPorPagina,
         paginaActual,
         idEmpleado,
-        numeroTelefonico,
-        nombresEmpleado,
+        nombres,
         apellidoPaterno,
         apellidoMaterno,
-        rolEmpleado,
+        numeroTelefonico,
+        idRol,
         refresh
     ]);
 
-    // El componente se refresca cada tiempo dado.
-    setTimeout(() => {
-        funcionRefresh(refresh, setRefresh);
-    }, tiempoRefresh*1000);
+    // Titulo del grid.
+    const tituloGrid = 'Registros de Empleados';
 
-    // Titulo de la tabla.
-    const tituloGrid = 'Registro de empleados';
+    // Funciones de las opciones de los registros.
+    const funcionesRegistros = {
+        onGuardarDatosTarjeta: (
+            idRegistro: number,
+            indexRegistro: number
+        ) => {
+            setIdRegistroOperacion(idRegistro);
 
-    // Pasar esta funcion a un iterador.
-    function poblarGrid(elementos: RespuestaConsultaEmpleado[]) {
-        return(elementos.map((elemento: RespuestaConsultaEmpleado, index: number) => {
-            return(
-                <Col
-                    sm='12'
-                    md='6'
-                    lg='4'
-                    xl='3'
-                >
-                    <CardRegistroEmpleado
-                        datosOperacion={{
-                            setIdRegistroOperacion: setIdRegistroOperacion,
-                            idRegistro: elemento.id,
-                            setRegistroOperacion: (indexRegistro) => {
-                                setRegistroOperacion(listaRegistros[indexRegistro]);
-                            },
-                            indexRegistro: index
-                        }}
-                        registro={elemento}
-                        toggleModals={{
-                            setEstadoModalRemoverRegistro: () => {
-                                setEstadoModalRemoverRegistro(!estadoModalRemoverRegistro)
-                            },
-                            setEstadoModalModificarRegistro: () => {
-                                setEstadoModalModificarRegistro(!estadoModalModificarRegistro)
-                            },
-                            setEstadoModalVisualizarRegistro: () => {
-                                setEstadoModalVisualizarRegistro(!estadoModalVisualizarRegistro)
-                            },
-                            setEstadoModalGuardarRegistro: () => {
-                                setEstadoModalGuardarRegistro(!estadoModalGuardarRegistro)
-                            }
-                        }}
-                    />
-                </Col>
+            setRegistroOperacion(
+                listaRegistros[indexRegistro]
             );
-        }));
+
+            setEstadoModalGuardarDatosTarjeta(
+                !estadoModalGuardarDatosTarjeta
+            );
+
+        },
+        onVisualizarRegistro: (
+            idRegistro: number,
+            indexRegistro: number
+        ) => {
+            setIdRegistroOperacion(idRegistro);
+
+            setRegistroOperacion(
+                listaRegistros[indexRegistro]
+            );
+
+            setEstadoModalVisualizarDatosDetalles(
+                !estadoModalVisualizarDatosDetalles
+            );
+        },
+        onModificarRegistro: (
+            idRegistro: number,
+            indexRegistro: number
+        ) => {
+            setIdRegistroOperacion(idRegistro);
+
+            setRegistroOperacion(
+                listaRegistros[indexRegistro]
+            );
+
+            setEstadoModalModificarRegistro(
+                !estadoModalModificarRegistro
+            );
+        }
     };
 
-    const controlGrid = {
-        display: (enCarga? 'none' : '')
+    // Opciones de la tabla.
+    const opcionesGrid = {
+        registrosPorPagina: registrosPorPagina,
+        guardarConfiguracion: (evento: any) => {
+            setRegistrosPorPagina(evento.target[0].value ?
+                parseInt(evento.target[0].value) : 0
+            );
+
+            setOpcionesRegistros(evento.target[1].checked);
+
+            setPaginaActual(1);
+            setOffset(0);
+        }
     };
 
-    const controlSpinner = {
-        display: (enCarga? '' : 'none')
+    // Funciones de las opciones de la tabla.
+    const funcionesOpciones = {
+        onAgregarRegistro: () => {setEstadoModalAgregarRegistro(
+            !estadoModalAgregarRegistro
+        )},
+        onRefrescarGrid: () => {setRefresh(
+            !refresh
+        )},
+        onProbarSerial: () => {setEstadoModalConexionSerial(
+            !estadoModalConexionSerial
+        )},
+        onCambiarConfiguracion: () => {console.log(
+            "configuracion cambiada"
+        )}
+    };
+
+    // Propiedades de la paginacion.
+    const paginacion = {
+        paginaActual: paginaActual,
+        offset: offset,
+        registrosPorPagina: registrosPorPagina,
+        totalPaginas: totalPaginas,
+        setPaginaActual: setPaginaActual,
+        setOffset: setOffset
     };
 
     const parametrosBusqueda = {
         setIdEmpleado: setIdEmpleado,
-        setNumeroTelefonico: setNumeroTelefonico,
-        setNombresEmpleado: setNombresEmpleado,
+        setNombres: setNombres,
         setApellidoPaterno: setApellidoPaterno,
         setApellidoMaterno: setApellidoMaterno,
-        setRolEmpleado: setRolEmpleado
-    }
-
-    const elementosOpciones = {
-        listaRoles: listaRoles
+        setNumeroTelefonico: setNumeroTelefonico,
+        setIdRol: setIdRol
     };
-
 
     return(
         <Grid
             tituloGrid={tituloGrid}
-            paginacion={{
-                paginaActual: paginaActual,
-                offset: offset,
-                elementos: elementos,
-                totalPaginas: totalPaginas,
-                setPaginaActual: setPaginaActual,
-                setOffset: setOffset
-            }}
-            opcionesGrid={{
-                elementos: elementos,
-                tiempoRefresh: tiempoRefresh,
-                setTiempoRefresh: setTiempoRefresh,
-                setElementos: setElementos,
-            }}
-            barraOpciones={{
-                toggleModalRegistro: () => {
-                    setEstadoModalAgregarRegistro(!estadoModalAgregarRegistro);
-                }
+            enCarga={enCarga}
+            setEnCarga={setEnCarga}
+            paginacion={paginacion}
+            opcionesGrid={opcionesGrid}
+            funcionesOpciones={funcionesOpciones}
+            funcionesRegistros={funcionesRegistros}
+            renderBarraBusqueda={() => {
+                return renderBarraBusqueda(parametrosBusqueda, listaRoles);
             }}
         >
-            {/*Body del grid de empleados*/}
-            <Container>
-                <Row>
-                    <Card color='dark'>
-                        <CardBody>
-                            { /*Barra de busqueda del Empleado*/ }
-                            <FormBusquedaEmpleado
-                                parametrosBusqueda={parametrosBusqueda}
-                                elementosOpciones={elementosOpciones}
-                            />
-                        </CardBody>
-                    </Card>
-                </Row><br/>
-
-                <Row style={controlGrid}>
-                    { /*Cards de los empleados renderizados en el grid*/ }
-                    {poblarGrid(listaRegistros)}
-                </Row>
-
-                <Row style={controlSpinner}>
-                        <Col/>
-                            <Col xs='auto'>
-                                { /*Spinner del grid de empleados*/ }
-                                <Spinner
-                                    color="warning"
-                                    style={{
-                                        height: '100px',
-                                        width: '100px'
-                                    }}
-                                />
-                            </Col>
-                        <Col/>
-                    </Row>
-            </Container>
-
-            {/*Modal de registro de empleados*/}
-            <ModalAgregarRegistro
+            {/*Modal de agregar registro*/}
+            <ModalRegistroEmpleadoCompleto
                 nombreTabla={tituloGrid}
                 modalActivo={estadoModalAgregarRegistro}
-                toggleModal={() => {
-                    setEstadoModalAgregarRegistro(!estadoModalAgregarRegistro);
-                }}
+                toggleModal={() => {setEstadoModalAgregarRegistro(
+                    !estadoModalAgregarRegistro
+                )}}
             >
-                <FormRegistroEmpleado
-                    elementosOpciones={elementosOpciones}
-                    toggleModal={() => {
-                        setEstadoModalAgregarRegistro(!estadoModalAgregarRegistro);
-                    }}
-                    toggleRefresh={() => {
-                        funcionRefresh(refresh, setRefresh);
-                    }}
+                {/*Form de registro de empleado completo*/}
+                <FormRegistroEmpleadoCompleto
+                    elementosOpciones={listaRoles}
+                    onGuardarRegistro={() => {}}
+                    toggleModal={() => {setEstadoModalAgregarRegistro(
+                        !estadoModalAgregarRegistro
+                    )}}
                 />
-            </ModalAgregarRegistro>
 
-            {/*Modal de eliminar registro*/}
-            <ModalRemoverRegistro
-                idRegistro={idRegistroOperacion}
-                modalActivo={estadoModalRemoverRegistro}
-                toggleModal={() => {
-                    setEstadoModalRemoverRegistro(!estadoModalRemoverRegistro);
-                }}
-                onOk={(idRegistro: number) => {
-                    RemoverEmpleado(idRegistro);
-                    funcionRefresh(refresh, setRefresh);
-                }}
-                onRechazar={() => {}}
-            >
-                <Display
-                    registro={registroOperacion}
-                    propiedades={[
-                        ['id'],
-                        ['nombres'],
-                        ['apellidoPaterno'],
-                        ['apellidoMaterno'],
-                        ['fechaRegistroEmpleado'],
-                    ]}
-                    campos={[
-                        'id',
-                        'Nombres del empleado',
-                        'Apellido paterno',
-                        'Apellido paterno',
-                        'fecha de registro'
-                    ]}
+                {/*Form de registro de usuario completo*/}
+                <FormRegistroUsuarioCompleto
+                    elementosOpciones={[]}
+                    onGuardarRegistro={() => {}}
+                    toggleModal={() => {setEstadoModalAgregarRegistro(
+                        !estadoModalAgregarRegistro
+                    )}}
+                    onAutogenerarPassword={() => {}}
+                    onAutogenerarUsername={() => {}}
                 />
-            </ModalRemoverRegistro>
+
+                {/*Form de registro de horario completo*/}
+                <FormRegistroHorarioCompleto
+                    elementosOpciones={[]}
+                    onGuardarRegistro={() => {}}
+                    toggleModal={() => {setEstadoModalAgregarRegistro(
+                        !estadoModalAgregarRegistro
+                    )}}
+                />
+            </ModalRegistroEmpleadoCompleto>
 
             {/*Modal de modificar registro*/}
-            <ModalModificarRegistro
+            <ModalModificarRegistroEmpleadoCompleto
                 idRegistro={idRegistroOperacion}
+                nombreTabla={tituloGrid}
                 modalActivo={estadoModalModificarRegistro}
-                toggleModal={
-                    () => {setEstadoModalModificarRegistro(
+                toggleModal={() => {
+                    setEstadoModalModificarRegistro(
                         !estadoModalModificarRegistro
-                    );}
-                }
-            >
-                <FormModificarEmpleado
-                    registro={registroOperacion}
-                    elementosOpciones={elementosOpciones}
-                    toggleModal={() => {
-                        setEstadoModalModificarRegistro(!estadoModalModificarRegistro);
-                    }}
-                    toggleRefresh={() => {
-                        funcionRefresh(refresh, setRefresh);
-                    }}
-                />
-            </ModalModificarRegistro>
-
-            {/*Modal de visualizar registro*/}
-            <ModalVisualizarRegistro
-                idRegistro={idRegistroOperacion}
-                modalActivo={estadoModalVisualizarRegistro}
-                toggleModal={() => {
-                    setEstadoModalVisualizarRegistro(!estadoModalVisualizarRegistro);
+                    );
                 }}
-                onOk={() => {}}
-                onRechazar={() => {}}
             >
-                <Display
-                    registro={registroOperacion}
-                    propiedades={[
-                        ['id'],
-                        ['nombres'],
-                        ['apellidoPaterno'],
-                        ['apellidoMaterno'],
-                        ['fechaRegistroEmpleado'],
-                    ]}
-                    campos={[
-                        'id',
-                        'Nombres del empleado',
-                        'Apellido paterno',
-                        'Apellido paterno',
-                        'fecha de registro'
-                    ]}
+                {/*Form de registro de empleado completo*/}
+                <FormModificarRegistroEmpleadoCompleto
+                    elementosOpciones={listaRoles}
+                    onGuardarRegistro={() => {}}
+                    toggleModal={() => {setEstadoModalAgregarRegistro(
+                        !estadoModalAgregarRegistro
+                    )}}
                 />
-            </ModalVisualizarRegistro>
 
-            {/*Modal de guardar registro*/}
-            <ModalGrabarTarjeta
+                {/*Form de registro de usuario completo*/}
+                <FormModificarRegistroUsuarioCompleto
+                    elementosOpciones={[]}
+                    onGuardarRegistro={() => {}}
+                    toggleModal={() => {setEstadoModalAgregarRegistro(
+                        !estadoModalAgregarRegistro
+                    )}}
+                    onAutogenerarPassword={() => {}}
+                    onAutogenerarUsername={() => {}}
+                />
+
+                {/*Form de registro de horario completo*/}
+                <FormModificarRegistroHorarioCompleto
+                    elementosOpciones={[]}
+                    onGuardarRegistro={() => {}}
+                    toggleModal={() => {setEstadoModalAgregarRegistro(
+                        !estadoModalAgregarRegistro
+                    )}}
+                />
+            </ModalModificarRegistroEmpleadoCompleto>
+
+            {/*Modal de conexion con dispositivo por medio de serial*/}
+            <ModalConexionSerial
+                nombreGrid={tituloGrid}
+                onConectarPorSerial={() => {}}
+                modalActivo={estadoModalConexionSerial}
+                toggleModal={() => {setEstadoModalConexionSerial(
+                    !estadoModalConexionSerial
+                )}}
+            >
+            </ModalConexionSerial>
+
+            {/*Modal de guardar datos en tarjeta*/}
+            <ModalGuardarDatosTarjeta
+                nombreGrid={tituloGrid}
                 registro={registroOperacion}
-                headerModal='Grabar Datos'
-                tituloModal='Grabar datos de empleado en tarjeta'
-                modalActivo={estadoModalGuardarRegistro}
-                toggleModal={() => {
-                    setEstadoModalGuardarRegistro(!estadoModalGuardarRegistro)
-                }}
+                onConectarPorSerial={() => {}}
+                modalActivo={estadoModalGuardarDatosTarjeta}
+                toggleModal={() => {setEstadoModalGuardarDatosTarjeta(
+                    !estadoModalGuardarDatosTarjeta
+                )}}
             >
-                <MenuGrabarTarjeta
-                    registro={registroOperacion}
-                    toggleModal={() => {
-                        setEstadoModalGuardarRegistro(!estadoModalGuardarRegistro)
-                    }}
-                />
-            </ModalGrabarTarjeta>
+            </ModalGuardarDatosTarjeta>
+
+            {/*Modal para visualizar los datos del empelado a detalle*/}
+            <ModalVisualizarDatosDetalles
+                nombreGrid={tituloGrid}
+                onConectarPorSerial={() => {}}
+                modalActivo={estadoModalVisualizarDatosDetalles}
+                toggleModal={() => {setEstadoModalVisualizarDatosDetalles(
+                    !estadoModalVisualizarDatosDetalles
+                )}}
+            >
+            </ModalVisualizarDatosDetalles>
+
+            {/*Renderizamos las cards de los registros de los empleados*/}
+            {renderizarCardsEmpleados(
+                listaRegistros,
+                funcionesRegistros
+            )}
         </Grid>
     );
 };

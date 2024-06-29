@@ -6,10 +6,13 @@ import {
 } from "reactstrap";
 
 // Componentes de los renders.
-import ModalExportarDatosTabla from "../../modals/modalTabla/modalExportarDatosTabla";
-import BarraOpcionesRegistros from "../../barraBotones/barraOpcionesRegistros";
-import ModalOpcionesTabla from "../../modals/modalTabla/modalOpcionesTabla";
+import BarraAccionesTablaHorarioEmpleados from "../../barraBotones/barraAcciones/barraAccionesTablaHorarioEmpleados/barraAccionesTablaHorarioEmpleados";
+import BarraOpcionesEstatusDispositivos from "../../barraBotones/barraOpciones/barraOpcionesEstatusDispositivos/barraOpcionesEstatusDispositivos";
+import BarraAccionesTablaDispositivos from "../../barraBotones/barraAcciones/barraAccionesTablaDispositivos/barraAccionesTablaDispositivos";
+import BarraOpcionesRegistros from "../../barraBotones/barraOpciones/barraOpcionesRegistros/barraOpcionesRegistros";
 import BarraAccionesTabla from "../../barraBotones/barraAcciones/barraAccionesTabla/barraAccionesTabla";
+import ModalExportarDatosTabla from "../../modals/modalTabla/modalExportarDatosTabla";
+import ModalOpcionesTabla from "../../modals/modalTabla/modalOpcionesTabla";
 import Paginacion from "../../paginacion/paginacion";
 
 // Funcion que aplica el formato especial al registro.
@@ -88,6 +91,61 @@ const renderOpcionesRegistro = (
     }
 };
 
+// Renderizamos las opciones por registro de la tabla de dispositivos.
+const renderOpcionesRegistroDispositivo = (
+    registro: {
+        data: any[],
+        metadata: any
+    },
+    opcionesTabla?: {
+        registrosPorPagina?: number,
+        opcionesRegistros?: boolean,
+        tiempoRefrescamiento?: number,
+        guardarConfiguracion?: Function
+    },
+    funcionesRegistros?: {
+        onGuardarConfiguracionDispositivo?: Function
+    }
+) => {
+    if(typeof opcionesTabla == 'undefined') {
+        return null;
+    }
+
+    if(typeof opcionesTabla.opcionesRegistros == 'undefined') {
+        return null;
+    }
+
+    if(typeof funcionesRegistros == 'undefined') {
+        return null;
+    }
+
+    if(opcionesTabla.opcionesRegistros) {
+        const keyTD = registro.data[0] + '-' + 'opciones';
+
+        return(<td key={keyTD}>
+            <Container>
+                <Row>
+                    <Col/>
+                    <Col>
+                        <BarraOpcionesEstatusDispositivos
+                            idRegistro={
+                                parseInt(registro.metadata.id)
+                            }
+                            indexRegistro={
+                                registro.metadata.indexRegistro
+                            }
+                            onGuardarConfiguracionDispositivo={
+                                funcionesRegistros.onGuardarConfiguracionDispositivo
+                            }
+                        />
+                    </Col>
+                    <Col/>
+                </Row>
+            </Container>
+        </td>);
+    }
+};
+
 // Renderiza la barra de opciones de la tabla.
 const renderBarraOpciones = (
     toggleModalExportarDatos: Function,
@@ -135,6 +193,102 @@ const renderBarraOpciones = (
         onExportarDatos={() => {
             funcionesOpciones.onExportarDatos();
             toggleModalExportarDatos();
+        }}
+        onOpciones={() => {
+            funcionesOpciones.onCambiarConfiguracion();
+            toggleModalOpcionesTabla();
+        }}
+    />);
+};
+
+// Renderiza la barra de opciones de la tabla de dispositivos.
+const renderBarraOpcionesDispositivos = (
+    toggleModalProbarSerial: Function,
+    toggleModalOpcionesTabla: Function,
+    toggleEnCarga?: Function,
+    funcionesOpciones?: {
+        onRefrescarTabla?: Function,
+        onProbarSerial?: Function,
+        onCambiarConfiguracion?: Function
+    },
+    opcionesTabla?: {
+        registrosPorPagina?: number,
+        opcionesRegistros?: boolean,
+        tiempoRefrescamiento?: number,
+        guardarConfiguracion: Function
+    }
+) => {
+    if(typeof funcionesOpciones == 'undefined') {
+        return null;
+    }
+
+    if(typeof opcionesTabla == 'undefined') {
+        return(<BarraAccionesTablaDispositivos
+            onRefrescarTabla={
+                funcionesOpciones.onRefrescarTabla
+            }
+        />);
+    }
+
+    return(<BarraAccionesTablaDispositivos
+        onRefrescarTabla={() => {
+            if(typeof toggleEnCarga != 'undefined') {
+                toggleEnCarga();
+            }
+
+            funcionesOpciones.onRefrescarTabla()
+        }}
+        onProbarSerial={() => {
+            funcionesOpciones.onProbarSerial();
+            toggleModalProbarSerial();
+        }}
+        onOpciones={() => {
+            funcionesOpciones.onCambiarConfiguracion();
+            toggleModalOpcionesTabla();
+        }}
+    />);
+};
+
+// Renderiza la barra de opciones de la tabla de horario de empleados.
+const renderBarraOpcionesHorarioEmpleados = (
+    toggleModalModificarRegistro?: Function,
+    toggleModalOpcionesTabla?: Function,
+    toggleEnCarga?: Function,
+    funcionesOpciones?: {
+        onRefrescarTabla?: Function,
+        onModificarRegistro?: Function,
+        onCambiarConfiguracion?: Function
+    },
+    opcionesTabla?: {
+        registrosPorPagina?: number,
+        opcionesRegistros?: boolean,
+        tiempoRefrescamiento?: number,
+        guardarConfiguracion: Function
+    }
+) => {
+    if(typeof funcionesOpciones == 'undefined') {
+        return null;
+    }
+
+    if(typeof opcionesTabla == 'undefined') {
+        return(<BarraAccionesTablaDispositivos
+            onRefrescarTabla={
+                funcionesOpciones.onRefrescarTabla
+            }
+        />);
+    }
+
+    return(<BarraAccionesTablaHorarioEmpleados
+        onRefrescarTabla={() => {
+            if(typeof toggleEnCarga != 'undefined') {
+                toggleEnCarga();
+            }
+
+            funcionesOpciones.onRefrescarTabla()
+        }}
+        onModificarRegistro={() => {
+            funcionesOpciones.onModificarRegistro();
+            toggleModalModificarRegistro();
         }}
         onOpciones={() => {
             funcionesOpciones.onCambiarConfiguracion();
@@ -194,6 +348,36 @@ const renderHeaderOpciones = (
     }
 
     if(typeof funcionesRegistros == 'undefined') {
+        return null;
+    }
+
+    if(opcionesTabla.opcionesRegistros) {
+        return(
+            <th key={'opciones'}>
+                Opciones
+            </th>
+        );
+    }
+};
+
+// Renderizamos la cabecera de las opciones de la
+// tabla para los dispositivos.
+const renderHeaderOpcionesDispositivos = (
+    funcionesRegistros?: {
+        onGuardarConfiguracionDispositivo?: Function
+    },
+    opcionesTabla?: {
+        registrosPorPagina?: number,
+        opcionesRegistros?: boolean,
+        tiempoRefrescamiento?: number,
+        guardarConfiguracion: Function
+    }
+) => {
+    if(typeof funcionesRegistros == 'undefined') {
+        return null;
+    }
+
+    if(typeof funcionesRegistros.onGuardarConfiguracionDispositivo == 'undefined') {
         return null;
     }
 
@@ -321,6 +505,111 @@ const renderContenidoTabla = (
     });
 };
 
+// Poblamos el cuerpo de la tabla de dispositivos.
+const renderContenidoTablaDispositivos = (
+    cabeceras: string[],
+    registros: any[],
+    formatoEspecial?: Object,
+    opcionesTabla?: {
+        registrosPorPagina?: number,
+        opcionesRegistros?: boolean,
+        tiempoRefrescamiento?: number,
+        guardarConfiguracion: Function
+    },
+    funcionesRegistros?: {
+        onGuardarConfiguracionDispositivo?: Function
+    }
+) => {
+    return registros.map((registro: any) => {
+        const keyTR = registro.metadata.id;
+
+        return(
+            <tr key={keyTR}>
+                {registro.data.map((dato: any, index: number) => {
+                    const keyTD = registro.metadata.id
+                        + '-'
+                        + cabeceras[index];
+
+                    if(typeof formatoEspecial != 'undefined') {
+                        if(typeof formatoEspecial[
+                            cabeceras[index]
+                        ] != 'undefined') {
+                            return renderFormatoEspecial(
+                                dato,
+                                index,
+                                keyTD,
+                                cabeceras,
+                                formatoEspecial
+                            );
+                        }
+                    }
+
+                    return(
+                        <td key={keyTD}>
+                            {dato}
+                        </td>
+                    );
+
+                })}
+
+                {renderOpcionesRegistroDispositivo(
+                    registro,
+                    opcionesTabla,
+                    funcionesRegistros
+                )}
+            </tr>
+        );
+    });
+};
+
+// Poblamos el cuerpo de la tabla de dispositivos.
+const renderContenidoTablaHorarioEmpleados = (
+    cabeceras: string[],
+    registros: any[],
+    formatoEspecial?: Object,
+    opcionesTabla?: {
+        registrosPorPagina?: number,
+        opcionesRegistros?: boolean,
+        tiempoRefrescamiento?: number,
+        guardarConfiguracion: Function
+    },
+) => {
+    return registros.map((registro: any) => {
+        const keyTR = registro.metadata.id;
+
+        return(
+            <tr key={keyTR}>
+                {registro.data.map((dato: any, index: number) => {
+                    const keyTD = registro.metadata.id
+                        + '-'
+                        + cabeceras[index];
+
+                    if(typeof formatoEspecial != 'undefined') {
+                        if(typeof formatoEspecial[
+                            cabeceras[index]
+                        ] != 'undefined') {
+                            return renderFormatoEspecial(
+                                dato,
+                                index,
+                                keyTD,
+                                cabeceras,
+                                formatoEspecial
+                            );
+                        }
+                    }
+
+                    return(
+                        <td key={keyTD}>
+                            {dato}
+                        </td>
+                    );
+
+                })}
+            </tr>
+        );
+    });
+};
+
 // Poblamos la cabecera de la tabla.
 const renderCabecera = (
     cabeceras: string[]
@@ -335,11 +624,16 @@ const renderCabecera = (
 };
 
 export {
+    renderContenidoTablaHorarioEmpleados,
+    renderBarraOpcionesHorarioEmpleados,
+    renderContenidoTablaDispositivos,
+    renderHeaderOpcionesDispositivos,
+    renderBarraOpcionesDispositivos,
+    renderModalExportarDatosTabla,
+    renderModalOpcionesTabla,
+    renderHeaderOpciones,
+    renderContenidoTabla,
     renderBarraOpciones,
     renderPaginacion,
-    renderHeaderOpciones,
-    renderModalOpcionesTabla,
-    renderModalExportarDatosTabla,
-    renderContenidoTabla,
     renderCabecera
 };

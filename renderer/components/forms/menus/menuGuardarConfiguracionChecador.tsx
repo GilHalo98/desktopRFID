@@ -12,32 +12,62 @@ import {
     Form, FormGroup, Button, Col, Container, Row
 } from 'reactstrap';
 
-// Interfaz de modelos.
-import { RespuestaConsultaDispositivos } from '../../../utils/API/respuestas/consultaDispositivo';
-
 // Interfaz con la API.
-import { funcionRefresh } from '../../../utils/refresh';
-import { GenerarTokenDispositivo } from '../../../utils/API/interface/dispositivo';
+import {
+    funcionRefresh
+} from '../../../utils/refresh';
+import {
+    GenerarTokenDispositivo
+} from '../../../utils/API/interface/dispositivo';
 
 // Funciones del form.
-import { guardarConfiguracionChecador } from './logic/guardarConfiguracionIoT';
+import {
+    guardarConfiguracionChecador
+} from './logic/guardarConfiguracionIoT';
 
-export default function MenuGuardarConfiguracionIoT(
+// Modelo de datos.
+import {
+    DispositivoIoT
+} from '../../../utils/API/modelos/dispositivoIoT';
+
+export default function MenuGuardarConfiguracionChecador(
     props: {
-        registro: RespuestaConsultaDispositivos,
+        registro: DispositivoIoT,
         toggleModal: Function
     }
 ) {
     // Hooks de datos a guardar en la tarjeta.
-    const [mostrarTodosLosPuertos, setMostrarTodosLosPuertos] = React.useState(false);
-    const [puertoSerial, setPuertoSerial] = React.useState(undefined);
-    const [token, setToken] = React.useState(undefined);
+    const [
+        mostrarTodosLosPuertos,
+        setMostrarTodosLosPuertos
+    ] = React.useState(false);
+
+    const [
+        puertoSerial,
+        setPuertoSerial
+    ] = React.useState(undefined);
+
+    const [
+        token,
+        setToken
+    ] = React.useState(undefined);
 
     // Hooks de menu de opciones.
-    const [listaPuertosSeriales, setListaPuertosSeriales] = React.useState([]);
+    const [
+        listaPuertosSeriales,
+        setListaPuertosSeriales
+    ] = React.useState([]);
+
+    const [
+        mostrarPassword,
+        setMostrarPassword
+    ] = React.useState(false);
 
     // Hook para el refrescamiento del componente.
-    const [refresh, setRefresh] = React.useState(false);
+    const [
+        refresh,
+        setRefresh
+    ] = React.useState(false);
 
     // baudRate soportados.
     const baudRateSoportados = [
@@ -88,7 +118,17 @@ export default function MenuGuardarConfiguracionIoT(
     React.useEffect(() => {
         GenerarTokenDispositivo(
             props.registro.id,
-            setToken
+            (respuesta: {
+                authorization: string,
+                codigoRespuesta: number
+            }) => {
+                setToken(respuesta.authorization);
+            },
+            () => {},
+            () => {
+                setToken(undefined);
+            },
+            () => {}
         );
     }, []);
 
@@ -156,6 +196,8 @@ export default function MenuGuardarConfiguracionIoT(
                 </Input>
             </FormGroup>
 
+            <br/>
+
             {/*SSID de la red donde se conectara el dispositivo.*/}
             <FormGroup>
                 <Label for="ssid">
@@ -179,10 +221,23 @@ export default function MenuGuardarConfiguracionIoT(
                 <Input
                     id="password"
                     name="campoPassword"
-                    type="password"
+                    type={mostrarPassword? "text": "password"}
                     defaultValue={"Aau190410ry2@"}
                 />
             </FormGroup>
+
+            {/*Indicamos que se mostrara el password de la ssid*/}
+            <FormGroup check>
+                <Label check>
+                    Mostrar contrasenia de la red
+                </Label>
+
+                <Input type="checkbox" onChange={(input) => {
+                    setMostrarPassword(input.target.checked);
+                }}/>
+            </FormGroup>
+
+            <br/>
 
             {/*Puerto del servidor API*/}
             <FormGroup>
@@ -212,7 +267,10 @@ export default function MenuGuardarConfiguracionIoT(
                 />
             </FormGroup>
 
-            {/*Version del servidor API esto no se muestra si no es un lector*/}
+            {/*
+               Version del servidor API esto
+                no se muestra si no es un lector
+            */}
             <FormGroup>
                 <Label for="apiVersion">
                     Version del API

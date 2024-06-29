@@ -40,15 +40,6 @@ export default function ListaAccesosRecientes(
     React.useEffect(() => {
         console.log('refresh');
 
-        ConsultaAccesosRecientes(
-            elementos,
-            offset,
-            null,
-            null,
-            setListaRegistros,
-            setTotalPaginas
-        );
-
     }, [
         elementos,
         refresh

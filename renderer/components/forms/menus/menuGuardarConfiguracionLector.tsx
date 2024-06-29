@@ -12,40 +12,69 @@ import {
     Form, FormGroup, Button, Col, Container, Row
 } from 'reactstrap';
 
-// Interfaz de modelos.
-import { RespuestaConsultaDispositivos } from '../../../utils/API/respuestas/consultaDispositivo';
-
 // Interfaz con la API.
-import { funcionRefresh } from '../../../utils/refresh';
-import { GenerarTokenDispositivo } from '../../../utils/API/interface/dispositivo';
+import {
+    funcionRefresh
+} from '../../../utils/refresh';
+import {
+    GenerarTokenDispositivo
+} from '../../../utils/API/interface/dispositivo';
 
 // Funciones del form.
 import {
     guardarConfiguracionLector
 } from './logic/guardarConfiguracionIoT';
 
-// Modelos de interfaz.
-import { Zona } from '../../../utils/API/modelos/zona';
+// Modelo de datos.
+import {
+    DispositivoIoT
+} from '../../../utils/API/modelos/dispositivoIoT';
+
+import {
+    Zona
+} from '../../../utils/API/modelos/zona';
 
 export default function MenuGuardarConfiguracionIoT(
     props: {
         elementosOpciones: {
             listaZonas:  Zona[]
         },
-        registro: RespuestaConsultaDispositivos,
+        registro: DispositivoIoT,
         toggleModal: Function
     }
 ) {
     // Hooks de datos a guardar en la tarjeta.
-    const [mostrarTodosLosPuertos, setMostrarTodosLosPuertos] = React.useState(false);
-    const [puertoSerial, setPuertoSerial] = React.useState(undefined);
-    const [token, setToken] = React.useState(undefined);
+    const [
+        mostrarTodosLosPuertos,
+        setMostrarTodosLosPuertos
+    ] = React.useState(false);
+
+    const [
+        puertoSerial,
+        setPuertoSerial
+    ] = React.useState(undefined);
+
+    const [
+        token,
+        setToken
+    ] = React.useState(undefined);
 
     // Hooks de menu de opciones.
-    const [listaPuertosSeriales, setListaPuertosSeriales] = React.useState([]);
+    const [
+        listaPuertosSeriales,
+        setListaPuertosSeriales
+    ] = React.useState([]);
+
+    const [
+        mostrarPassword,
+        setMostrarPassword
+    ] = React.useState(false);
 
     // Hook para el refrescamiento del componente.
-    const [refresh, setRefresh] = React.useState(false);
+    const [
+        refresh,
+        setRefresh
+    ] = React.useState(false);
 
     // baudRate soportados.
     const baudRateSoportados = [
@@ -96,7 +125,17 @@ export default function MenuGuardarConfiguracionIoT(
     React.useEffect(() => {
         GenerarTokenDispositivo(
             props.registro.id,
-            setToken
+            (respuesta: {
+                authorization: string,
+                codigoRespuesta: number
+            }) => {
+                setToken(respuesta.authorization);
+            },
+            () => {},
+            () => {
+                setToken(undefined);
+            },
+            () => {}
         );
     }, []);
 
@@ -111,151 +150,6 @@ export default function MenuGuardarConfiguracionIoT(
             guardarConfiguracionLector(evento);
             props.toggleModal();
         }}>
-            {/*Listamos los puertos serial disponibles al dispositivo*/}
-            <FormGroup>
-                <Label for="puertoSerial">
-                    Puerto Serial del dispositivo grabador de tarjetas.
-                </Label>
-
-                <Input
-                    id="puertoSerial"
-                    type="select"
-                    defaultValue={puertoSerial}
-                >
-                    {listaPuertosSeriales.map((registro: any) => {
-                        return(
-                            <option value={registro.path}>
-                                {registro.path}
-                            </option>
-                        );
-                    })}
-                </Input>
-            </FormGroup>
-
-            {/*Indicamos que se listaran todos los puertos seriales*/}
-            <FormGroup check>
-                <Label check>
-                    Listar todos los puertos serial
-                </Label>
-
-                <Input type="checkbox" onChange={(input) => {
-                    setMostrarTodosLosPuertos(input.target.checked);
-                }}/>
-            </FormGroup>
-
-            {/*Mostramos los baudrate disponibles*/}
-            <FormGroup>
-                <Label for="baudRate">
-                    baudRate
-                </Label>
-
-                <Input
-                    id="baudRate"
-                    type="select"
-                    name="campoBaudRate"
-                    defaultValue={115200}
-                >
-                    {baudRateSoportados.map((baudRate: number) => {
-                        return(
-                            <option value={baudRate}>
-                                {baudRate}
-                            </option>
-                        );
-                    })}
-                </Input>
-            </FormGroup>
-
-            {/*SSID de la red donde se conectara el dispositivo.*/}
-            <FormGroup>
-                <Label for="ssid">
-                    SSID de red
-                </Label>
-
-                <Input
-                    id="ssid"
-                    name="campoSsid"
-                    type="text"
-                    defaultValue={"AC Automatizacion 2.4"}
-                />
-            </FormGroup>
-
-            {/*PASSWORD de la red donde se conectara el dispositivo.*/}
-            <FormGroup>
-                <Label for="password">
-                    Password de red
-                </Label>
-
-                <Input
-                    id="password"
-                    name="campoPassword"
-                    type="password"
-                    defaultValue={"Aau190410ry2@"}
-                />
-            </FormGroup>
-
-            {/*Puerto del servidor API*/}
-            <FormGroup>
-                <Label for="apiPort">
-                    Puerto de API
-                </Label>
-
-                <Input
-                    id="apiPort"
-                    name="campoApiPort"
-                    type="text"
-                    defaultValue={API_PORT}
-                />
-            </FormGroup>
-
-            {/*IP del servidor API*/}
-            <FormGroup>
-                <Label for="apiIp">
-                    IP del API
-                </Label>
-
-                <Input
-                    id="apiIp"
-                    name="campoApiIp"
-                    type="text"
-                    defaultValue={API_HOST}
-                />
-            </FormGroup>
-
-            {/*Version del servidor API esto no se muestra si no es un lector*/}
-            <FormGroup>
-                <Label for="apiVersion">
-                    Version del API
-                </Label>
-
-                <Input
-                    id="apiVersion"
-                    type="select"
-                    defaultValue={API_URL}
-                >
-                    {versionesApi.map((version: string) => {
-                        return(
-                            <option value={version}>
-                                {version}
-                            </option>
-                        );
-                    })}
-                </Input>
-            </FormGroup>
-
-            {/*Api key del dispositivo*/}
-            <FormGroup>
-                <Label for="apiKeyDispositivo">
-                    API KEY del dispositivo
-                </Label>
-
-                <Input
-                    id="apiKeyDispositivo"
-                    name="campoApiKeyDispositivo"
-                    type="text"
-                    defaultValue={token}
-                />
-            </FormGroup>
-
             {/*Bit de permiso pedido por el dispositivo esto no se muestra si no es un lector*/}
             <FormGroup>
                 <Label for="bitZona">
@@ -333,6 +227,170 @@ export default function MenuGuardarConfiguracionIoT(
                         </Col>
                     </Row>
                 </Container>
+            </FormGroup>
+
+            <br/>
+
+            {/*Listamos los puertos serial disponibles al dispositivo*/}
+            <FormGroup>
+                <Label for="puertoSerial">
+                    Puerto Serial del dispositivo grabador de tarjetas.
+                </Label>
+
+                <Input
+                    id="puertoSerial"
+                    type="select"
+                    defaultValue={puertoSerial}
+                >
+                    {listaPuertosSeriales.map((registro: any) => {
+                        return(
+                            <option value={registro.path}>
+                                {registro.path}
+                            </option>
+                        );
+                    })}
+                </Input>
+            </FormGroup>
+
+            {/*Indicamos que se listaran todos los puertos seriales*/}
+            <FormGroup check>
+                <Label check>
+                    Listar todos los puertos serial
+                </Label>
+
+                <Input type="checkbox" onChange={(input) => {
+                    setMostrarTodosLosPuertos(input.target.checked);
+                }}/>
+            </FormGroup>
+
+            {/*Mostramos los baudrate disponibles*/}
+            <FormGroup>
+                <Label for="baudRate">
+                    baudRate
+                </Label>
+
+                <Input
+                    id="baudRate"
+                    type="select"
+                    defaultValue={115200}
+                >
+                    {baudRateSoportados.map((baudRate: number) => {
+                        return(
+                            <option value={baudRate}>
+                                {baudRate}
+                            </option>
+                        );
+                    })}
+                </Input>
+            </FormGroup>
+
+            <br/>
+
+            {/*SSID de la red donde se conectara el dispositivo.*/}
+            <FormGroup>
+                <Label for="ssid">
+                    SSID de red
+                </Label>
+
+                <Input
+                    id="ssid"
+                    name="campoSsid"
+                    type="text"
+                    defaultValue={"AC Automatizacion 2.4"}
+                />
+            </FormGroup>
+
+            {/*PASSWORD de la red donde se conectara el dispositivo.*/}
+            <FormGroup>
+                <Label for="password">
+                    Password de red
+                </Label>
+
+                <Input
+                    id="password"
+                    name="campoPassword"
+                    type={mostrarPassword? "text": "password"}
+                    defaultValue={"Aau190410ry2@"}
+                />
+            </FormGroup>
+
+            {/*Indicamos que se mostrara el password de la ssid*/}
+            <FormGroup check>
+                <Label check>
+                    Mostrar contrasenia de la red
+                </Label>
+
+                <Input type="checkbox" onChange={(input) => {
+                    setMostrarPassword(input.target.checked);
+                }}/>
+            </FormGroup>
+
+            <br/>
+
+            {/*Puerto del servidor API*/}
+            <FormGroup>
+                <Label for="apiPort">
+                    Puerto de API
+                </Label>
+
+                <Input
+                    id="apiPort"
+                    name="campoApiPort"
+                    type="text"
+                    defaultValue={API_PORT}
+                />
+            </FormGroup>
+
+            {/*IP del servidor API*/}
+            <FormGroup>
+                <Label for="apiIp">
+                    IP del API
+                </Label>
+
+                <Input
+                    id="apiIp"
+                    name="campoApiIp"
+                    type="text"
+                    defaultValue={API_HOST}
+                />
+            </FormGroup>
+
+            {/*
+               Version del servidor API esto
+                no se muestra si no es un lector
+            */}
+            <FormGroup>
+                <Label for="apiVersion">
+                    Version del API
+                </Label>
+
+                <Input
+                    id="apiVersion"
+                    type="select"
+                    defaultValue={API_URL}
+                >
+                    {versionesApi.map((version: string) => {
+                        return(
+                            <option value={version}>
+                                {version}
+                            </option>
+                        );
+                    })}
+                </Input>
+            </FormGroup>
+
+            {/*Api key del dispositivo*/}
+            <FormGroup>
+                <Label for="apiKeyDispositivo">
+                    API KEY del dispositivo
+                </Label>
+
+                <Input
+                    id="apiKeyDispositivo"
+                    name="campoApiKeyDispositivo"
+                    type="text"
+                    defaultValue={token}
+                />
             </FormGroup>
 
             <br/>

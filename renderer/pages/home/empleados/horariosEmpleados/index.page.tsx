@@ -9,6 +9,7 @@ import {
 } from 'reactstrap';
 
 import SideBarLayout from '../../../../components/Layout/sideBarLayout';
+import TablaHorarioEmpleado from '../../../../components/tablas/tablaHorarioEmpleado/tablaHorarioEmpleado';
 
 export default function ListaReportes() {
     return (
@@ -16,6 +17,7 @@ export default function ListaReportes() {
             <Container fluid>
                 <Row>
                     <Col>
+                        <TablaHorarioEmpleado/>
                     </Col>
                 </Row>
             </Container>

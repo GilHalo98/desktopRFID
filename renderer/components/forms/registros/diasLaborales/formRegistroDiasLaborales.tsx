@@ -156,7 +156,7 @@ export default function FormRegistroDiasLaborales(
                                 type='time'
                                 disabled={esDescanso}
                             />
-                        </FormGroup>                    
+                        </FormGroup>
                     </Col>
 
                     <Col>
@@ -171,7 +171,7 @@ export default function FormRegistroDiasLaborales(
                                 type='time'
                                 disabled={esDescanso}
                             />
-                        </FormGroup>                    
+                        </FormGroup>
                     </Col>
                 </Row>
             </Container>

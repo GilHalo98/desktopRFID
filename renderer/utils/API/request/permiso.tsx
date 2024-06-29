@@ -5,7 +5,7 @@ const GetPermiso = async (
     parametros?: {
         limit?: number,
         offset?: number,
-        id?: string,
+        id?: string | number,
         descripcionPermiso?: string,
     }
 ) => {

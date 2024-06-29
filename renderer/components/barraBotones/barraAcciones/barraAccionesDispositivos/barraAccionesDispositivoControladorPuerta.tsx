@@ -7,8 +7,16 @@ import React from 'react';
 import { Button, ButtonGroup } from 'reactstrap';
 
 // Iconos de los botones.
-import { IoMdLocate } from "react-icons/io";
-import { FaDoorClosed, FaDoorOpen, FaLock, FaLockOpen } from 'react-icons/fa';
+import {
+    mdiMapMarkerRadius,
+    mdiDoorSlidingOpen,
+    mdiDoorSliding,
+    mdiLock,
+    mdiLockOpen
+} from '@mdi/js';
+
+// Componente para mostrar el icono.
+import Icon from '@mdi/react';
 
 
 export default function BarraAccionesDispositivoControladorPuerta(
@@ -32,13 +40,13 @@ export default function BarraAccionesDispositivoControladorPuerta(
                     });
                 }}
             >
-                <IoMdLocate/>
+                <Icon path={mdiMapMarkerRadius} size={1}/>
             </Button>
 
             <Button
                 className='botonIcono'
                 outline
-                color='warning'
+                color='info'
                 onClick={() => {
                     window.ipc.send('emitir_evento_socket', {
                         evento: 'forzar_accion',
@@ -49,13 +57,13 @@ export default function BarraAccionesDispositivoControladorPuerta(
                     });
                 }}
             >
-                <FaDoorClosed/>
+                <Icon path={mdiDoorSliding} size={1}/>
             </Button>
 
             <Button
                 className='botonIcono'
                 outline
-                color='warning'
+                color='info'
                 onClick={() => {
                     window.ipc.send('emitir_evento_socket', {
                         evento: 'forzar_accion',
@@ -66,13 +74,13 @@ export default function BarraAccionesDispositivoControladorPuerta(
                     });
                 }}
             >
-                <FaDoorOpen/>
+                <Icon path={mdiDoorSlidingOpen} size={1}/>
             </Button>
 
             <Button
                 className='botonIcono'
                 outline
-                color='warning'
+                color='danger'
                 onClick={() => {
                     window.ipc.send('emitir_evento_socket', {
                         evento: 'forzar_accion',
@@ -83,13 +91,13 @@ export default function BarraAccionesDispositivoControladorPuerta(
                     });
                 }}
             >
-                <FaLock/>
+                <Icon path={mdiLock} size={1}/>
             </Button>
 
             <Button
                 className='botonIcono'
                 outline
-                color='warning'
+                color='success'
                 onClick={() => {
                     window.ipc.send('emitir_evento_socket', {
                         evento: 'forzar_accion',
@@ -100,7 +108,7 @@ export default function BarraAccionesDispositivoControladorPuerta(
                     });
                 }}
             >
-                <FaLockOpen/>
+                <Icon path={mdiLockOpen} size={1}/>
             </Button>
 
         </ButtonGroup>

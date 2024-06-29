@@ -1,47 +1,78 @@
+// Importamos react.
 import React from 'react';
 
+// Componente para imagenes.
 import Image from 'next/image';
 
+// Componentes de reactstrap.
 import {
     Button,
     Container, Row, Col,
     Card, CardBody, CardHeader, CardText, CardTitle, Spinner
 } from 'reactstrap';
-import BarraOpcionesRegistroEmpleado from '../../barraBotones/barraOpcionesRegistroEmpleado';
-import { RespuestaConsultaEmpleado } from '../../../utils/API/respuestas/consultaEmpleado';
-import { ConsultaRecurso } from '../../../utils/API/interface/recurso';
-import { Recurso } from '../../../utils/API/modelos/recurso';
+
+// Componentes propios.
+import BarraOpcionesRegistroEmpleado from '../../barraBotones/barraOpciones/BarraOpcionesRegistrosEmpleado/barraOpcionesRegistroEmpleado';
+
+// Logica del componente.
+import {
+    consultarImagenEmpleado
+} from "./logic/registros";
+
+// Importando modelo de datos.
+import { Empleado } from '../../../utils/API/modelos/empleado';
+
+import {
+    Recurso
+} from '../../../utils/API/modelos/recurso';
 
 export default function CardRegistroEmpleado(
     props: {
-        registro: RespuestaConsultaEmpleado,
-        datosOperacion: {
-            setIdRegistroOperacion: Function
-            idRegistro: number,
-            setRegistroOperacion: Function,
-            indexRegistro: number,
-        }
-        toggleModals: {
-            setEstadoModalRemoverRegistro: Function,
-            setEstadoModalModificarRegistro: Function,
-            setEstadoModalVisualizarRegistro: Function,
-            setEstadoModalGuardarRegistro: Function
+        registro: Empleado,
+        indexRegistro: number,
+        funcionesRegistros?: {
+            onGuardarDatosTarjeta?: Function,
+            onVisualizarRegistro?: Function,
+            onModificarRegistro?: Function
         }
     }
 ) {
-    const [enCarga, setEnCarga] = React.useState(true);
-    const [recursos, setRecursos ] = React.useState([]);
+    function renderBarraOpcionesRegistro() {
+        if(typeof props.funcionesRegistros == 'undefined') {
+            return <></>;
+        }
+
+        return <BarraOpcionesRegistroEmpleado
+            registro={props.registro}
+            indexRegistro={props.indexRegistro}
+            onGuardarDatosTarjeta={
+                props.funcionesRegistros.onGuardarDatosTarjeta
+            }
+            onVisualizarRegistro={
+                props.funcionesRegistros.onVisualizarRegistro
+            }
+            onModificarRegistro={
+                props.funcionesRegistros.onModificarRegistro
+            }
+        />;
+    }
+
+    const [
+        enCarga,
+        setEnCarga
+    ] = React.useState(true);
+
+    const [
+        recursos,
+        setRecursos
+     ] = React.useState([]);
 
     React.useEffect(() => {
-        ConsultaRecurso(
-            1,
-            0,
-            props.registro.idImagenVinculada,
-            null,
-            null,
+        consultarImagenEmpleado(
             setRecursos,
             () => {},
-            setEnCarga
+            setEnCarga,
+            {id:props.registro.idImagenVinculada}
         );
     }, []);
 
@@ -55,8 +86,14 @@ export default function CardRegistroEmpleado(
 
     return(
         <Card className='cardEmpleado' color='dark'>
-            <CardHeader>
-                {props.registro.nombres + ' ' + props.registro.apellidoPaterno + ' ' + props.registro.apellidoMaterno}
+            <CardHeader style={{textAlign: 'center'}}>
+                {
+                    props.registro.nombres
+                    + ' '
+                    + props.registro.apellidoPaterno
+                    + ' '
+                    + props.registro.apellidoMaterno
+                }
             </CardHeader>
 
             <CardBody>
@@ -67,9 +104,13 @@ export default function CardRegistroEmpleado(
                                 const imagenB64 = window.btoa(imagen.data);
                                 return(
                                     <img
-                                        key={'imagen-' + props.registro.id}
+                                        key={
+                                            'imagen-'
+                                            + props.registro.id
+                                        }
                                         src={
-                                            `data:${imagen.tipo};base64,${imagenB64}`
+                                            `data:${imagen.tipo}
+                                            ;base64,${imagenB64}`
                                         }
                                     />
                                 );
@@ -95,45 +136,24 @@ export default function CardRegistroEmpleado(
 
             <CardBody>
                 <CardTitle style={{textAlign: 'center'}}>
-                    Fecha de registro: {props.registro.fechaRegistroEmpleado.split('T')[0]}
+                    Fecha de registro: {
+                        props.registro.fechaRegistroEmpleado.split('T')[0]
+                    }
                 </CardTitle>
-                
+
                 <CardText style={{textAlign: 'center'}}>
-                    Rol del empleado: {props.registro.rol.rolTrabajador}
+                    Rol del empleado: {props.registro.idRolVinculado}
                 </CardText>
             </CardBody>
 
             <CardBody>
-                <Container>
-                    <Row>
-                        <Col/>
-                        <Col>
-                            <BarraOpcionesRegistroEmpleado
-                                onGuardarDatos={() => {
-                                    props.datosOperacion.setIdRegistroOperacion(props.datosOperacion.idRegistro);
-                                    props.datosOperacion.setRegistroOperacion(props.datosOperacion.indexRegistro);
-                                    props.toggleModals.setEstadoModalGuardarRegistro();
-                                }}
-                                onEliminar={() => {
-                                    props.datosOperacion.setIdRegistroOperacion(props.datosOperacion.idRegistro);
-                                    props.datosOperacion.setRegistroOperacion(props.datosOperacion.indexRegistro);
-                                    props.toggleModals.setEstadoModalRemoverRegistro();
-                                }}
-                                onModificar={() => {
-                                    props.datosOperacion.setIdRegistroOperacion(props.datosOperacion.idRegistro);
-                                    props.datosOperacion.setRegistroOperacion(props.datosOperacion.indexRegistro);
-                                    props.toggleModals.setEstadoModalModificarRegistro();
-                                }}
-                                onVisularizar={() => {
-                                    props.datosOperacion.setIdRegistroOperacion(props.datosOperacion.idRegistro);
-                                    props.datosOperacion.setRegistroOperacion(props.datosOperacion.indexRegistro);
-                                    props.toggleModals.setEstadoModalVisualizarRegistro();
-                                }}
-                            />
-                        </Col>
-                        <Col/>
-                    </Row>
-                </Container>
+                <Row>
+                    <Col/>
+                    <Col>
+                        {renderBarraOpcionesRegistro()}
+                    </Col>
+                    <Col/>
+                </Row>
             </CardBody>
         </Card>
     );

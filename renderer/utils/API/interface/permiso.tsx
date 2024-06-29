@@ -11,7 +11,7 @@ function ConsultaPermiso(
     parametrosBusqueda?: {
         limit?: number,
         offset?: number,
-        id?: string,
+        id?: string | number,
         descripcionPermiso?: string,
     },
     onError?: Function,

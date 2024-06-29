@@ -6,7 +6,7 @@ import {
 
 // Componentes de los renders.
 import BarraAccionesGrid from '../../barraBotones/barraAcciones/barraAccionesGrid/barraAccionesGrid';
-import ModalOpcionesGrid from '../../modals/modalOpciones/modalOpcionesGrid';
+import ModalOpcionesGrid from '../../modals/modalGrid/modalOpcionesGrid';
 import BarraAccionesTabla from "../../barraBotones/barraAcciones/barraAccionesTabla/barraAccionesTabla";
 import Paginacion from "../../paginacion/paginacion";
 
@@ -49,9 +49,8 @@ const renderBarraOpciones = (
         onProbarSerial?: Function,
         onCambiarConfiguracion?: Function
     },
-    opcionesTabla?: {
+    opcionesGrid?: {
         registrosPorPagina?: number,
-        opcionesRegistros?: boolean,
         tiempoRefrescamiento?: number,
         guardarConfiguracion: Function
     }
@@ -60,7 +59,7 @@ const renderBarraOpciones = (
         return null;
     }
 
-    if(typeof opcionesTabla == 'undefined') {
+    if(typeof opcionesGrid == 'undefined') {
         return(<BarraAccionesGrid
             onAgregarRegistro={
                 funcionesOpciones.onAgregarRegistro
@@ -85,7 +84,7 @@ const renderBarraOpciones = (
         onProbarSerial={() => {
             funcionesOpciones.onProbarSerial();
         }}
-        onOpciones={() => {
+        onCambiarConfiguracion={() => {
             funcionesOpciones.onCambiarConfiguracion();
             toggleModalOpcionesTabla();
         }}
@@ -103,27 +102,33 @@ const renderTitulo = (
         onProbarSerial?: Function,
         onCambiarConfiguracion?: Function
     },
-    opcionesTabla?: {
+    opcionesGrid?: {
         registrosPorPagina?: number,
-        opcionesRegistros?: boolean,
         tiempoRefrescamiento?: number,
         guardarConfiguracion: Function
     }
 ) => {
     return(
         <Card color="dark">
-            <Container>
-                <Row>
-                    <Col>
-                        <CardHeader className='text-white'>
-                            {tituloGrid}
-                        </CardHeader>
-                    </Col>
+            <CardHeader className='text-white'>
+                <Container>
+                    <Row>
+                        <Col>
+                                {tituloGrid}
+                        </Col>
 
-                    {/*Renderizamos la barra de opciones del grid*/}
-                    {renderBarraOpciones()}
-                </Row>
-            </Container>
+                        <Col style={{textAlign:'right'}}>
+                            {/*Renderizamos la barra de opciones del grid*/}
+                            {renderBarraOpciones(
+                                toggleModalOpcionesTabla,
+                                toggleEnCarga,
+                                funcionesOpciones,
+                                opcionesGrid
+                                )}
+                        </Col>
+                    </Row>
+                </Container>
+            </CardHeader>
         </Card>
     );
 };

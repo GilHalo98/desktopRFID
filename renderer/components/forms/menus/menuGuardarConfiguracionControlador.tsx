@@ -12,13 +12,10 @@ import {
     Form, FormGroup, Button, Col, Container, Row
 } from 'reactstrap';
 
-// Interfaz de modelos.
-import {
-    RespuestaConsultaDispositivos
-} from '../../../utils/API/respuestas/consultaDispositivo';
-import { Rol } from '../../../utils/API/modelos/rol';
-
 // Interfaz con la API.
+import {
+    funcionRefresh
+} from '../../../utils/refresh';
 import {
     GenerarTokenDispositivo
 } from '../../../utils/API/interface/dispositivo';
@@ -28,36 +25,55 @@ import {
     guardarConfiguracionControlador
 } from './logic/guardarConfiguracionIoT';
 
-// Funciones extra.
+// Modelo de datos.
 import {
-    funcionRefresh
-} from '../../../utils/refresh';
+    DispositivoIoT
+} from '../../../utils/API/modelos/dispositivoIoT';
+import {
+    Rol
+} from '../../../utils/API/modelos/rol';
 
-
-export default function MenuGuardarConfiguracionIoT(
+export default function MenuGuardarConfiguracionControlador(
     props: {
         elementosOpciones: {
             listaRoles:  Rol[]
         }
-        registro: RespuestaConsultaDispositivos,
+        registro: DispositivoIoT,
         toggleModal: Function
     }
 ) {
     // Hooks de datos a guardar en la tarjeta.
-    const [mostrarTodosLosPuertos, setMostrarTodosLosPuertos] = React.useState(false);
-    const [puertoSerial, setPuertoSerial] = React.useState(undefined);
-    const [token, setToken] = React.useState(undefined);
+    const [
+        mostrarTodosLosPuertos,
+        setMostrarTodosLosPuertos
+    ] = React.useState(false);
+
+    const [
+        puertoSerial,
+        setPuertoSerial
+    ] = React.useState(undefined);
+
+    const [
+        token,
+        setToken
+    ] = React.useState(undefined);
 
     // Hooks de menu de opciones.
-    const [listaPuertosSeriales, setListaPuertosSeriales] = React.useState([]);
+    const [
+        listaPuertosSeriales,
+        setListaPuertosSeriales
+    ] = React.useState([]);
+
+    const [
+        mostrarPassword,
+        setMostrarPassword
+    ] = React.useState(false);
 
     // Hook para el refrescamiento del componente.
-    const [refresh, setRefresh] = React.useState(false);
-
-    // Versiones del api soportadas.
-    const versionesApi = [
-        '/apiV0.1.0/'
-    ];
+    const [
+        refresh,
+        setRefresh
+    ] = React.useState(false);
 
     // baudRate soportados.
     const baudRateSoportados = [
@@ -74,6 +90,11 @@ export default function MenuGuardarConfiguracionIoT(
         115200,
         230400,
         460800,
+    ];
+
+    // Versiones del api soportadas.
+    const versionesApi = [
+        '/apiV0.1.0/'
     ];
 
     // Consultamos los datos del menu de opciones.
@@ -103,7 +124,17 @@ export default function MenuGuardarConfiguracionIoT(
     React.useEffect(() => {
         GenerarTokenDispositivo(
             props.registro.id,
-            setToken
+            (respuesta: {
+                authorization: string,
+                codigoRespuesta: number
+            }) => {
+                setToken(respuesta.authorization);
+            },
+            () => {},
+            () => {
+                setToken(undefined);
+            },
+            () => {}
         );
     }, []);
 
@@ -118,6 +149,28 @@ export default function MenuGuardarConfiguracionIoT(
             guardarConfiguracionControlador(evento);
             props.toggleModal();
         }}>
+            {/*Rol que puede hacer uso del dispositivo*/}
+            <FormGroup>
+                <Label for="bitRol">
+                    Rol con permiso de uso de dispositivo
+                </Label>
+
+                <Input
+                    id="bitRol"
+                    type="select"
+                >
+                    {props.elementosOpciones.listaRoles.map((rol: Rol) => {
+                        return(
+                            <option value={rol.bitRol}>
+                                {rol.descripcionRol}
+                            </option>
+                        );
+                    })}
+                </Input>
+            </FormGroup>
+
+            <br/>
+
             {/*Listamos los puertos serial disponibles al dispositivo*/}
             <FormGroup>
                 <Label for="puertoSerial">
@@ -171,6 +224,8 @@ export default function MenuGuardarConfiguracionIoT(
                 </Input>
             </FormGroup>
 
+            <br/>
+
             {/*SSID de la red donde se conectara el dispositivo.*/}
             <FormGroup>
                 <Label for="ssid">
@@ -194,10 +249,23 @@ export default function MenuGuardarConfiguracionIoT(
                 <Input
                     id="password"
                     name="campoPassword"
-                    type="password"
+                    type={mostrarPassword? "text": "password"}
                     defaultValue={"Aau190410ry2@"}
                 />
             </FormGroup>
+
+            {/*Indicamos que se mostrara el password de la ssid*/}
+            <FormGroup check>
+                <Label check>
+                    Mostrar contrasenia de la red
+                </Label>
+
+                <Input type="checkbox" onChange={(input) => {
+                    setMostrarPassword(input.target.checked);
+                }}/>
+            </FormGroup>
+
+            <br/>
 
             {/*Puerto del servidor API*/}
             <FormGroup>
@@ -227,7 +295,10 @@ export default function MenuGuardarConfiguracionIoT(
                 />
             </FormGroup>
 
-            {/*Version del servidor API esto no se muestra si no es un lector, checador o controlador*/}
+            {/*
+               Version del servidor API esto
+                no se muestra si no es un lector
+            */}
             <FormGroup>
                 <Label for="apiVersion">
                     Version del API
@@ -260,26 +331,6 @@ export default function MenuGuardarConfiguracionIoT(
                     type="text"
                     defaultValue={token}
                 />
-            </FormGroup>
-
-            {/*Rol que puede hacer uso del dispositivo*/}
-            <FormGroup>
-                <Label for="bitRol">
-                    Rol con permiso de uso de dispositivo
-                </Label>
-
-                <Input
-                    id="bitRol"
-                    type="select"
-                >
-                    {props.elementosOpciones.listaRoles.map((rol: Rol) => {
-                        return(
-                            <option value={rol.bitRol}>
-                                {rol.descripcionRol}
-                            </option>
-                        );
-                    })}
-                </Input>
             </FormGroup>
 
             <br/>

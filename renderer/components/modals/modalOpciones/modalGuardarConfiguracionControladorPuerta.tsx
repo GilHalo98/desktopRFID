@@ -41,7 +41,7 @@ export default function ModalGuardarConfiguracionControladorPuerta(
                     </CardTitle>
 
                     {/*Mostramos los datos de la configuracion del dispositivo.*/}
-                    <Display
+                    {/* <Display
                         registro={props.registro}
                         propiedades={[
                             ['id'],
@@ -55,7 +55,7 @@ export default function ModalGuardarConfiguracionControladorPuerta(
                             'Zona donde se encuentra el dispositivo',
                             'Fecha de registro'
                         ]}
-                    />
+                    /> */}
 
                     {/*Form para establecer el dispositivo y configuracion extra*/}
                     {props.children}

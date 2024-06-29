@@ -39,7 +39,7 @@ export default function ModalGuardarConfiguracionLector(
                     </CardTitle>
 
                     {/*Mostramos los datos de la configuracion del dispositivo.*/}
-                    <Display
+                    {/* <Display
                         registro={props.registro}
                         propiedades={[
                             ['id'],
@@ -55,7 +55,7 @@ export default function ModalGuardarConfiguracionLector(
                             'Bit de permiso de acceso a la zona',
                             'Fecha de registro'
                         ]}
-                    />
+                    /> */}
 
                     {/*Form para establecer el dispositivo y configuracion extra*/}
                     {props.children}

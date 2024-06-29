@@ -119,7 +119,7 @@ export default function FormRegistroUsuario(
             {/*Input de id de empleado*/}
             <FormGroup>
                 <Label for="idEmpleado">
-                    Selecciona un usuario al que registrar como usuario
+                    Selecciona un empleado al que registrar como usuario
                 </Label>
 
                 <Input

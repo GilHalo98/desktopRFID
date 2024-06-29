@@ -7,6 +7,12 @@
 @tailwind variants;
 
 @layer base {
+    .prueba {
+        width: 200%;
+        height: 200%;
+        background-color: red;
+    }
+
     ::-webkit-scrollbar {
         display: none;
     }
@@ -100,6 +106,16 @@
     }
 
     /*
+    * Indicador de estado de maquina.
+    */
+    .indicadorEstadoMaquina {
+        text-align: center;
+        font-weight: bolder;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    /*
     * Estilo de la barra de navegacion.
     */
     .barraNavegacion {
@@ -187,6 +203,21 @@
         background-color: #FFBC26;
         color: black;
         font-weight: bold;
+    }
+
+    /*
+    * Estilo del grid de cards de empleados.
+    */
+    .contenidoGridEmpleados {
+        overflow-y: scroll;
+    }
+
+    /*
+    * Estilo de grafico de actividad de maquinas.
+    */
+    .bordeHeaderDisplay {
+        border-bottom: 40px;
+        border-color: #FFBC26;
     }
 }
 
