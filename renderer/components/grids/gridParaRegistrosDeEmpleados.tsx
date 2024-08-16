@@ -10,19 +10,17 @@ import {
 } from 'reactstrap';
 
 // Componentes propios.
+import CardHeaderRegistroEmpleado from '../cards/cardHeader/cardHeaderRegistroEmpleado';
+import { renderPaginacion } from './logic/renders';
 import ModalOpcionesGrid from '../modals/modalGrid/modalOpcionesGrid';
+import { Rol } from '../../utils/API/modelos/rol';
 
 // Funcionalidad del grid.
-import {
-    renderPaginacion,
-    renderTitulo
-} from "./logic/renders";
 
 export default function GridParaRegistrosDeEmpleados(
     props: {
         tituloGrid: string,
-        enCarga?: boolean,
-        setEnCarga?: Function,
+        elementosOpciones: Rol[],
         renderBarraBusqueda?: Function,
         paginacion?: {
             paginaActual: number,
@@ -47,81 +45,51 @@ export default function GridParaRegistrosDeEmpleados(
             onGuardarDatosTarjeta?: Function,
             onVisualizarRegistro?: Function,
             onModificarRegistro?: Function
-        }
+        },
+        parametrosBusqueda: {
+            setId: Function,
+            setNombres: Function,
+            setApellidoPaterno: Function,
+            setApellidoMaterno: Function,
+            setNumeroTelefonico: Function,
+            setIdRol: Function
+        },
         children?: any
     }
 ) {
-    
-    // Estado del modal de opciones de tabla.
     const [
         estadoModalOpcionesGrid,
         setEstadoModalOpcionesGrid
     ] = React.useState(false);
 
-    const controlGrid = {
-        display: (props.enCarga? 'none' : '')
-    };
-
-    const controlSpinner = {
-        display: (props.enCarga? '' : 'none')
-    };
-
-    const renderBarraBusqueda = () => {
-        if(typeof props.renderBarraBusqueda == 'undefined') {
-            return <></>;
-        }
-
-        return(<>
-            <br/>
-            {props.renderBarraBusqueda()}
-        </>);
-    };
-
     return(
         <Container>
-            {/*Titulo y barra de herramientas del grid.*/}
+            {/*Header del grid.*/}
             <Row>
                 <Col>
-                    {renderTitulo(
-                        props.tituloGrid,
-                        () => {setEstadoModalOpcionesGrid(
-                            !estadoModalOpcionesGrid
-                        )},
-                        undefined,
-                        props.funcionesOpciones,
-                        props.opcionesGrid
-                    )}
+                    <CardHeaderRegistroEmpleado
+                        tituloGrid={props.tituloGrid}
+                        parametrosBusqueda={props.parametrosBusqueda}
+                        elementosOpciones={props.elementosOpciones}
+                        funcionesOpciones={props.funcionesOpciones}
+                        toggleModalOpcionesGrid={() => {
+                            setEstadoModalOpcionesGrid(
+                                !estadoModalOpcionesGrid
+                            );
+                        }}
+                    />
                 </Col>
             </Row>
 
-            {renderBarraBusqueda()}
-
             <br/>
 
-            {/*Contenido del grid*/}
-            <Row style={controlGrid} className='contenidoGridEmpleados'>
+            {/*Renderizamos el contenido del grid.*/}
+            <Row>
                 {props.children}
             </Row>
 
-            {/*Spinner del contenido del grid*/}
-            <Row style={controlSpinner}>
-                <Col/>
-                    <Col xs='auto'>
-                        <Spinner
-                            color="warning"
-                            style={{
-                                height: '100px',
-                                width: '100px'
-                            }}
-                        />
-                    </Col>
-                <Col/>
-            </Row>
-
-            <br/>
-
             {/*Paginacion del grid*/}
-            <Row style={controlGrid}>
+            <Row>
                 <Col>
                     {/*Paginación del grid.*/}
                     {renderPaginacion(props.paginacion)}

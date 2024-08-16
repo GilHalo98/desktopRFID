@@ -91,49 +91,6 @@ const renderBarraOpciones = (
     />);
 };
 
-// Renerizamos el titulo y la barra de acciones del grid.
-const renderTitulo = (
-    tituloGrid: string,
-    toggleModalOpcionesTabla: Function,
-    toggleEnCarga?: Function,
-    funcionesOpciones?: {
-        onAgregarRegistro?: Function,
-        onRefrescarGrid?: Function,
-        onProbarSerial?: Function,
-        onCambiarConfiguracion?: Function
-    },
-    opcionesGrid?: {
-        registrosPorPagina?: number,
-        tiempoRefrescamiento?: number,
-        guardarConfiguracion: Function
-    }
-) => {
-    return(
-        <Card color="dark">
-            <CardHeader className='text-white'>
-                <Container>
-                    <Row>
-                        <Col>
-                                {tituloGrid}
-                        </Col>
-
-                        <Col style={{textAlign:'right'}}>
-                            {/*Renderizamos la barra de opciones del grid*/}
-                            {renderBarraOpciones(
-                                toggleModalOpcionesTabla,
-                                toggleEnCarga,
-                                funcionesOpciones,
-                                opcionesGrid
-                                )}
-                        </Col>
-                    </Row>
-                </Container>
-            </CardHeader>
-        </Card>
-    );
-};
-
 export {
-    renderPaginacion,
-    renderTitulo
+    renderPaginacion
 };

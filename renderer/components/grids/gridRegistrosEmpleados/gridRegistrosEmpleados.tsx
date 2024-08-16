@@ -26,6 +26,7 @@ import {
     renderBarraBusqueda,
     renderizarCardsEmpleados
 } from './logic/renders';
+import { Col, Row, Spinner } from 'reactstrap';
 
 // Modelo de datos.
 
@@ -293,24 +294,42 @@ export default function GridRegistrosEmpleados(
         setIdRol: setIdRol
     };
 
-    // Si no se han cargado los registros, mostramos el spinner.
-    if(!listaRegistros) {
-        return <></>;
-    }
+    const poblarGrid = () => {
+        if(!listaRegistros) {
+            return(
+                <Row>
+                    <Col xs='auto'>
+                        <Spinner
+                            color="warning"
+                            style={{
+                                height: '100px',
+                                width: '100px'
+                            }}
+                        />
+                    </Col>
+                </Row>
+            );
+        }
+
+        return renderizarCardsEmpleados(
+            listaRegistros,
+            funcionesRegistros
+        );
+    };
 
     return(
         <GridParaRegistrosDeEmpleados
             tituloGrid={tituloGrid}
-            enCarga={enCarga}
-            setEnCarga={setEnCarga}
-            paginacion={paginacion}
+            elementosOpciones={listaRegistrosVinculados}
+            parametrosBusqueda={parametrosBusqueda}
             opcionesGrid={opcionesGrid}
             funcionesOpciones={funcionesOpciones}
+            paginacion={paginacion}
             funcionesRegistros={funcionesRegistros}
-            renderBarraBusqueda={() => {
-                return renderBarraBusqueda(parametrosBusqueda, listaRegistrosVinculados);
-            }}
         >
+            {/* Renderizamos el contenido del grid. */}
+            {poblarGrid()}
+
             {/*Modal de agregar registro*/}
             <ModalRegistroEmpleadoCompleto
                 nombreTabla={tituloGrid}
@@ -381,8 +400,7 @@ export default function GridRegistrosEmpleados(
                 toggleModal={() => {setEstadoModalConexionSerial(
                     !estadoModalConexionSerial
                 )}}
-            >
-            </ModalConexionSerial>
+            />
 
             {/*Modal de guardar datos en tarjeta*/}
             <ModalGuardarDatosTarjeta
@@ -393,8 +411,7 @@ export default function GridRegistrosEmpleados(
                 toggleModal={() => {setEstadoModalGuardarDatosTarjeta(
                     !estadoModalGuardarDatosTarjeta
                 )}}
-            >
-            </ModalGuardarDatosTarjeta>
+            />
 
             {/*Modal para visualizar los datos del empelado a detalle*/}
             <ModalVisualizarDatosDetalles
@@ -404,14 +421,7 @@ export default function GridRegistrosEmpleados(
                 toggleModal={() => {setEstadoModalVisualizarDatosDetalles(
                     !estadoModalVisualizarDatosDetalles
                 )}}
-            >
-            </ModalVisualizarDatosDetalles>
-
-            {/*Renderizamos las cards de los registros de los empleados*/}
-            {renderizarCardsEmpleados(
-                listaRegistros,
-                funcionesRegistros
-            )}
+            />
         </GridParaRegistrosDeEmpleados>
     );
 };
