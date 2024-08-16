@@ -370,15 +370,16 @@ export default function TablaReportesChequeos(
                 )}}
             >
                 <Display
+                    tituloDisplay={'nose'}
                     registro={registroOperacion}
-                    propiedades={[
+                    campos={[
                         ['id'],
                         ['idReporteVinculado'],
                         ['idEmpleadoVinculado'],
                         ['fechaRegistroReporteChequeos'],
                         ['fechaModificacionReporteChequeos']
                     ]}
-                    campos={[
+                    nombresCampos={[
                         'ID',
                         'ID de reporte vinculado',
                         'ID de empleado vinculado',

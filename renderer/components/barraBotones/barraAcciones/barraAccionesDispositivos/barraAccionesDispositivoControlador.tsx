@@ -8,6 +8,8 @@ import { Button, ButtonGroup } from 'reactstrap';
 
 // Iconos de los botones.
 import {
+    mdiLock,
+    mdiLockOpen,
     mdiMapMarkerRadius,
     mdiPause,
     mdiPlay
@@ -72,6 +74,40 @@ export default function BarraAccionesDispositivoControlador(
                 }}
             >
                 <Icon path={mdiPause} size={1}/>
+            </Button>
+
+            <Button
+                className='botonIcono'
+                outline
+                color='danger'
+                onClick={() => {
+                    window.ipc.send('emitir_evento_socket', {
+                        evento: 'forzar_accion',
+                        parametros: {
+                            'accion': 'bloquear',
+                            'idDispositivo': props.idDispositivo
+                        }
+                    });
+                }}
+            >
+                <Icon path={mdiLock} size={1}/>
+            </Button>
+
+            <Button
+                className='botonIcono'
+                outline
+                color='success'
+                onClick={() => {
+                    window.ipc.send('emitir_evento_socket', {
+                        evento: 'forzar_accion',
+                        parametros: {
+                            'accion': 'desbloquear',
+                            'idDispositivo': props.idDispositivo
+                        }
+                    });
+                }}
+            >
+                <Icon path={mdiLockOpen} size={1}/>
             </Button>
         </ButtonGroup>
     );

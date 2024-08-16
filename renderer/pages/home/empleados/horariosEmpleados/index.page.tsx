@@ -2,14 +2,18 @@
 
 import 'bootstrap/dist/css/bootstrap.css';
 
-import React from 'react';
+// Evento de submit.
+import React, { SyntheticEvent } from 'react';
 
+// Componentes de reacstrap
 import {
     Container, Row, Col
 } from 'reactstrap';
 
+// Componentes propios.
 import SideBarLayout from '../../../../components/Layout/sideBarLayout';
-import TablaHorarioEmpleado from '../../../../components/tablas/tablaHorarioEmpleado/tablaHorarioEmpleado';
+import TablaHorarioEmpelado from '../../../../components/tablas/tablaHorarioEmpleado/tablaHorarioEmpleado';
+
 
 export default function ListaReportes() {
     return (
@@ -17,7 +21,7 @@ export default function ListaReportes() {
             <Container fluid>
                 <Row>
                     <Col>
-                        <TablaHorarioEmpleado/>
+                        <TablaHorarioEmpelado/>
                     </Col>
                 </Row>
             </Container>

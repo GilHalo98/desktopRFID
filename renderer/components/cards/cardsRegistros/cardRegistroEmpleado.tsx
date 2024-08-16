@@ -100,7 +100,7 @@ export default function CardRegistroEmpleado(
                 <Container>
                     <Row style={controlImagen}>
                         <Col>
-                            {recursos.map((imagen: Recurso)=>{
+                            {recursos.map((imagen: Recurso) => {
                                 const imagenB64 = window.btoa(imagen.data);
                                 return(
                                     <img

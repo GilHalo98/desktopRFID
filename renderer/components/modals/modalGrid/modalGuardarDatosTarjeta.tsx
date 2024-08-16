@@ -13,7 +13,17 @@ import {
 import MenuGrabarTarjeta from '../../forms/menus/menuGrabarTarjeta';
 
 // Importamos los modelos de datos.
-import { Empleado } from '../../../utils/API/modelos/empleado';
+import {
+    Empleado
+} from '../../../utils/API/modelos/empleado';
+
+import {
+    Permiso
+} from '../../../utils/API/modelos/permiso';
+
+import {
+    Rol
+} from '../../../utils/API/modelos/rol';
 
 // Funcionalidad
 import {
@@ -21,7 +31,10 @@ import {
     renderDatosRol,
     renderDatosPermiso
 } from './logic/renders';
-import { consultarDatosVinculados } from './logic/registros';
+
+import {
+    consultarDatosVinculados
+} from './logic/registros';
 
 export default function ModalGuardarDatosTarjeta(
     props: {
@@ -34,7 +47,7 @@ export default function ModalGuardarDatosTarjeta(
 ) {
     // Hook de carga de datos.
     const [
-        enCarga, 
+        enCarga,
         setEnCarga
     ] = React.useState(true);
 
@@ -132,6 +145,10 @@ export default function ModalGuardarDatosTarjeta(
                     {/*aqui va el form del menu de grabar tarjeta.*/}
                     <MenuGrabarTarjeta
                         registro={props.registro}
+                        registrosVinculados={{
+                            rol: rolVinculado,
+                            permiso: permisoVinculado
+                        }}
                         toggleModal={props.toggleModal}
                     />
                 </CardBody>

@@ -5,7 +5,7 @@ import { createWindow } from './helpers'
 
 // Manipulación de puerto serial
 import {
-    ByteLengthParser, 
+    ByteLengthParser,
     ReadlineParser,
     SerialPort
 } from 'serialport';
@@ -30,6 +30,8 @@ let clienteSocket = undefined;
 let socket = undefined;
 
 let listaClientes = [];
+
+let estatusDispositivo = 0;
 
 if (isProd) {
     serve({ directory: 'app' });
@@ -117,6 +119,11 @@ ipcMain.on('sesion_iniciada', async (
         listaClientes = lista;
     });
 
+    socket.on('estatus_dispositivo', (estatus) => {
+        // Guardamos el estatus del dispositivo.
+        estatusDispositivo = estatus;
+    });
+
     socket.on('cliente_terminado', () => {
         // Actualizamos la lista de los cleintes conectados.
         socket.emit('listar_clientes');
@@ -125,7 +132,7 @@ ipcMain.on('sesion_iniciada', async (
     socket.on('cliente_conectado', () => {
         // Actualizamos la lista de los cleintes conectados.
         socket.emit('listar_clientes');
-    });    
+    });
 });
 
 ipcMain.on('sesion_terminada', async (
@@ -146,4 +153,12 @@ ipcMain.on('listar_clientes', (
     args
 ) => {
     evento.returnValue = listaClientes;
+});
+
+ipcMain.on('estatus_dispositivo', (
+    evento,
+    args
+) => {
+    evento.returnValue = estatusDispositivo;
+    estatusDispositivo = 0;
 });

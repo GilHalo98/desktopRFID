@@ -339,14 +339,15 @@ export default function TablaTiposDispositivos(
                )}}
             >
                 <Display
+                    tituloDisplay={'nose'}
                     registro={registroOperacion}
-                    propiedades={[
+                    campos={[
                         ['id'],
                         ['nombreTipoDispositivo'],
                         ['descripcionTipoDispositivo'],
                         ['fechaRegistroTipoDispositivo'],
                     ]}
-                    campos={[
+                    nombresCampos={[
                         'id',
                         'nombre del tipo de dispositivo',
                         'descripcion del tipo de dispositivo',

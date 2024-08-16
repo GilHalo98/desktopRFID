@@ -399,8 +399,9 @@ export default function TablaEmpleados(
                 )}}
             >
                 <Display
+                    tituloDisplay={'nose'}
                     registro={registroOperacion}
-                    propiedades={[
+                    campos={[
                         ['id'],
                         ['nombres'],
                         ['apellidoPaterno'],
@@ -413,7 +414,7 @@ export default function TablaEmpleados(
                         ['fechaRegistroEmpleado'],
                         ['fechaModificacionEmpleado']
                     ]}
-                    campos={[
+                    nombresCampos={[
                         'ID',
                         'Nombres',
                         'Apellido parterno',

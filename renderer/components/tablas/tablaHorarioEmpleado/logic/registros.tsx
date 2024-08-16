@@ -1,3 +1,6 @@
+// React.
+import { SyntheticEvent } from "react";
+
 // Formatea los datos del registro.
 import {
     exportarDatosTabla,
@@ -9,21 +12,17 @@ import {
     Horario
 } from "../../../../utils/API/modelos/horario";
 
-import {
-    Empleado
-} from "../../../../utils/API/modelos/horario";
-
 // Importamos la interfaz con la API.
 import {
-    ConsultaHorario,
-    ModificarHorario,
-    RegistrarHorario,
-    RemoverHorario
-} from "../../../../utils/API/interface/horario";
+    ConsultaRol
+} from "../../../../utils/API/interface/rol";
 
 import {
-    ConsultaEmpleado
-} from "../../../../utils/API/interface/empleado";
+    ConsultaHorario,
+    ConsultaHorarioCompleto,
+    ModificarHorarioCompleto
+} from "../../../../utils/API/interface/horario";
+
 
 // Registros que se mostraran en la tabla.
 const formatearRegistros = (
@@ -73,125 +72,23 @@ const exportarDatos = (
     }
 };
 
-// Guarda un registro en la base de datos.
-const guardarRegistro = (
-    evento: any,
-    refresh: boolean,
-    setRefresh: Function
-) => {
-    /**
-     * Creamos un nuevo registro y lo guardamos en la base de datos.
-     */
-
-    const datosRegistro = new FormData();
-
-    datosRegistro.append(
-        'idEmpleadoVinculado',
-        evento.target[0].value
-    );
-    datosRegistro.append(
-        'descripcionHorario',
-        evento.target[1].value
-    );
-    datosRegistro.append(
-        'tolerancia',
-        evento.target[2].value
-    );
-
-    // Registramos el permiso en la base de datos.
-    RegistrarHorario(
-        datosRegistro,
-        undefined,
-        (error: any) => {console.log(
-            error
-        )},
-        undefined,
-        () => {setRefresh(
-            !refresh
-        )},
-    );
-};
-
-// Modificamos un registro de la base de datos
-// y guardamos los cambios realizados.
-const modificarRegistro = (
-    evento: any,
-    idRegistro: number,
-    refresh: boolean,
-    setRefresh: Function
-) => {
-    /**
-     * Modificamos el registro pasado por evento.
-     */
-
-    const datosModificaion = new FormData();
-
-    datosModificaion.append(
-        'idEmpleadoVinculado',
-        evento.target[0].value
-    );
-    datosModificaion.append(
-        'descripcionHorario',
-        evento.target[1].value
-    );
-    datosModificaion.append(
-        'tolerancia',
-        evento.target[2].value
-    );
-
-    // Registramos el permiso en la base de datos.
-    ModificarHorario(
-        idRegistro,
-        datosModificaion,
-        undefined,
-        (error: any) => {console.log(
-            error
-        )},
-        undefined,
-        () => {setRefresh(
-            !refresh
-        )},
-    );
-};
-
-// Eliminamos un registro de la base de datos.
-const eliminarRegistro = (
-    idRegistro: number,
-    refresh: boolean,
-    setRefresh: Function
-) => {
-    RemoverHorario(
-        idRegistro,
-        undefined,
-        (error: any) => {console.log(
-            error
-        )},
-        undefined,
-        () => {setRefresh(
-            !refresh
-        )},
-    );
-};
-
 // Consulta los registros de los permisos filtrados.
 const consultarRegistros = (
     setListaRegistros: Function,
-    setTotalPaginas: Function,
     setEnCarga: Function,
     querry: {
-        limit?: number,
-        offset?: number,
         id?: number,
-        descripcionHorario?: string,
-        idEmpleadoVinculado?: number
-    }
+        numeroTelefonico?: string,
+        nombres?: string,
+        apellidoPaterno?: string,
+        apellidoMaterno?: string,
+        idRolVinculado?: number
+    },
+    consultaConcatenada?: Function
 ) => {
-    return ConsultaHorario(
+    return ConsultaHorarioCompleto(
         (respuesta: any) => {
-            setListaRegistros(respuesta.registros);
-            setTotalPaginas(Math.ceil(
-                respuesta.totalRegistros / querry.limit
-            ));
+            setListaRegistros(respuesta.registro);
         },
         querry,
         (error: any) => {
@@ -199,33 +96,178 @@ const consultarRegistros = (
             setEnCarga(false);
         },
         () => {
-            setListaRegistros([]);
+            setListaRegistros(null);
             setEnCarga(true);
         },
-        undefined
+        () => {
+            if(!consultaConcatenada) {
+                setEnCarga(false);
+            } else {
+                consultaConcatenada();
+            }
+        }
     );
 };
 
 // Consultamos los registros de las empleados.
-const consultarRegistrosEmpleados = (
+const consultarRegistrosVinculados = (
     setListaEmpleados: Function,
-    setEnCarga: Function
+    setEnCarga: Function,
+    querry: {
+        limit?: number,
+        offset?: number,
+        id?: number,
+        rolTrabajador?: string,
+        descripcionRol?: string,
+        idPermisoVinculado?: number
+    },
+    consultaConcatenada?: Function
 ) => {
-    return ConsultaEmpleado(
+    return ConsultaRol(
         (respuesta: any) => {setListaEmpleados(
             respuesta.registros
         )},
-        undefined,
+        querry,
         (error: any) => {
             console.log(error);
             setEnCarga(false);
         },
         () => {
-            setListaEmpleados([]);
             setEnCarga(true);
         },
         () => {
-            setEnCarga(false);
+            if(!consultaConcatenada) {
+                setEnCarga(false);
+            } else {
+                consultaConcatenada();
+            }
+        }
+    );
+};
+
+// Modificamos un registro del horario.
+const modificarRegistro = (
+    evento: SyntheticEvent,
+    id: number
+) => {
+    // Lista de dias.
+    const listaDias = [
+        'Lunes',
+        'Martes',
+        'Miercoles',
+        'Jueves',
+        'Viernes',
+        'Sabado',
+        'Domingo'
+    ];
+
+    // Registros de formularios.
+    const datosModificaion = new FormData();
+
+    // Guardamos los datos del registro del horario.
+    /**
+     * RECURDA CAMBIAR LA DESCRIPCION DEL HORARIO.
+     */
+    datosModificaion.append(
+        'descripcionHorario',
+        'Prueba de registro de horarios'
+    );
+
+    datosModificaion.append(
+        'tolerancia',
+        evento.target[0].value
+    );
+
+    // Si las horas de entrada, salida y descanso son similares para
+    // toda la semana.
+    if (evento.target[1].checked) {
+        // Recuperamos los datos que seran similares para todos los dias
+        // de la semana.
+        const horaEntrada = evento.target[2].value;
+        const horaSalidaDescanso = evento.target[3].value;
+        const horaEntradaDescanso = evento.target[4].value;
+        const HoraSalida = evento.target[5].value;
+
+        // Esto nos permite iterar entre los nombres de los dias.
+        let indexDia = 0;
+
+        // Los campos para identificar los dias empiezan en el index
+        // 18 hasta el 24, iteramos entre cada uno de ellos.
+        for (let index = 6; index <= 12; index++) {
+            // Agregamos el valor si el dia es laborado o descanso.
+            datosModificaion.append(
+                evento.target[index].id,
+                evento.target[index].checked?
+                    1 : 0
+            );
+
+            // Si el dia es laborado, mandamos la hora de entrada
+            // y salida, asi como la hora de descanso
+            if(!evento.target[index].checked) {
+                datosModificaion.append(
+                    'horaEntrada' + listaDias[indexDia],
+                    horaEntrada
+                );
+                datosModificaion.append(
+                    'horaSalidaDescanso' + listaDias[indexDia],
+                    horaSalidaDescanso
+                );
+                datosModificaion.append(
+                    'horaEntradaDescanso' + listaDias[indexDia],
+                    horaEntradaDescanso
+                );
+                datosModificaion.append(
+                    'horaSalida' + listaDias[indexDia],
+                    HoraSalida
+                );
+            }
+
+            // Cambiamos de dia.
+            indexDia++;
+        }
+
+    // Si son diferentes, iteramos por todos los campos que representen
+    // la semana y los agregamos al form.
+    } else {
+        // Los campos del dia, si es descanso, entrada, salida y
+        // hora de descanso empiezan en el index 14 hasta el 48.
+        for (let index = 2; index <= 36; index++) {
+            // Si el campo es de tipo check.
+            if (evento.target[index].className == 'form-check-input') {
+                // Agregamos el valor del campo.
+                datosModificaion.append(
+                    evento.target[index].id,
+                    evento.target[index].checked?
+                        1 : 0
+                );
+
+                // Si el dia es dia descansado,
+                // entonces saltamos los proximos 4
+                // campos que indican hora de
+                // entrada, salida y hora de descanso.
+                if(evento.target[index].checked) {
+                    index += 4;
+                }
+
+            } else {
+                // Si no es un check, agregamos el
+                // valor almacenado en el campo.
+                datosModificaion.append(
+                    evento.target[index].id,
+                    evento.target[index].value
+                );
+            }
+        }
+    }
+
+    ModificarHorarioCompleto(
+        id,
+        datosModificaion,
+        (respuesta) => {
+            console.log(respuesta);
+        },
+        (error) => {
+            console.log(error);
         }
     );
 };
@@ -233,9 +275,7 @@ const consultarRegistrosEmpleados = (
 export {
     formatearRegistros,
     exportarDatos,
-    guardarRegistro,
-    modificarRegistro,
-    eliminarRegistro,
     consultarRegistros,
-    consultarRegistrosEmpleados
+    consultarRegistrosVinculados,
+    modificarRegistro
 };

@@ -1,86 +1,76 @@
 // Importamos los request.
 import {
-    GetAccesosRecientes,
     GetAccesosPorDia,
-    GetReportesPorTipo
+    GetActividadMaquina
 } from "../request/dashboard";
 
-function ConsultaAccesosRecientes(
-    limit: number,
-    offset: number,
-    id: string,
-    descripcionReporte: string,
-    setListaRegistros: Function,
-    setTotalPaginas: Function
+function AccesosPorDia(
+    onOk: Function,
+    parametrosBusqueda?: {
+    },
+    onError?: Function,
+    onAntes?: Function,
+    onFinalizar?: Function
 ) {
-    // Creamos los parametros de busqueda de la consulta.
-    const parametrosBusqueda = {
-        limit: limit,
-        offset: offset,
-        id: id,
-        descripcionReporte: descripcionReporte,
-    };
-
-    // Realizamos el request.
-    GetAccesosRecientes(parametrosBusqueda).then((respuesta) => {
-        // Guardamos los registros en la Reporte.
-        setListaRegistros(respuesta.data.registros);
-
-        if(setTotalPaginas) {
-            // Guardamos el total de paginas en la variable.
-            setTotalPaginas(Math.ceil(respuesta.data.totalRegistros / limit));
-        }
-
-    }).catch((error) => {
-        // Ocurrio un errr al realizar el request.
-        console.log(error);
-
-    }).finally(() => {
-    });
-};
-
-function ReporteAccesosPorDia(
-    setListaRegistros: Function,
-) {
-    // Creamos los parametros de busqueda de la consulta.
-    const parametrosBusqueda = {
-    };
+    if(typeof onAntes != 'undefined') {
+        // Ejecutamos la funcion de antes de realizar el request.
+        onAntes();
+    }
 
     // Realizamos el request.
     GetAccesosPorDia(parametrosBusqueda).then((respuesta) => {
-        // Guardamos los registros en la Reporte.
-        setListaRegistros(respuesta.data);
+        // Al cumplirse el request, se ejecuta la función.
+        onOk(respuesta.data);
 
     }).catch((error) => {
-        // Ocurrio un errr al realizar el request.
-        console.log(error);
+        if(typeof onError != 'undefined') {
+            // Al ocurrir un error con el reques, ejecutamos la función.
+            onError(error);
+        }
 
     }).finally(() => {
+        if(typeof onFinalizar != 'undefined') {
+            // Al terminar el request, se ejecuta la función.
+            onFinalizar();
+        }
+
     });
 };
 
-function ReportesPorTipo(
-    setListaRegistros: Function,
+function ActividadMaquina(
+    onOk: Function,
+    parametrosBusqueda?: {
+    },
+    onError?: Function,
+    onAntes?: Function,
+    onFinalizar?: Function
 ) {
-    // Creamos los parametros de busqueda de la consulta.
-    const parametrosBusqueda = {
-    };
+    if(typeof onAntes != 'undefined') {
+        // Ejecutamos la funcion de antes de realizar el request.
+        onAntes();
+    }
 
     // Realizamos el request.
-    GetReportesPorTipo(parametrosBusqueda).then((respuesta) => {
-        // Guardamos los registros en la Reporte.
-        setListaRegistros(respuesta.data.conteos);
+    GetActividadMaquina(parametrosBusqueda).then((respuesta) => {
+        // Al cumplirse el request, se ejecuta la función.
+        onOk(respuesta.data);
 
     }).catch((error) => {
-        // Ocurrio un errr al realizar el request.
-        console.log(error);
+        if(typeof onError != 'undefined') {
+            // Al ocurrir un error con el reques, ejecutamos la función.
+            onError(error);
+        }
 
     }).finally(() => {
+        if(typeof onFinalizar != 'undefined') {
+            // Al terminar el request, se ejecuta la función.
+            onFinalizar();
+        }
+
     });
 };
 
 export {
-    ConsultaAccesosRecientes,
-    ReporteAccesosPorDia,
-    ReportesPorTipo
+    AccesosPorDia,
+    ActividadMaquina
 };

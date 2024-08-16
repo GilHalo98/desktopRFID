@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 
 import {
     Container, Row, Col,
@@ -12,7 +12,7 @@ import { Rol } from '../../../utils/API/modelos/rol';
 export default function FormBusquedaEmpleado(
     props: {
         parametrosBusqueda: {
-            setIdEmpleado: Function,
+            setId: Function,
             setNombres: Function,
             setApellidoPaterno: Function,
             setApellidoMaterno: Function,
@@ -41,12 +41,9 @@ export default function FormBusquedaEmpleado(
                         id="idEmpleado"
                         placeholder="ID del empleado"
                         type="text"
-                        onChange={(evento) => {
-                            var id = null;
-                            if(evento.target.value) {
-                                id = evento.target.value;
-                            }
-                            props.parametrosBusqueda.setIdEmpleado(id);
+                        onChange={(evento: SyntheticEvent) => {
+                            const input = evento.target as HTMLTextAreaElement;
+                            props.parametrosBusqueda.setId(input.value);
                         }}
                     />
                 </Col>
@@ -56,13 +53,10 @@ export default function FormBusquedaEmpleado(
                         id="numeroEmpleado"
                         placeholder="Numero telefonico del empleado"
                         type="text"
-                        onChange={(evento) => {
-                            var numeroEmpleado = null;
-                            if(evento.target.value) {
-                                numeroEmpleado = evento.target.value;
-                            }
+                        onChange={(evento: SyntheticEvent) => {
+                            const input = evento.target as HTMLTextAreaElement;
                             props.parametrosBusqueda.setNumeroTelefonico(
-                                numeroEmpleado
+                                input.value
                             );
                         }}
                     />
@@ -73,8 +67,9 @@ export default function FormBusquedaEmpleado(
                         id="rolEmpleado"
                         type="select"
                         value={idRol}
-                        onChange={(evento) => {
-                            setIdRol(evento.target.value);
+                        onChange={(evento: SyntheticEvent) => {
+                            const input = evento.target as HTMLSelectElement;
+                            setIdRol(input.value);
                         }}
                     >
                         <option value={''}>
@@ -102,13 +97,10 @@ export default function FormBusquedaEmpleado(
                         id="nombresEmpleado"
                         placeholder="Nombres de empleado"
                         type="text"
-                        onChange={(evento) => {
-                            var nombresEmpleado = null;
-                            if(evento.target.value) {
-                                nombresEmpleado = evento.target.value;
-                            }
+                        onChange={(evento: SyntheticEvent) => {
+                            const input = evento.target as HTMLTextAreaElement;
                             props.parametrosBusqueda.setNombres(
-                                nombresEmpleado
+                                input.value
                             );
                         }}
                     />
@@ -119,13 +111,10 @@ export default function FormBusquedaEmpleado(
                         id="apellidoPaterno"
                         placeholder="Apellido paterno del empleado"
                         type="text"
-                        onChange={(evento) => {
-                            var apellidoPaterno = null;
-                            if(evento.target.value) {
-                                apellidoPaterno = evento.target.value;
-                            }
+                        onChange={(evento: SyntheticEvent) => {
+                            const input = evento.target as HTMLTextAreaElement;
                             props.parametrosBusqueda.setApellidoPaterno(
-                                apellidoPaterno
+                                input.value
                             );
                         }}
                     />
@@ -136,13 +125,10 @@ export default function FormBusquedaEmpleado(
                         id="apellidoMaterno"
                         placeholder="Apellido materno del empleado"
                         type="text"
-                        onChange={(evento) => {
-                            var apellidoMaterno = null;
-                            if(evento.target.value) {
-                                apellidoMaterno = evento.target.value;
-                            }
+                        onChange={(evento: SyntheticEvent) => {
+                            const input = evento.target as HTMLTextAreaElement;
                             props.parametrosBusqueda.setApellidoMaterno(
-                                apellidoMaterno
+                                input.value
                             );
                         }}
                     />

@@ -32,7 +32,8 @@ const URL_GENERALES = {
     REPORTE_ACTIVIDAD: 'reporteActividad/',
     REPORTE_DISPOSITIVO: 'reporteDispositivo/',
     REPORTE_ACCESO: 'reporteAcceso/',
-    REPORTE_CHEQUEO: 'reporteChequeo/'
+    REPORTE_CHEQUEO: 'reporteChequeo/',
+    REPORTES: 'reportes/'
 };
 
 var REQUEST_HANDLER = axios.create({
@@ -366,19 +367,38 @@ const ENDPOINTS = {
                 params: parametros,
                 headers: { 'authorization': sessionStorage.getItem('token') }
             });
-        }
-    },
+        },
 
-    DASHBOARD: {
-        ACCESOS_RECIENTES: (parametros: any) => {
+        REGISTRAR_COMPLETO: (datos: FormData) => {
+            return REQUEST_HANDLER({
+                method: 'post',
+                url: URL_GENERALES.EMPLEADO + '/registrar/completo',
+                data: datos,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
+        CONSULTA_COMPLETO: (parametros: any) => {
             return REQUEST_HANDLER({
                 method: 'get',
-                url: URL_GENERALES.DASHBOARD + 'accesos',
+                url: URL_GENERALES.EMPLEADO + 'consultar/completo',
                 params: parametros,
                 headers: { 'authorization': sessionStorage.getItem('token') }
             });
         },
 
+        MODIFICAR_COMPLETO: (parametros: any, datos: FormData) => {
+            return REQUEST_HANDLER({
+                method: 'put',
+                url: URL_GENERALES.EMPLEADO + 'modificar/completo',
+                params: parametros,
+                data: datos,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+    },
+
+    DASHBOARD: {
         ACCESOS_POR_DIA: (parametros: any) => {
             return REQUEST_HANDLER({
                 method: 'get',
@@ -388,10 +408,10 @@ const ENDPOINTS = {
             });
         },
 
-        REPORTE_POR_TIPO: (parametros: any) => {
+        ACTIVIDAD_MAQUINA: (parametros: any) => {
             return REQUEST_HANDLER({
                 method: 'get',
-                url: URL_GENERALES.DASHBOARD + 'accesos/porTipo',
+                url: URL_GENERALES.DASHBOARD + 'actividadMaquina',
                 params: parametros,
                 headers: { 'authorization': sessionStorage.getItem('token') }
             });
@@ -551,7 +571,26 @@ const ENDPOINTS = {
                 params: parametros,
                 headers: { 'authorization': sessionStorage.getItem('token') }
             });
-        }
+        },
+
+        CONSULTA_COMPLETO: (parametros: any) => {
+            return REQUEST_HANDLER({
+                method: 'get',
+                url: URL_GENERALES.HORARIO + 'consultar/completo',
+                params: parametros,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
+        MODIFICAR_COMPLETO: (parametros: any, datos: FormData) => {
+            return REQUEST_HANDLER({
+                method: 'put',
+                url: URL_GENERALES.HORARIO + 'modificar/completo',
+                params: parametros,
+                data: datos,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
     },
 
     REPORTE_ACTIVIDAD: {
@@ -710,8 +749,42 @@ const ENDPOINTS = {
         }
     },
 
-    IOT: {
+    REPORTES: {
+        HORAS_TRABAJADAS: (parametros: any) => {
+            return REQUEST_HANDLER({
+                method: 'get',
+                url: URL_GENERALES.REPORTES + 'horasTrabajadas',
+                params: parametros,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
 
+        HISTORIAL_ACTIVIDAD_MAQUINA: (parametros: any) => {
+            return REQUEST_HANDLER({
+                method: 'get',
+                url: URL_GENERALES.REPORTES + '/historial/actividad/maquina',
+                params: parametros,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
+        HISTORIAL_USOS_MAQUINA: (parametros: any) => {
+            return REQUEST_HANDLER({
+                method: 'get',
+                url: URL_GENERALES.REPORTES + '/historial/usos/maquina',
+                params: parametros,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
+        HISTORIAL_OPERADORES_MAQUINA: (parametros: any) => {
+            return REQUEST_HANDLER({
+                method: 'get',
+                url: URL_GENERALES.REPORTES + '/historial/operadores/maquina',
+                params: parametros,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        }
     }
 };
 

@@ -36,9 +36,33 @@ const DeleteHorario = async (
     return ENDPOINTS.HORARIO.ELIMINAR(parametros);
 };
 
+const GetHorarioCompleto = async (
+    parametros?: {
+        id?: number,
+        numeroTelefonico?: string,
+        nombres?: string,
+        apellidoPaterno?: string,
+        apellidoMaterno?: string,
+        idRolVinculado?: number,
+    }
+) => {
+    return ENDPOINTS.HORARIO.CONSULTA_COMPLETO(parametros);
+};
+
+const PutHorarioCompleto = async (
+    parametros: {
+        id: number,
+    },
+    formModificacion: FormData
+) => {
+    return ENDPOINTS.HORARIO.MODIFICAR_COMPLETO(parametros, formModificacion);
+};
+
 export {
     GetHorario,
     PostHorario,
     PutHorario,
-    DeleteHorario
+    DeleteHorario,
+    GetHorarioCompleto,
+    PutHorarioCompleto
 };

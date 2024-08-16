@@ -355,15 +355,16 @@ export default function TablaZonas(
                 )}}
             >
                 <Display
+                    tituloDisplay={'nose'}
                     registro={registroOperacion}
-                    propiedades={[
+                    campos={[
                         ['id'],
                         ['nombreZona'],
                         ['descripcionZona'],
                         ['bitZona'],
                         ['fechaRegistroTipoReporte'],
                     ]}
-                    campos={[
+                    nombresCampos={[
                         'ID',
                         'Nombre de zona',
                         'Descripcion',

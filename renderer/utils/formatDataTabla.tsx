@@ -39,7 +39,8 @@ function formatearDatos(
             // Nombre del campo.
             var nombreCampo = camposSeleccionados[j][0];
 
-            // Si hay sub-campos, se toman en cuenta para mostrarlos en la lista.
+            // Si hay sub-campos, se toman en cuenta para
+            // mostrarlos en la lista.
             if(camposSeleccionados[j].length > 1) {
                 // Se recupera el sub-campo.
                 const subRegistro = registro[camposSeleccionados[j][0]];

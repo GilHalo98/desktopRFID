@@ -22,7 +22,7 @@ import {
 
 // Funciones del form.
 import {
-    guardarConfiguracionChecador
+    guardarConfiguracionChecador, guardarConfiguracionControladorPuerta
 } from './logic/guardarConfiguracionIoT';
 
 // Modelo de datos.
@@ -86,11 +86,6 @@ export default function MenuGuardarConfiguracionControladorPuerta(
         460800,
     ];
 
-    // Versiones del api soportadas.
-    const versionesApi = [
-        '/apiV0.1.0/'
-    ];
-
     // Consultamos los datos del menu de opciones.
     React.useEffect(() => {
         console.log('refresh');
@@ -140,7 +135,7 @@ export default function MenuGuardarConfiguracionControladorPuerta(
     return(
         <Form onSubmit={(evento) => {
             evento.preventDefault();
-            guardarConfiguracionChecador(evento);
+            guardarConfiguracionControladorPuerta(evento);
             props.toggleModal();
         }}>
             {/*Listamos los puertos serial disponibles al dispositivo*/}
@@ -265,30 +260,6 @@ export default function MenuGuardarConfiguracionControladorPuerta(
                     type="text"
                     defaultValue={API_HOST}
                 />
-            </FormGroup>
-
-            {/*
-               Version del servidor API esto
-                no se muestra si no es un lector
-            */}
-            <FormGroup>
-                <Label for="apiVersion">
-                    Version del API
-                </Label>
-
-                <Input
-                    id="apiVersion"
-                    type="select"
-                    defaultValue={API_URL}
-                >
-                    {versionesApi.map((version: string) => {
-                        return(
-                            <option value={version}>
-                                {version}
-                            </option>
-                        );
-                    })}
-                </Input>
             </FormGroup>
 
             {/*Api key del dispositivo*/}

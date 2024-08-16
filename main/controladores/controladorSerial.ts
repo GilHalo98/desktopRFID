@@ -31,6 +31,14 @@ import {
     Empleado
 } from "../../renderer/utils/API/modelos/empleado";
 
+import {
+    Rol
+} from "../../renderer/utils/API/modelos/rol";
+
+import {
+    Permiso
+} from "../../renderer/utils/API/modelos/permiso";
+
 // Instancia del puerto serial.
 let puertoSerial: SerialPort = null;
 
@@ -82,12 +90,18 @@ export const guardarDatosTarjeta = async (
     evento: IpcMainEvent,
     args: {
         registro: Empleado,
+        registrosVinculados: {
+            rol: Rol,
+            permiso: Permiso
+        },
         datosDispositivo: {
             path: string,
             baudRate: number
         }
     }
 ) => {
+    console.log(args);
+
     try {
         // Si el puerto serial esta iniciado.
         if(puertoSerial) {
@@ -107,10 +121,10 @@ export const guardarDatosTarjeta = async (
                 args.registro.id.toString()
             ], [
                 EVENTOS_GUARDADO_DATOS_TARJETA.AUTORIZACION_ENVIADO,
-                args.registro.rol.permiso.autorizacion.toString()
+                args.registrosVinculados.permiso.autorizacion.toString()
             ], [
                 EVENTOS_GUARDADO_DATOS_TARJETA.ROL_ENVIADO,
-                args.registro.rol.bitRol.toString()
+                args.registrosVinculados.rol.bitRol.toString()
         ]]
 
         // Inicaliamos el puerto serial.
@@ -255,7 +269,7 @@ export const guardarConfiguracionDispositivoLector = async (
 
         // Esperamos por el evento del puerto abierto.
         puertoSerial.on("open", () => {
-            conexionAbierta();            
+            conexionAbierta();
         });
 
         // Si recivimos datos, los mostramos.

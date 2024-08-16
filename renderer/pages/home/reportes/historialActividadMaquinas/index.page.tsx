@@ -1,21 +1,22 @@
 'use client'
 
-import 'bootstrap/dist/css/bootstrap.css';
+// React.
+import React from "react";
 
-import React from 'react';
+// Componentes propios.
+import GridReporteActividadMaquina from "../../../../components/grids/gridReporteActividadMaquina/gridReporteActividadMaquina";
+import SideBarLayout from "../../../../components/Layout/sideBarLayout";
 
-import {
-    Container, Row, Col
-} from 'reactstrap';
+// Componentes de reactstrap.
+import { Container, Row, Col } from "reactstrap";
 
-import SideBarLayout from '../../../../components/Layout/sideBarLayout';
-
-export default function ListaReportes() {
+export default function HistorialActividadMaquinas() {
     return (
         <React.Fragment>
             <Container fluid>
                 <Row>
                     <Col>
+                        <GridReporteActividadMaquina/>
                     </Col>
                 </Row>
             </Container>
@@ -23,6 +24,6 @@ export default function ListaReportes() {
     );
 };
 
-ListaReportes.getLayout = function(page) {
+HistorialActividadMaquinas.getLayout = function(page) {
     return <SideBarLayout>{page}</SideBarLayout>;
 };

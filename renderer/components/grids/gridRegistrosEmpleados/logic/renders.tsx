@@ -20,7 +20,7 @@ import FormBusquedaEmpleado from "../../../forms/busqueda/formBusquedaEmpleado";
 // Renderizamos la barra de busqueda.
 const renderBarraBusqueda = (
     parametrosBusqueda: {
-        setIdEmpleado: Function,
+        setId: Function,
         setNombres: Function,
         setApellidoPaterno: Function,
         setApellidoMaterno: Function,

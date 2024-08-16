@@ -405,13 +405,14 @@ export default function TablaUsuarios(
                 )}}
             >
                 <Display
+                    tituloDisplay={'nose'}
                     registro={registroOperacion}
-                    propiedades={[
+                    campos={[
                         ['id'],
                         ['nombreUsuario'],
                         ['fechaRegistroUsuario'],
                     ]}
-                    campos={[
+                    nombresCampos={[
                         'ID',
                         'Nombre de usuario',
                         'Fecha de registro'

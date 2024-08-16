@@ -15,7 +15,7 @@ import { funcionRefresh } from '../../../utils/refresh';
 
 // Interfaz de API.
 import {
-    ConsultaAccesosRecientes
+    ConsultaAccesosRecientes, ReporteAccesosPorDia
 } from '../../../utils/API/interface/dashboard'
 
 export default function ListaAccesosRecientes(
@@ -36,9 +36,23 @@ export default function ListaAccesosRecientes(
 
     // Hook del id del registro para operaciones
 
-    // Declaramos el useEffect de react para actualizar el contenido de la vista.
+    // Declaramos el useEffect de react para actualizar el
+    // contenido de la vista.
+
     React.useEffect(() => {
         console.log('refresh');
+
+        ReporteAccesosPorDia(
+            (data: any) => {
+                setListaRegistros(data.registros);
+            },
+            {},
+            () => {
+            },
+            () => {
+            },
+            () => {}
+        )
 
     }, [
         elementos,
@@ -55,14 +69,14 @@ export default function ListaAccesosRecientes(
 
     console.log(listaRegistros);
 
-    function elegirColor(clasificacion: string) {
+    function elegirColor(tipo: number) {
         let color = '';
-        switch(clasificacion) {
-            case 'accesoGarantizado':
+        switch(tipo) {
+            case 1:
                 color = 'success';
                 break;
 
-            case 'accesoNegado':
+            case 2:
                 color = 'danger';
                 break;
         
@@ -74,19 +88,28 @@ export default function ListaAccesosRecientes(
         return(color);
     }
 
+    function renderReportes() {
+        if(listaRegistros.length > 0) {
+            return listaRegistros.map((item: any) => {
+                console.log(item);
+                return(
+                    <li>
+                        <Alert color={elegirColor(item.reporte.tipoReporte.id)}>
+                            {item.descripcionReporte} por {item.empleado.nombres} resolucion: {item.reporte.tipoReporte.nombreTipoReporte}
+                        </Alert>
+                    </li>
+                );
+            })
+        }
+
+        return <></>;
+    };
+
     return(
         <Lista
             tituloLista={tituloLista}
         >
-            {listaRegistros.map((item: any) => {
-                return(
-                    <li>
-                        <Alert color={elegirColor(item.tipoReporte.clasificacionReporte)}>
-                            {item.descripcionReporte} por {item.empleado.nombres} resolucion: {item.tipoReporte.clasificacionReporte}
-                        </Alert>
-                    </li>
-                );
-            })}
+            {renderReportes()}
         </Lista>
     );
 };

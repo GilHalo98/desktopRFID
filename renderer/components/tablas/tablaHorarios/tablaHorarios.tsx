@@ -357,8 +357,9 @@ export default function TablaHorarios(
                 )}}
             >
                 <Display
+                    tituloDisplay={'nose'}
                     registro={registroOperacion}
-                    propiedades={[
+                    campos={[
                         ['id'],
                         ['descripcionHorario'],
                         ['tolerancia'],
@@ -366,7 +367,7 @@ export default function TablaHorarios(
                         ['fechaModificacionHorario'],
                         ['idEmpleadoVinculado']
                     ]}
-                    campos={[
+                    nombresCampos={[
                         'ID',
                         'Descripcion',
                         'Tiempo de tolerancia',

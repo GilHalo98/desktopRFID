@@ -18,7 +18,7 @@ import {
     renderTitulo
 } from "./logic/renders";
 
-export default function Grid(
+export default function GridParaRegistrosDeEmpleados(
     props: {
         tituloGrid: string,
         enCarga?: boolean,

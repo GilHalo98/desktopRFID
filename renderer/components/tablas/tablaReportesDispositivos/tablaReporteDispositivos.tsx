@@ -370,15 +370,16 @@ export default function TablaReportesDispositivos(
                 )}}
             >
                 <Display
+                    tituloDisplay={'nose'}
                     registro={registroOperacion}
-                    propiedades={[
+                    campos={[
                         ['id'],
                         ['idReporteVinculado'],
                         ['idDispositivoVinculado'],
                         ['fechaRegistroReporteDispositivo'],
                         ['fechaModificacionReporteDispositivo']
                     ]}
-                    campos={[
+                    nombresCampos={[
                         'ID',
                         'ID de reporte vinculado',
                         'ID de dispositivo vinculado',

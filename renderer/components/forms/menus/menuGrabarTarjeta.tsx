@@ -1,5 +1,5 @@
 // Funcionalidad de React.
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 
 // Componentes de reactstrap.
 import {
@@ -11,20 +11,44 @@ import {
 import { guardarDatos } from './logic/guardarDatosTarjeta';
 
 // Importamos los modelos de datos.
-import { Empleado } from '../../../utils/API/modelos/empleado';
+import {
+    Empleado
+} from '../../../utils/API/modelos/empleado';
+
+import {
+    Rol
+} from '../../../utils/API/modelos/rol';
+
+import {
+    Permiso
+} from '../../../utils/API/modelos/permiso';
 
 export default function MenuGrabarTarjeta(
     props: {
         registro: Empleado,
+        registrosVinculados: {
+            rol: Rol,
+            permiso: Permiso
+        }
         toggleModal: Function
     }
 ) {
     // Hooks de datos a guardar en la tarjeta.
-    const [mostrarTodosLosPuertos, setMostrarTodosLosPuertos] = React.useState(false);
-    const [puertoSerial, setPuertoSerial] = React.useState(undefined);
+    const [
+        mostrarTodosLosPuertos,
+        setMostrarTodosLosPuertos
+    ] = React.useState(false);
+
+    const [
+        puertoSerial,
+        setPuertoSerial
+    ] = React.useState(undefined);
 
     // Hooks de menu de opciones.
-    const [listaPuertosSeriales, setListaPuertosSeriales] = React.useState([]);
+    const [
+        listaPuertosSeriales,
+        setListaPuertosSeriales
+    ] = React.useState([]);
 
     // baudRate soportados.
     const baudRateSoportados = [
@@ -67,9 +91,13 @@ export default function MenuGrabarTarjeta(
     }, [mostrarTodosLosPuertos]);
 
     return(
-        <Form onSubmit={(evento) => {
+        <Form onSubmit={(evento: SyntheticEvent) => {
             evento.preventDefault();
-            guardarDatos(evento, props.registro);
+            guardarDatos(
+                evento,
+                props.registro,
+                props.registrosVinculados
+            );
             props.toggleModal();
         }}>
             {/*Listamos los puertos serial disponibles al dispositivo*/}

@@ -342,14 +342,15 @@ export default function TablaRecursos(
                 )}}
             >
                 <Display
+                    tituloDisplay={'nose'}
                     registro={registroOperacion}
-                    propiedades={[
+                    campos={[
                         ['id'],
                         ['tipo'],
                         ['nombre'],
                         ['fechaRegistroRecurso']
                     ]}
-                    campos={[
+                    nombresCampos={[
                         'id',
                         'tipo de recurso',
                         'nombre del recurso',

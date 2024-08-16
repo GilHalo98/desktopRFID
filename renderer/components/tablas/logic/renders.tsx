@@ -14,6 +14,7 @@ import BarraAccionesTabla from "../../barraBotones/barraAcciones/barraAccionesTa
 import ModalExportarDatosTabla from "../../modals/modalTabla/modalExportarDatosTabla";
 import ModalOpcionesTabla from "../../modals/modalTabla/modalOpcionesTabla";
 import Paginacion from "../../paginacion/paginacion";
+import BarraAccionesTablaReportesHorasTrabajadas from "../../barraBotones/barraAcciones/barraAccionesTablaReportesHorasTrabajadas.tsx/barraAccionesTablaReportesHorasTrabajadas.tsx";
 
 // Funcion que aplica el formato especial al registro.
 const renderFormatoEspecial = (
@@ -47,6 +48,7 @@ const renderOpcionesRegistro = (
     funcionesRegistros?: {
         onEliminar?: Function,
         onModificar?: Function,
+        onVisualizarDetalles?: Function
     }
 ) => {
     if(typeof opcionesTabla == 'undefined') {
@@ -81,6 +83,9 @@ const renderOpcionesRegistro = (
                             }
                             onModificar={
                                 funcionesRegistros.onModificar
+                            }
+                            onVisualizarDetalles={
+                                funcionesRegistros.onVisualizarDetalles
                             }
                         />
                     </Col>
@@ -297,6 +302,54 @@ const renderBarraOpcionesHorarioEmpleados = (
     />);
 };
 
+// Renderiza la barra de opciones de la tabla de reporte de horas trabajadas.
+const renderBarraOpcionesReporteHorasTrabajadas = (
+    toggleModalExportarDatos: Function,
+    toggleModalOpcionesTabla: Function,
+    toggleEnCarga?: Function,
+    funcionesOpciones?: {
+        onRefrescarTabla?: Function,
+        onExportarDatos?: Function,
+        onCambiarConfiguracion?: Function
+    },
+    opcionesTabla?: {
+        registrosPorPagina?: number,
+        opcionesRegistros?: boolean,
+        tiempoRefrescamiento?: number,
+        guardarConfiguracion: Function
+    }
+) => {
+    if(typeof funcionesOpciones == 'undefined') {
+        return null;
+    }
+
+    if(typeof opcionesTabla == 'undefined') {
+        return(<BarraAccionesTablaReportesHorasTrabajadas
+            onRefrescarTabla={
+                funcionesOpciones.onRefrescarTabla
+            }
+        />);
+    }
+
+    return(<BarraAccionesTablaReportesHorasTrabajadas
+        onRefrescarTabla={() => {
+            if(typeof toggleEnCarga != 'undefined') {
+                toggleEnCarga();
+            }
+
+            funcionesOpciones.onRefrescarTabla()
+        }}
+        onExportarDatos={() => {
+            funcionesOpciones.onExportarDatos();
+            toggleModalExportarDatos();
+        }}
+        onOpciones={() => {
+            funcionesOpciones.onCambiarConfiguracion();
+            toggleModalOpcionesTabla();
+        }}
+    />);
+};
+
 // Renderiza la paginacion del la tabla.
 const renderPaginacion = (
     paginacion?: {
@@ -329,8 +382,9 @@ const renderPaginacion = (
 // Renderizamos la cabecera de las opciones de la tabla.
 const renderHeaderOpciones = (
     funcionesRegistros?: {
-        onEliminar: Function,
-        onModificar: Function,
+        onEliminar?: Function,
+        onModificar?: Function,
+        onVisualizarDetalles?: Function
     },
     opcionesTabla?: {
         registrosPorPagina?: number,
@@ -461,6 +515,7 @@ const renderContenidoTabla = (
     funcionesRegistros?: {
         onEliminar?: Function,
         onModificar?: Function,
+        onVisualizarDetalles?: Function
     }
 ) => {
     return registros.map((registro: any) => {
@@ -624,6 +679,7 @@ const renderCabecera = (
 };
 
 export {
+    renderBarraOpcionesReporteHorasTrabajadas,
     renderContenidoTablaHorarioEmpleados,
     renderBarraOpcionesHorarioEmpleados,
     renderContenidoTablaDispositivos,

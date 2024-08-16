@@ -40,7 +40,9 @@ const renderizarGuardarDatosTarjeta = (
 };
 
 const renderizarVisualizarRegistro = (
-    onVisualizarRegistro?: Function
+    onVisualizarRegistro?: Function,
+    idRegistro?: number,
+    indexRegistro?: number,
 ) => {
     if(typeof onVisualizarRegistro == 'undefined') {
         return null;
@@ -52,7 +54,7 @@ const renderizarVisualizarRegistro = (
             color='info'
             outline
             onClick={() => {
-                onVisualizarRegistro();
+                onVisualizarRegistro(idRegistro, indexRegistro);
             }}
         >
             <Icon path={mdiAccountEye} size={1} />
@@ -61,7 +63,9 @@ const renderizarVisualizarRegistro = (
 };
 
 const renderizarModificarRegistro = (
-    onModificarRegistro?: Function
+    onModificarRegistro?: Function,
+    idRegistro?: number,
+    indexRegistro?: number,
 ) => {
     if(typeof onModificarRegistro == 'undefined') {
         return null;
@@ -73,7 +77,7 @@ const renderizarModificarRegistro = (
             color='warning'
             outline
             onClick={() => {
-                onModificarRegistro();
+                onModificarRegistro(idRegistro, indexRegistro);
             }}
         >
             <Icon path={mdiAccountEdit} size={1} />

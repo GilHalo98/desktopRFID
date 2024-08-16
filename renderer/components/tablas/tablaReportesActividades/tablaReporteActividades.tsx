@@ -391,8 +391,9 @@ export default function TablaReportesActividades(
                 )}}
             >
                 <Display
+                    tituloDisplay={'nose'}
                     registro={registroOperacion}
-                    propiedades={[
+                    campos={[
                         ['id'],
                         ['idReporteVinculado'],
                         ['idEmpleadoVinculado'],
@@ -400,7 +401,7 @@ export default function TablaReportesActividades(
                         ['fechaRegistroReporteActividad'],
                         ['fechaModificacionReporteActividad']
                     ]}
-                    campos={[
+                    nombresCampos={[
                         'ID',
                         'ID de reporte vinculado',
                         'ID de empleado vinculado',

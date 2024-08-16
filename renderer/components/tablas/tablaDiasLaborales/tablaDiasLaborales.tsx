@@ -396,8 +396,9 @@ export default function TablaDiasLaborales(
                 )}}
             >
                 <Display
+                    tituloDisplay={'nose'}
                     registro={registroOperacion}
-                    propiedades={[
+                    campos={[
                         ['id'],
                         ['dia'],
                         ['esDescanso'],
@@ -409,7 +410,7 @@ export default function TablaDiasLaborales(
                         ['fechaModificacionDia'],
                         ['idHorarioVinculado']
                     ]}
-                    campos={[
+                    nombresCampos={[
                         'ID',
                         'Dia laboral',
                         'Es descanso',

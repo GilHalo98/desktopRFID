@@ -347,14 +347,15 @@ export default function TablaReportes(
                 )}}
             >
                 <Display
+                    tituloDisplay={'nose'}
                     registro={registroOperacion}
-                    propiedades={[
+                    campos={[
                         ['id'],
                         ['descripcionPermiso'],
                         ['autorizacion'],
                         ['fechaRegistroPermiso'],
                     ]}
-                    campos={[
+                    nombresCampos={[
                         'id',
                         'descripcion del permiso',
                         'autorizacion del permiso',

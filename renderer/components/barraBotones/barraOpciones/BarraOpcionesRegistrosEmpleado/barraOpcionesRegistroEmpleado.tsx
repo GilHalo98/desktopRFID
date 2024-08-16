@@ -34,8 +34,16 @@ export default function BarraOpcionesRegistroEmpleado(
                 props.registro.id,
                 props.indexRegistro
             )}
-            {renderizarVisualizarRegistro(props.onVisualizarRegistro)}
-            {renderizarModificarRegistro(props.onModificarRegistro)}
+            {renderizarVisualizarRegistro(
+                props.onVisualizarRegistro,
+                props.registro.id,
+                props.indexRegistro
+            )}
+            {renderizarModificarRegistro(
+                props.onModificarRegistro,
+                props.registro.id,
+                props.indexRegistro
+            )}
         </ButtonGroup>
     );
 };

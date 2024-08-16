@@ -341,14 +341,15 @@ export default function TablaTiposReportes(
                 )}}
             >
                 <Display
+                tituloDisplay={'nose'}
                     registro={registroOperacion}
-                    propiedades={[
+                    campos={[
                         ['id'],
                         ['nombreTipoReporte'],
                         ['descripcionTipoReporte'],
                         ['fechaRegistroTipoReporte']
                     ]}
-                    campos={[
+                    nombresCampos={[
                         'id',
                         'nombre del tipo de reporte',
                         'descripcion del tipo de reporte',

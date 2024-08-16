@@ -1,3 +1,6 @@
+// Evento regresado por el form.
+import { SyntheticEvent } from "react";
+
 // Formatea los datos del registro.
 import {
     exportarDatosTabla,
@@ -21,8 +24,9 @@ import {
 import {
     ConsultaEmpleado,
     ModificarEmpleado,
-    RegistrarEmpleado,
-    RemoverEmpleado
+    RemoverEmpleado,
+    RegistrarEmpleadoCompleto,
+    ModificarEmpleadoCompleto
 } from "../../../../utils/API/interface/empleado";
 
 // Registros que se mostraran en la tabla.
@@ -80,7 +84,7 @@ const exportarDatos = (
 
 // Guarda un registro en la base de datos.
 const guardarRegistro = (
-    evento: any,
+    evento: SyntheticEvent,
     refresh: boolean,
     setRefresh: Function
 ) => {
@@ -88,51 +92,137 @@ const guardarRegistro = (
      * Creamos un nuevo registro y lo guardamos en la base de datos.
      */
 
+    // Lista de dias.
+    const listaDias = [
+        'Lunes',
+        'Martes',
+        'Miercoles',
+        'Jueves',
+        'Viernes',
+        'Sabado',
+        'Domingo'
+    ];
+
+    // Registros de formularios.
     const datosRegistro = new FormData();
 
+    // Guardamos el registro de la imagen del empleado.
     datosRegistro.append(
-        'nombres',
-        evento.target[0].value
-    );
-    datosRegistro.append(
-        'apellidoPaterno',
-        evento.target[1].value
-    );
-    datosRegistro.append(
-        'apellidoMaterno',
-        evento.target[2].value
-    );
-    datosRegistro.append(
-        'numeroTelefonico',
-        evento.target[3].value
-    );
-    datosRegistro.append(
-        'fechaNacimiento',
-        evento.target[4].value
-    );
-    datosRegistro.append(
-        'idRolVinculado',
-        evento.target[5].value
+        'file',
+        evento.target[0].files[0]
     );
 
-    // Registramos el permiso en la base de datos.
-    RegistrarEmpleado(
+    // Guardamos los datos del registro del empleado.
+    datosRegistro.append('nombres', evento.target[1].value);
+    datosRegistro.append('apellidoPaterno', evento.target[2].value);
+    datosRegistro.append('apellidoMaterno', evento.target[3].value);
+    datosRegistro.append('numeroTelefonico', evento.target[4].value);
+    datosRegistro.append('fechaNacimiento', evento.target[5].value);
+    datosRegistro.append('idRolVinculado', evento.target[6].value);
+
+    // Guardamos los datos del registro del usuario.
+    datosRegistro.append('nombreUsuario', evento.target[7].value);
+    datosRegistro.append('password', evento.target[9].value);
+
+    // Guardamos los datos del registro del horario.
+    datosRegistro.append('descripcionHorario', "Prueba de registro de horarios");
+    datosRegistro.append('tolerancia', evento.target[12].value);
+
+    // Si las horas de entrada, salida y descanso son similares para
+    // toda la semana.
+    if (evento.target[13].checked) {
+        // Recuperamos los datos que seran similares para todos los dias
+        // de la semana.
+        const horaEntrada = evento.target[14].value;
+        const horaSalidaDescanso = evento.target[15].value;
+        const horaEntradaDescanso = evento.target[16].value;
+        const HoraSalida = evento.target[17].value;
+
+        // Esto nos permite iterar entre los nombres de los dias.
+        let indexDia = 0;
+
+        // Los campos para identificar los dias empiezan en el index
+        // 18 hasta el 24, iteramos entre cada uno de ellos.
+        for (let index = 18; index <= 24; index++) {
+            // Agregamos el valor si el dia es laborado o descanso.
+            datosRegistro.append(
+                evento.target[index].id,
+                evento.target[index].checked? 1 : 0
+            );
+
+            // Si el dia es laborado, mandamos la hora de entrada
+            // y salida, asi como la hora de descanso
+            if(!evento.target[index].checked) {
+                datosRegistro.append(
+                    'horaEntrada' + listaDias[indexDia],
+                    horaEntrada
+                );
+                datosRegistro.append(
+                    'horaSalidaDescanso' + listaDias[indexDia],
+                    horaSalidaDescanso
+                );
+                datosRegistro.append(
+                    'horaEntradaDescanso' + listaDias[indexDia],
+                    horaEntradaDescanso
+                );
+                datosRegistro.append(
+                    'horaSalida' + listaDias[indexDia],
+                    HoraSalida
+                );
+            }
+
+            // Cambiamos de dia.
+            indexDia++;
+        }
+
+    // Si son diferentes, iteramos por todos los campos que representen
+    // la semana y los agregamos al form.
+    } else {
+        // Los campos del dia, si es descanso, entrada, salida y
+        // hora de descanso empiezan en el index 14 hasta el 48.
+        for (let index = 14; index <= 48; index++) {
+            // Si el campo es de tipo check.
+            if (evento.target[index].className == 'form-check-input') {
+                // Agregamos el valor del campo.
+                datosRegistro.append(
+                    evento.target[index].id,
+                    evento.target[index].checked? 1 : 0
+                );
+
+                // Si el dia es dia descansado, entonces
+                // saltamos los proximos 4 campos que indican hora de
+                // entrada, salida y hora de descanso.
+                if(evento.target[index].checked) {
+                    index += 4;
+                }
+
+            } else {
+                // Si no es un check, agregamos el valor almacenado en
+                // el campo.
+                datosRegistro.append(
+                    evento.target[index].id,
+                    evento.target[index].value
+                );
+            }
+        }
+    }
+
+    console.log('hola');
+
+    // Enviamos el registro al api.
+    RegistrarEmpleadoCompleto(
         datosRegistro,
-        undefined,
-        (error: any) => {console.log(
-            error
-        )},
-        undefined,
-        () => {setRefresh(
-            !refresh
-        )},
+        (respuesta: any) => {
+            console.log('hola');
+            console.log(respuesta);
+        }
     );
 };
 
 // Modificamos un registro de la base de datos
 // y guardamos los cambios realizados.
 const modificarRegistro = (
-    evento: any,
+    evento: SyntheticEvent,
     idRegistro: number,
     refresh: boolean,
     setRefresh: Function
@@ -141,42 +231,131 @@ const modificarRegistro = (
      * Modificamos el registro pasado por evento.
      */
 
+    console.log(evento);
+
+    // Lista de dias.
+    const listaDias = [
+        'Lunes',
+        'Martes',
+        'Miercoles',
+        'Jueves',
+        'Viernes',
+        'Sabado',
+        'Domingo'
+    ];
+
+    // Registros de formularios.
     const datosModificaion = new FormData();
 
+    // Guardamos el registro de la imagen del empleado.
     datosModificaion.append(
-        'nombres',
-        evento.target[0].value
-    );
-    datosModificaion.append(
-        'apellidoPaterno',
-        evento.target[1].value
-    );
-    datosModificaion.append(
-        'apellidoMaterno',
-        evento.target[2].value
-    );
-    datosModificaion.append(
-        'numeroTelefonico',
-        evento.target[3].value
-    );
-    datosModificaion.append(
-        'fechaNacimiento',
-        evento.target[5].value
-    );
-    datosModificaion.append(
-        'idRolVinculado',
-        evento.target[6].value
-    );
-    datosModificaion.append(
-        'idImagenVinculado',
-        evento.target[7].value
+        'file',
+        evento.target[0].files[0]
     );
 
+    // Guardamos los datos del registro del empleado.
+    datosModificaion.append('nombres', evento.target[1].value);
+    datosModificaion.append('apellidoPaterno', evento.target[2].value);
+    datosModificaion.append('apellidoMaterno', evento.target[3].value);
+    datosModificaion.append('numeroTelefonico', evento.target[4].value);
+    datosModificaion.append('fechaNacimiento', evento.target[5].value);
+    datosModificaion.append('idRolVinculado', evento.target[6].value);
+
+    // Guardamos los datos del registro del usuario.
+    datosModificaion.append('nombreUsuario', evento.target[7].value);
+    datosModificaion.append('password', evento.target[9].value);
+
+    // Guardamos los datos del registro del horario.
+    datosModificaion.append('descripcionHorario', "Prueba de registro de horarios");
+    datosModificaion.append('tolerancia', evento.target[12].value);
+
+    // Si las horas de entrada, salida y descanso son similares para
+    // toda la semana.
+    if (evento.target[13].checked) {
+        // Recuperamos los datos que seran similares para todos los dias
+        // de la semana.
+        const horaEntrada = evento.target[14].value;
+        const horaSalidaDescanso = evento.target[15].value;
+        const horaEntradaDescanso = evento.target[16].value;
+        const HoraSalida = evento.target[17].value;
+
+        // Esto nos permite iterar entre los nombres de los dias.
+        let indexDia = 0;
+
+        // Los campos para identificar los dias empiezan en el index
+        // 18 hasta el 24, iteramos entre cada uno de ellos.
+        for (let index = 18; index <= 24; index++) {
+            // Agregamos el valor si el dia es laborado o descanso.
+            datosModificaion.append(
+                evento.target[index].id,
+                evento.target[index].checked? 1 : 0
+            );
+
+            // Si el dia es laborado, mandamos la hora de entrada
+            // y salida, asi como la hora de descanso
+            if(!evento.target[index].checked) {
+                datosModificaion.append(
+                    'horaEntrada' + listaDias[indexDia],
+                    horaEntrada
+                );
+                datosModificaion.append(
+                    'horaSalidaDescanso' + listaDias[indexDia],
+                    horaSalidaDescanso
+                );
+                datosModificaion.append(
+                    'horaEntradaDescanso' + listaDias[indexDia],
+                    horaEntradaDescanso
+                );
+                datosModificaion.append(
+                    'horaSalida' + listaDias[indexDia],
+                    HoraSalida
+                );
+            }
+
+            // Cambiamos de dia.
+            indexDia++;
+        }
+
+    // Si son diferentes, iteramos por todos los campos que representen
+    // la semana y los agregamos al form.
+    } else {
+        // Los campos del dia, si es descanso, entrada, salida y
+        // hora de descanso empiezan en el index 14 hasta el 48.
+        for (let index = 14; index <= 48; index++) {
+            // Si el campo es de tipo check.
+            if (evento.target[index].className == 'form-check-input') {
+                // Agregamos el valor del campo.
+                datosModificaion.append(
+                    evento.target[index].id,
+                    evento.target[index].checked ? 1 : 0
+                );
+
+                // Si el dia es dia descansado, entonces
+                // saltamos los proximos 4 campos que indican hora de
+                // entrada, salida y hora de descanso.
+                if(evento.target[index].checked) {
+                    index += 4;
+                }
+
+            } else {
+                // Si no es un check, agregamos el valor almacenado en
+                // el campo.
+                datosModificaion.append(
+                    evento.target[index].id,
+                    evento.target[index].value
+                );
+            }
+        }
+    }
+
     // Registramos el permiso en la base de datos.
-    ModificarEmpleado(
+    ModificarEmpleadoCompleto(
         idRegistro,
         datosModificaion,
-        undefined,
+        (resp) => {
+            console.log(resp)
+
+        },
         (error: any) => {console.log(
             error
         )},
@@ -220,7 +399,8 @@ const consultarRegistros = (
         apellidoPaterno?: string,
         apellidoMaterno?: string,
         idRolVinculado?: number
-    }
+    },
+    consultaConcatenada?: Function
 ) => {
     return ConsultaEmpleado(
         (respuesta: any) => {
@@ -235,17 +415,24 @@ const consultarRegistros = (
             setEnCarga(false);
         },
         () => {
-            setListaRegistros([]);
+            setListaRegistros(null);
             setEnCarga(true);
         },
-        undefined
+        () => {
+            if(!consultaConcatenada) {
+                setEnCarga(false);
+            } else {
+                consultaConcatenada();
+            }
+        }
     );
 };
 
 // Consultamos los roles de los empleados.
-const consultarRegistrosRoles = (
+const consultarRegistrosVinculados = (
     setListaRoles: Function,
-    setEnCarga: Function
+    setEnCarga: Function,
+    consultaConcatenada?: Function
 ) => {
     return ConsultaRol(
         (respuesta: any) => {setListaRoles(
@@ -257,11 +444,14 @@ const consultarRegistrosRoles = (
             setEnCarga(false);
         },
         () => {
-            setListaRoles([]);
             setEnCarga(true);
         },
         () => {
-            setEnCarga(false);
+            if(!consultaConcatenada) {
+                setEnCarga(false);
+            } else {
+                consultaConcatenada();
+            }
         }
     );
 };
@@ -273,5 +463,5 @@ export {
     modificarRegistro,
     eliminarRegistro,
     consultarRegistros,
-    consultarRegistrosRoles
+    consultarRegistrosVinculados
 };

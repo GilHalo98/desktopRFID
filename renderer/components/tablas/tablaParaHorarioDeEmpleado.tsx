@@ -1,138 +1,129 @@
 'use client'
 
-// React.
-import React from 'react';
+import 'bootstrap/dist/css/bootstrap.css';
 
-// Componentes de reactstrap.
+// Evento de submit.
+import React, { SyntheticEvent } from 'react';
+
+// Componentes de reacstrap
 import {
-    Spinner,
-    Table, Button,
     Container, Row, Col,
-    Card, CardBody, CardTitle, CardSubtitle, CardText, CardHeader, List,
+    CardBody, Card, CardHeader,
+    Table,
+    Badge, Alert, Spinner,
+    Button, ButtonGroup
 } from 'reactstrap';
 
-// Funcionalidad de la tabla.
+// Iconos de los botones.
+import Icon from '@mdi/react';
+
 import {
-    renderBarraOpcionesHorarioEmpleados,
-    renderContenidoTablaDispositivos,
-    renderHeaderOpcionesDispositivos,
-    renderBarraOpcionesDispositivos,
-    renderModalExportarDatosTabla,
-    renderModalOpcionesTabla,
-    renderPaginacion,
-    renderCabecera,
-    renderContenidoTablaHorarioEmpleados,
-} from "./logic/renders";
+    mdiCalendarEdit,
+    mdiRefreshCircle
+} from '@mdi/js';
+
+// Componentes propios.
+import FormBusquedaEmpleado from '../../components/forms/busqueda/formBusquedaEmpleado';
+
+// Modelos de datos.
+import {
+    HorarioCompleto
+} from '../../utils/API/respuestas/horarioCompleto';
+
+import {
+    Rol
+} from '../../utils/API/modelos/rol';
+
+import {
+    DiaLaboral
+} from '../../utils/API/modelos/diaLaboral';
+
+// Funcionalidad
+import { numeroDiaANombreDia } from '../../utils/conversiones';
+import { HorasTrabajadas } from '../../utils/API/respuestas/horasTrabajadas';
 
 export default function TablaParaHorarioDeEmpleado(
     props: {
         tituloTabla: string,
-        cabeceras: string[],
-        registros: any[],
-        enCarga?: boolean,
-        setEnCarga?: Function,
-        exportarDatos?: Function,
-        formatoEspecial?: Object,
-        paginacion?: {
-            paginaActual: number,
-            offset: number,
-            registrosPorPagina: number,
-            totalPaginas: number,
-            setPaginaActual: Function,
-            setOffset: Function
+        registro: HorarioCompleto,
+        elementosOpciones: Rol[],
+        parametrosBusqueda: {
+            setId: Function,
+            setNombres: Function,
+            setApellidoPaterno: Function,
+            setApellidoMaterno: Function,
+            setNumeroTelefonico: Function,
+            setIdRol: Function
         },
         funcionesOpciones?: {
             onRefrescarTabla?: Function,
-            onModificarRegistro?: Function,
-            onCambiarConfiguracion?: Function
-        },
-        opcionesTabla?: {
-            registrosPorPagina?: number,
-            opcionesRegistros?: boolean,
-            tiempoRefrescamiento?: number,
-            guardarConfiguracion: Function
+            onModificarRegistro?: Function
         },
         children?: any
-    }
+    },
 ) {
-    // Estado del modal de opciones de la tabla.
-    const [
-        estadoModalOpcionesTabla,
-        setEstadoModalOpcionesTabla
-    ] = React.useState(false);
 
-    // Estado del modal de exportar datos de la tabla.
-    const [
-        estadoModalExportarDatosTabla,
-        setEstadoModalExportarDatosTabla
-    ] = React.useState(false);
+    // Poblamos la tabla del su contenido.
+    const poblarTabla = (registros: DiaLaboral[]) => {
+        return registros.map((registro: DiaLaboral) => {
+            if(registro.esDescanso) {
+                return(
+                    <tr>
+                        <td  style={{textAlign: 'center'}}>
+                            {numeroDiaANombreDia(registro.dia)}
+                        </td>
 
-    const controlTabla = {
-        display: (props.enCarga? 'none' : '')
+                        <td colSpan={4} style={{textAlign: 'center'}}>
+                            <Button color='secondary' block size='sm'>
+                                DESCANSO
+                            </Button>
+                        </td>
+                    </tr>
+                );
+            }
+
+            return(
+                <tr>
+                    <td  style={{textAlign: 'center'}}>
+                        {numeroDiaANombreDia(registro.dia)}
+                    </td>
+
+                    <td  style={{textAlign: 'center'}}>
+                        <Button color='primary' block size='sm'>
+                            {registro.horaEntrada}
+                        </Button>
+                    </td>
+
+                    <td  style={{textAlign: 'center'}}>
+                        <Button color='primary' block size='sm'>
+                            {registro.horaSalidaDescanso}
+                        </Button>
+                    </td>
+
+                    <td  style={{textAlign: 'center'}}>
+                        <Button color='primary' block size='sm'>
+                            {registro.horaEntradaDescanso}
+                        </Button>
+                    </td>
+
+                    <td  style={{textAlign: 'center'}}>
+                        <Button color='primary' block size='sm'>
+                            {registro.horaSalida}
+                        </Button>
+                    </td>
+                </tr>
+            );
+        });
     };
 
-    const controlSpinner = {
-        display: (props.enCarga? '' : 'none')
-    };
-
-    return(
-        <Card color='dark'>
-            <CardHeader className='text-white'>
+    // Renderizamos el contenido de la tabla.
+    const renderContienido = (registro: HorarioCompleto) => {
+        // Si los datos no existen o son invalidos.
+        if(!registro) {
+            // Mostramos el spinner de carga.
+            return(
                 <Container>
                     <Row>
-                        <Col>
-                            {props.tituloTabla}
-                        </Col>
-
-                        <Col style={{textAlign:'right'}}>
-                            {/*Render de opciones de tabla*/}
-                            {renderBarraOpcionesHorarioEmpleados(
-                                () => {},
-                                () => {setEstadoModalOpcionesTabla(
-                                        !estadoModalOpcionesTabla
-                                )},
-                                () => {props.setEnCarga(
-                                    !props.enCarga
-                                )},
-                                props.funcionesOpciones,
-                                props.opcionesTabla
-                            )}
-                        </Col>
-                    </Row>
-                </Container>
-            </CardHeader>
-
-            <CardBody>
-                <CardTitle>
-                    {props.children}
-                </CardTitle>
-
-                <Container>
-                    <Row style={controlTabla}>
-                        <Table hover dark responsive>
-                            <thead className='cabeceraTablaRegistros'>
-                                <tr key="header">
-                                    {/*Renderizamos la cabecera*/}
-                                    {renderCabecera(props.cabeceras)}
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                {/*Poblamos la tabla.*/}
-                                {renderContenidoTablaHorarioEmpleados(
-                                    props.cabeceras,
-                                    props.registros,
-                                    props.formatoEspecial,
-                                    props.opcionesTabla
-                                )}
-                            </tbody>
-                        </Table>
-
-                        {/*Paginación de la tabla.*/}
-                        {renderPaginacion(props.paginacion)}
-                    </Row>
-
-                    <Row style={controlSpinner}>
                         <Col/>
                             <Col xs='auto'>
                                 <Spinner
@@ -146,28 +137,91 @@ export default function TablaParaHorarioDeEmpleado(
                         <Col/>
                     </Row>
                 </Container>
+            );
+        }
+
+        return(
+            <Table hover dark responsive>
+                <thead className='cabeceraTablaRegistros'>
+                    <tr key="header">
+                        <th>Dia</th>
+                        <th>Entrada</th>
+                        <th>Inicio de descanso</th>
+                        <th>Termino de descanso</th>
+                        <th>Salida</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {/*Poblamos la tabla.*/}
+                    {poblarTabla(registro.diaLaborals)}
+                </tbody>
+            </Table>
+        );
+    };
+
+    return (
+        <Card color='dark'>
+            <CardHeader className='text-white'>
+                {/*
+                    Renderizamos el header de la tabla de horario
+                    del empleado
+                */}
+                <Container>
+                    <Row>
+                        <Col>
+                            {props.tituloTabla}
+                        </Col>
+
+                        <Col style={{textAlign:'right'}}>
+                            <ButtonGroup size="sm">
+                                <Button
+                                    className='botonIcono'
+                                    outline
+                                    color='primary'
+                                    onClick={() => {
+                                        props.funcionesOpciones.onRefrescarTabla();
+                                    }}
+                                >
+                                    <Icon path={mdiRefreshCircle} size={1} />
+                                </Button>
+
+                                <Button
+                                    className='botonIcono'
+                                    outline
+                                    color='warning'
+                                    onClick={() => {
+                                        props.funcionesOpciones.onModificarRegistro();
+                                    }}
+                                >
+                                    <Icon path={mdiCalendarEdit} size={1} />
+                                </Button>
+                            </ButtonGroup>
+                        </Col>
+                    </Row>
+                </Container>
+            </CardHeader>
+
+            <CardBody>
+                <Container>
+                    {/*
+                        Renderizamos la barra de busqueda de la tabla.
+                    */}
+                    <Row>
+                        <FormBusquedaEmpleado
+                            parametrosBusqueda={props.parametrosBusqueda}
+                            elementosOpciones={props.elementosOpciones}
+                        />
+                    </Row>
+
+                    <Row>
+                        {renderContienido(props.registro)}
+
+                        {/* Renderizamos le contenido hijo del componente */}
+                        {props.children}
+                    </Row>
+                </Container>
             </CardBody>
-
-            {/*Modal de opciones de tabla*/}
-            {renderModalOpcionesTabla(
-                props.tituloTabla,
-                estadoModalOpcionesTabla,
-                () => {setEstadoModalOpcionesTabla(
-                    !estadoModalOpcionesTabla
-                )},
-                props.opcionesTabla,
-                props.funcionesOpciones
-            )}
-
-            {/*Modal para exportar los datos a un archivo xlsx*/}
-            {renderModalExportarDatosTabla(
-                props.tituloTabla,
-                estadoModalExportarDatosTabla,
-                () => {setEstadoModalExportarDatosTabla(
-                    !estadoModalExportarDatosTabla
-                )},
-                props.exportarDatos
-            )}
         </Card>
     );
 };

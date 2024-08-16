@@ -6,22 +6,20 @@ import React from 'react';
 // Componentes propios.
 import FormModificarRegistroEmpleadoCompleto from '../../forms/registros/empleadoCompleto/formModificarRegistroEmpleadoCompleto';
 import ModalModificarRegistroEmpleadoCompleto from '../../modals/modalEmpleadoCompleto/modalModificarRegistroEmpleadoCompleto';
-import FormModificarRegistroHorarioCompleto from '../../forms/registros/empleadoCompleto/formModificarRegistroHorarioCompleto';
-import FormModificarRegistroUsuarioCompleto from '../../forms/registros/empleadoCompleto/formModificarRegistroUsuarioCompleto';
 import FormRegistroEmpleadoCompleto from '../../forms/registros/empleadoCompleto/formRegistroEmpleadoCompleto';
 import ModalRegistroEmpleadoCompleto from '../../modals/modalEmpleadoCompleto/modalRegistroEmpleadoCompleto';
-import FormRegistroHorarioCompleto from '../../forms/registros/empleadoCompleto/formRegistroHorarioCompleto';
-import FormRegistroUsuarioCompleto from '../../forms/registros/empleadoCompleto/formRegistroUsuarioCompleto';
 import ModalVisualizarDatosDetalles from '../../modals/modalGrid/modalVisualizarDatosDetalles';
 import ModalGuardarDatosTarjeta from '../../modals/modalGrid/modalGuardarDatosTarjeta';
 import ModalConexionSerial from '../../modals/modalGrid/modalConexionSerial';
-import Grid from '../grid';
+import GridParaRegistrosDeEmpleados from '../gridParaRegistrosDeEmpleados';
 
 
 // Importamos la funcionalidad de la tabla.
 import {
     consultarRegistros,
-    consultarRegistrosRoles
+    consultarRegistrosVinculados,
+    guardarRegistro,
+    modificarRegistro
 } from './logic/registros';
 
 import {
@@ -31,7 +29,7 @@ import {
 
 // Modelo de datos.
 
-export default function TablaEmpleados(
+export default function GridRegistrosEmpleados(
     props: {}
 ) {
     // Hook para el estado del indicador de carga.
@@ -40,12 +38,7 @@ export default function TablaEmpleados(
         setEnCarga
     ] = React.useState(false);
 
-    // Declaramos los hookers que vamos a usar.
-    const [
-        listaRegistros,
-        setListaRegistros
-    ] = React.useState([]);
-
+    // Hooks para la paginacion.
     const [
         offset,
         setOffset
@@ -76,7 +69,7 @@ export default function TablaEmpleados(
         nombres,
         setNombres
     ] = React.useState(undefined);
-    
+
     const [
         apellidoPaterno,
         setApellidoPaterno
@@ -148,8 +141,13 @@ export default function TablaEmpleados(
     // Hook para los forms de registro
     // modificacion y la barra de busqueda.
     const [
-        listaRoles,
-        setListaRoles
+        listaRegistros,
+        setListaRegistros
+    ] = React.useState(null);
+
+    const [
+        listaRegistrosVinculados,
+        setListaRegistrosVinculados
     ] = React.useState([]);
 
     // Declaramos el useEffect de react para
@@ -157,6 +155,16 @@ export default function TablaEmpleados(
     React.useEffect(() => {
         console.log('refresh');
 
+        consultarRegistrosVinculados(
+            setListaRegistrosVinculados,
+            setEnCarga,
+            () => {}
+        );
+
+    }, [refresh]);
+
+    // Consultamos los registros.
+    React.useEffect(() => {
         consultarRegistros(
             setListaRegistros,
             setTotalPaginas,
@@ -166,19 +174,14 @@ export default function TablaEmpleados(
                 offset: offset,
                 id: idEmpleado ,
                 nombres: nombres,
-                numeroTelefonico: apellidoPaterno,
-                apellidoPaterno: apellidoMaterno,
-                apellidoMaterno: numeroTelefonico,
+                numeroTelefonico: numeroTelefonico,
+                apellidoPaterno: apellidoPaterno,
+                apellidoMaterno: apellidoMaterno,
                 idRolVinculado: idRol
             }
         );
-
-        consultarRegistrosRoles(
-            setListaRoles,
-            setEnCarga
-        );
-
     }, [
+        listaRegistrosVinculados,
         registrosPorPagina,
         paginaActual,
         idEmpleado,
@@ -187,7 +190,6 @@ export default function TablaEmpleados(
         apellidoMaterno,
         numeroTelefonico,
         idRol,
-        refresh
     ]);
 
     // Titulo del grid.
@@ -281,8 +283,9 @@ export default function TablaEmpleados(
         setOffset: setOffset
     };
 
+    // Propiedades de la barra de busqueda.
     const parametrosBusqueda = {
-        setIdEmpleado: setIdEmpleado,
+        setId: setIdEmpleado,
         setNombres: setNombres,
         setApellidoPaterno: setApellidoPaterno,
         setApellidoMaterno: setApellidoMaterno,
@@ -290,8 +293,13 @@ export default function TablaEmpleados(
         setIdRol: setIdRol
     };
 
+    // Si no se han cargado los registros, mostramos el spinner.
+    if(!listaRegistros) {
+        return <></>;
+    }
+
     return(
-        <Grid
+        <GridParaRegistrosDeEmpleados
             tituloGrid={tituloGrid}
             enCarga={enCarga}
             setEnCarga={setEnCarga}
@@ -300,50 +308,39 @@ export default function TablaEmpleados(
             funcionesOpciones={funcionesOpciones}
             funcionesRegistros={funcionesRegistros}
             renderBarraBusqueda={() => {
-                return renderBarraBusqueda(parametrosBusqueda, listaRoles);
+                return renderBarraBusqueda(parametrosBusqueda, listaRegistrosVinculados);
             }}
         >
             {/*Modal de agregar registro*/}
             <ModalRegistroEmpleadoCompleto
                 nombreTabla={tituloGrid}
                 modalActivo={estadoModalAgregarRegistro}
-                toggleModal={() => {setEstadoModalAgregarRegistro(
-                    !estadoModalAgregarRegistro
-                )}}
+                toggleModal={() => {
+                    setEstadoModalAgregarRegistro(
+                        !estadoModalAgregarRegistro
+                    );
+                } }
             >
                 {/*Form de registro de empleado completo*/}
                 <FormRegistroEmpleadoCompleto
-                    elementosOpciones={listaRoles}
-                    onGuardarRegistro={() => {}}
-                    toggleModal={() => {setEstadoModalAgregarRegistro(
-                        !estadoModalAgregarRegistro
-                    )}}
-                />
-
-                {/*Form de registro de usuario completo*/}
-                <FormRegistroUsuarioCompleto
-                    elementosOpciones={[]}
-                    onGuardarRegistro={() => {}}
-                    toggleModal={() => {setEstadoModalAgregarRegistro(
-                        !estadoModalAgregarRegistro
-                    )}}
-                    onAutogenerarPassword={() => {}}
-                    onAutogenerarUsername={() => {}}
-                />
-
-                {/*Form de registro de horario completo*/}
-                <FormRegistroHorarioCompleto
-                    elementosOpciones={[]}
-                    onGuardarRegistro={() => {}}
-                    toggleModal={() => {setEstadoModalAgregarRegistro(
-                        !estadoModalAgregarRegistro
-                    )}}
+                    elementosOpciones={listaRegistrosVinculados}
+                    onGuardarRegistro={(evento) => {
+                        guardarRegistro(evento, refresh, setRefresh);
+                    }}
+                    onAutogenerarPassword={() => {
+                    }}
+                    onAutogenerarUsername={() => {
+                    }}
+                    toggleModal={() => {
+                        setEstadoModalAgregarRegistro(
+                            !estadoModalAgregarRegistro
+                        );
+                    }}
                 />
             </ModalRegistroEmpleadoCompleto>
 
             {/*Modal de modificar registro*/}
             <ModalModificarRegistroEmpleadoCompleto
-                idRegistro={idRegistroOperacion}
                 nombreTabla={tituloGrid}
                 modalActivo={estadoModalModificarRegistro}
                 toggleModal={() => {
@@ -352,33 +349,27 @@ export default function TablaEmpleados(
                     );
                 }}
             >
-                {/*Form de registro de empleado completo*/}
+                {/*Form para modificar registro de empleado completo*/}
                 <FormModificarRegistroEmpleadoCompleto
-                    elementosOpciones={listaRoles}
-                    onGuardarRegistro={() => {}}
-                    toggleModal={() => {setEstadoModalAgregarRegistro(
-                        !estadoModalAgregarRegistro
-                    )}}
-                />
-
-                {/*Form de registro de usuario completo*/}
-                <FormModificarRegistroUsuarioCompleto
-                    elementosOpciones={[]}
-                    onGuardarRegistro={() => {}}
-                    toggleModal={() => {setEstadoModalAgregarRegistro(
-                        !estadoModalAgregarRegistro
-                    )}}
-                    onAutogenerarPassword={() => {}}
-                    onAutogenerarUsername={() => {}}
-                />
-
-                {/*Form de registro de horario completo*/}
-                <FormModificarRegistroHorarioCompleto
-                    elementosOpciones={[]}
-                    onGuardarRegistro={() => {}}
-                    toggleModal={() => {setEstadoModalAgregarRegistro(
-                        !estadoModalAgregarRegistro
-                    )}}
+                    idRegistro={idRegistroOperacion}
+                    elementosOpciones={listaRegistrosVinculados}
+                    onGuardarRegistro={(evento) => {
+                        modificarRegistro(
+                            evento,
+                            idRegistroOperacion,
+                            refresh,
+                            setRefresh
+                        );
+                    }}
+                    onAutogenerarPassword={() => {
+                    }}
+                    onAutogenerarUsername={() => {
+                    }}
+                    toggleModal={() => {
+                        setEstadoModalModificarRegistro(
+                            !estadoModalModificarRegistro
+                        );
+                    }}
                 />
             </ModalModificarRegistroEmpleadoCompleto>
 
@@ -421,6 +412,6 @@ export default function TablaEmpleados(
                 listaRegistros,
                 funcionesRegistros
             )}
-        </Grid>
+        </GridParaRegistrosDeEmpleados>
     );
 };
