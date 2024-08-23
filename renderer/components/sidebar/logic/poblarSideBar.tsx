@@ -25,7 +25,8 @@ import {
     mdiClipboardPlay,
     mdiClipboardAlert,
     mdiClipboardClock,
-    mdiClipboardFlow
+    mdiClipboardFlow,
+    mdiFileCad
 } from '@mdi/js';
 
 // Paginas a las que se pueden accesar desde el sidebar.
@@ -150,6 +151,11 @@ const paginas = [{
             url: "/home/reportes/historialActividadMaquinas",
             descripcion: "Historial de actividad de maquinas",
             icono: mdiArchiveCog
+        }, {
+            id: "3.3",
+            url: "/home/reportes/dibujos",
+            descripcion: "Reportes de dibujos",
+            icono: mdiFileCad
         }]
     }, {
         id: "apartadoEmpleados",

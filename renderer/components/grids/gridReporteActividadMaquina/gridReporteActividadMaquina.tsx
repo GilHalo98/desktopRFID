@@ -6,24 +6,16 @@ import React from 'react';
 // Componentes de reactstrap.
 import {
     Card,
-    Container, Row, Col, CardHeader
+    Container, Row, Col, CardHeader, Spinner, CardBody, CardText, Alert
 } from 'reactstrap';
 
-// Modelo de datos.
-import {
-    Empleado
-} from '../../../utils/API/modelos/empleado';
-
-import {
-    DispositivoIoT
-} from '../../../utils/API/modelos/dispositivoIoT';
-
 // Componentes propios.
+import ListaHistorialUsosMaquina from '../../listas/listaHistorialUsosMaquina/listaHistorialUsosMaquina';
+import CardHeaderHistorialActividad from '../../cards/cardHeader/cardHeaderHistorialActividad';
 import GridParaReporteDeActividadDeMaquina from '../gridParaReporteDeActividadDeMaquina';
-import GraficoActividadMaquina from '../../graficos/graficoActividadMaquina';
 import CardRegistroEmpleado from '../../cards/cardsRegistros/cardRegistroEmpleado';
 import DisplayOperadoresMaquina from '../../displays/displayOperadoresMaquina';
-import ListaHistorialUsosMaquina from '../../listas/listaHistorialUsosMaquina/listaHistorialUsosMaquina';
+import GraficoActividadMaquina from '../../graficos/graficoActividadMaquina';
 
 // Funcionalidad.
 import {
@@ -32,7 +24,13 @@ import {
     consultarReporteOperadoresMaquina,
     consultarReporteUsosMaquina
 } from './logic/registros';
-import { ReporteOperadoresMaquina } from '../../../utils/API/respuestas/reporteOperadoresMaquina';
+
+// Modelo de datos.
+import {
+    ReporteOperadoresMaquina
+} from '../../../utils/API/respuestas/reporteOperadoresMaquina';
+import AlertaFaltaRegistrosParaReporte from '../../alertas/alertaFaltaRegistrosParaReporte';
+import IndicadorCargaSpinner from '../../cargas/indicadorCargaSpinner';
 
 export default function GridReporteActividadMaquina(
     props: {}
@@ -41,6 +39,53 @@ export default function GridReporteActividadMaquina(
     const [
         enCarga, setEnCarga
     ] = React.useState(true);
+
+    // Hooks para refrescar la vista.
+    const [
+        refresh,
+        setRefresh
+    ] = React.useState(false);
+
+    // Hooks de opciones de vista.
+    const [
+        offsetUltimosOperadores,
+        setOffsetUltimosOperadores
+    ] = React.useState(0);
+
+    const [
+        limitUltimosOperadores,
+        setLimitUltimosOperadores
+    ] = React.useState(5);
+
+    const [
+        totalPaginasUltimosOperadores,
+        setTotalPaginasUltimosOperadores
+    ] = React.useState(1);
+
+    const [
+        paginaActualUltimosOperadores,
+        setPaginaActualUltimosOperadores
+    ] = React.useState(1);
+
+    const [
+        offsetUsosMaquina,
+        setOffsetUsosMaquina
+    ] = React.useState(0);
+
+    const [
+        limitUsosMaquina,
+        setLimitUsosMaquina
+    ] = React.useState(12);
+
+    const [
+        totalPaginasUsosMaquina,
+        setTotalPaginasUsosMaquina
+    ] = React.useState(1);
+
+    const [
+        paginaActualUsosMaquina,
+        setPaginaActualUsosMaquina
+    ] = React.useState(1);
 
     // Hooks de registro de operaciones.
     const [
@@ -53,15 +98,25 @@ export default function GridReporteActividadMaquina(
         setRegistroOperaciones
     ] = React.useState(null);
 
-    const [
-        limiteOperadores,
-        setLimiteOperadores
-    ] = React.useState(5);
-
     // Hooks de los datos del filtro.
     const [
         listaRegistrosDispositivos,
         setListaRegistrosDispositivos
+    ] = React.useState([]);
+
+    const [
+        idDispositivo,
+        setIdDispositivo
+    ] = React.useState(null);
+
+    const [
+        descripcionDispositivo,
+        setDescripcionDispositivo
+    ] = React.useState(null);
+
+    const [
+        semanaReporte,
+        setSemanaReporte
     ] = React.useState(null);
 
     // Hooks de los datos de la vista.
@@ -80,6 +135,8 @@ export default function GridReporteActividadMaquina(
         setReporteUsosMaquina
     ] = React.useState(null);
 
+    /// React effect de consulta de dispostivos controladores.
+    // Poner aquí el filtro para los dispositivos.
     React.useEffect(() => {
         consultarRegistrosDispositivos(
             setListaRegistrosDispositivos,
@@ -87,85 +144,146 @@ export default function GridReporteActividadMaquina(
             () => {
             }
         );
-    }, [indexRegistro]);
+    }, []);
 
-    /// React effect.
+    // Consultamos los datos de las graficas.
     React.useEffect(() => {
         if(listaRegistrosDispositivos) {
-            consultarReporteActividadMaquina(
-                setReporteActivdadMaquina,
-                setEnCarga,
-                {
-                    id: listaRegistrosDispositivos[
-                        indexRegistro
-                    ].id
-                },
-                () => {
-                    consultarReporteOperadoresMaquina(
-                        setReporteOperadoresMaquina,
-                        setEnCarga,
-                        {
-                            offset: 0,
-                            limit: 5,
-                            id: listaRegistrosDispositivos[
-                                indexRegistro
-                            ].id
-                        },
-                        () => {
-                            consultarReporteUsosMaquina(
-                                setReporteUsosMaquina,
-                                setEnCarga,
-                                {
-                                    id: listaRegistrosDispositivos[
-                                        indexRegistro
-                                    ].id
-                                },
-                            );
-                        }
-                    );
-                }
-            );
-        }
-    }, [
-        listaRegistrosDispositivos
-    ]);
-
-    const parametrosBusqueda = {
-        setIdDispositivo: () => {},
-        setDescripcionDispositivo: () => {},
-        setSemanaReporte: () => {}
-    };
-
-    const elementosOpciones = {
-        indexRegistro: indexRegistro,
-        setIndexRegistro: setIndexRegistro,
-        listaRegistrosDispositivos: listaRegistrosDispositivos
-    };
-
-    if(
-        enCarga
-        || !listaRegistrosDispositivos
-        || !reporteActividadMaquina
-        || !reporteOperadoresMaquina
-        || !reporteUsosMaquina
-    ) {
-        return "";
-    }
-
-    return(
-        <GridParaReporteDeActividadDeMaquina
-            tituloGrid={
-                'Actividad de '
-                + listaRegistrosDispositivos[
-                    indexRegistro
-                ].descripcionDispositivo
+            if(listaRegistrosDispositivos.length > 0) {
+                consultarReporteActividadMaquina(
+                    setReporteActivdadMaquina,
+                    setEnCarga,
+                    {
+                        id: listaRegistrosDispositivos[
+                            indexRegistro
+                        ].id,
+                        semanaReporte: semanaReporte
+                    },
+                    () => {}
+                );
             }
-            parametrosBusqueda={parametrosBusqueda}
-            elementosOpciones={elementosOpciones}
-        >
+        }
+
+    }, [
+        listaRegistrosDispositivos,
+        indexRegistro,
+        semanaReporte
+    ,refresh]);
+
+    // Consultamos la lista de los ultimos operadores.
+    React.useEffect(() => {
+        if(listaRegistrosDispositivos) {
+            if(listaRegistrosDispositivos.length > 0) {
+                consultarReporteOperadoresMaquina(
+                    setReporteOperadoresMaquina,
+                    setEnCarga,
+                    {
+                        offset: offsetUltimosOperadores,
+                        limit: limitUltimosOperadores,
+                        id: listaRegistrosDispositivos[
+                            indexRegistro
+                        ].id,
+                        semanaReporte: semanaReporte
+                    },
+                    () => {}
+                );
+            }
+        }
+
+    }, [
+        listaRegistrosDispositivos,
+        indexRegistro,
+        semanaReporte
+    ,refresh]);
+
+    // Consultamos la lista de los ultimos usos de la maquina.
+    React.useEffect(() => {
+        if(listaRegistrosDispositivos) {
+            if(listaRegistrosDispositivos.length > 0) {
+                consultarReporteUsosMaquina(
+                    setReporteUsosMaquina,
+                    setTotalPaginasUsosMaquina,
+                    setEnCarga,
+                    {
+                        limit: limitUsosMaquina,
+                        offset: offsetUsosMaquina,
+                        id: listaRegistrosDispositivos[
+                            indexRegistro
+                        ].id,
+                        semanaReporte: semanaReporte
+                    },
+                    () => {}
+                );
+            }
+        }
+
+    }, [
+        listaRegistrosDispositivos,
+        indexRegistro,
+        semanaReporte,
+        paginaActualUsosMaquina
+    ,refresh]);
+
+    // Parametros de busqueda de la barra de filtros.
+    const parametrosBusqueda = {
+        setIdDispositivo: setIdDispositivo,
+        setDescripcionDispositivo: setDescripcionDispositivo,
+        setSemanaReporte: setSemanaReporte
+    };
+
+    // Funciones de opciones del grid.
+    const funcionesOpciones = {
+        onRefrescarGrid: () => {
+            setRefresh(!refresh);
+        },
+        onExportarDatos: () => {
+        },
+        onCambiarConfiguracion: () => {
+        },
+    };
+
+    // Paginacion de la tabla de usos de la maquina.
+    const paginacionUsosMaquina = {
+        paginaActual: paginaActualUsosMaquina,
+        offset: offsetUsosMaquina,
+        registrosPorPagina: limitUsosMaquina,
+        totalPaginas: totalPaginasUsosMaquina,
+        setPaginaActual: setPaginaActualUsosMaquina,
+        setOffset: setOffsetUsosMaquina,
+    };
+
+    // Render de contenido del grid.
+    const renderContenido = () => {
+        if(
+            !listaRegistrosDispositivos
+            || !reporteActividadMaquina
+            || !reporteOperadoresMaquina
+            || !reporteUsosMaquina
+        ) {
+            // Renderizamos el spinner de carga.
+            return <IndicadorCargaSpinner/>;
+        }
+
+        // Si no existen reportes para mostrar.
+        if(
+            reporteOperadoresMaquina.length == 0
+            && reporteUsosMaquina.length == 0
+        ) {
+            // Mostramos un card que indique que no existen registros
+            // para generar un reporte de actividad de maquina.
+            return <AlertaFaltaRegistrosParaReporte
+                listaRegistrosDispositivos={listaRegistrosDispositivos}
+                semanaReporte={semanaReporte}
+                indexRegistro={indexRegistro}
+            />;
+        }
+
+        // Renderizamos el contenido de la vista.
+        return(
             <Container>
                 <Row>
                     <Col>
+                        {/* Renderizamos el card con la imagen y los datos del ultimo operador. */}
                         <Row>
                             <Col>
                                 <CardRegistroEmpleado
@@ -178,7 +296,8 @@ export default function GridReporteActividadMaquina(
                         </Row>
 
                         <br/>
-
+                        
+                        {/* Renderizamos la lista de los ultimos N operadores.. */}
                         <Row>
                             <Col>
                                 <DisplayOperadoresMaquina
@@ -187,12 +306,13 @@ export default function GridReporteActividadMaquina(
                                             return registro.empleado;
                                         })
                                     }
-                                    limiteOperadores={limiteOperadores}
+                                    limiteOperadores={limitUltimosOperadores}
                                 />
                             </Col>
                         </Row>
                     </Col>
 
+                    {/* Renderizamos el grafico del reporte. */}
                     <Col>
                         <GraficoActividadMaquina
                             tituloGrafico={
@@ -209,21 +329,49 @@ export default function GridReporteActividadMaquina(
 
                 <br/>
 
+                {/* Renderizamos el hisotrial de usos de la maquina. */}
                 <Row>
                     <Col>
                         <ListaHistorialUsosMaquina
-                            tituloLista={
-                                'Historial de usos de '
-                                + listaRegistrosDispositivos[
-                                    indexRegistro
-                                ].descripcionDispositivo
-                                + ' del DD/MM/AA al DD/MM/AA'
-                            }
+                            semanaReporte={semanaReporte}
                             registros={reporteUsosMaquina}
+                            paginacion={paginacionUsosMaquina}
                         />
                     </Col>
                 </Row>
             </Container>
+        );
+    };
+
+    return(
+        <GridParaReporteDeActividadDeMaquina>
+            {/* Cabecera del grid con barra de busqueda. */}
+            <Row>
+                <Col>
+                    <CardHeaderHistorialActividad
+                        parametrosBusqueda={
+                            parametrosBusqueda
+                        }
+                        funcionesOpciones={
+                            funcionesOpciones
+                        }
+                        indexRegistro={
+                            indexRegistro
+                        }
+                        setIndexRegistro={
+                            setIndexRegistro
+                        }
+                        registros={
+                            listaRegistrosDispositivos
+                        }
+                    />
+                </Col>
+            </Row>
+
+            <br/>
+
+            {/* Renderizamos el contenido del grid. */}
+            {renderContenido()}
 
         </GridParaReporteDeActividadDeMaquina>
     );

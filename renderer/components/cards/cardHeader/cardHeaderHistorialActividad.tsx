@@ -13,6 +13,7 @@ import {
 
 // Componentes propios.
 import FormBusquedaHistorialActividad from '../../forms/busqueda/formBusquedaHistorialActividad';
+import BarraAccionesGrid from '../../barraBotones/barraAcciones/barraAccionesGrid/barraAccionesGrid';
 
 // Funcionalidad del grid.
 
@@ -29,13 +30,58 @@ export default function CardHeaderHistorialActividad(
             setDescripcionDispositivo: Function,
             setSemanaReporte: Function,
         },
+        funcionesOpciones?: {
+            onRefrescarGrid?: Function,
+            onExportarDatos?: Function,
+            onCambiarConfiguracion?: Function
+        },
         children?: any,
     }
 ) {
+    const renderHeader = () => {
+        let texto = 'Cargando...';
+
+        if(props.registros) {
+            if(props.registros[props.indexRegistro]) {
+                texto = 'Reporte de '+ props.registros[
+                    props.indexRegistro
+                ].descripcionDispositivo;
+            }
+        }
+
+        return <>
+            {texto}
+        </>;
+    };
+
+    function prueba() {
+        return 
+    }
+
     return(
         <Card color="dark">
             <CardHeader className='text-white'>
-                Reporte de {props.registros[props.indexRegistro].descripcionDispositivo}    
+                <Container>
+                    <Row>
+                        <Col>
+                            {renderHeader()}
+                        </Col>
+
+                        <Col style={{textAlign:'right'}}>
+                            <BarraAccionesGrid
+                                onRefrescarGrid={
+                                    props.funcionesOpciones.onRefrescarGrid
+                                }
+                                onExportarDatos={
+                                    props.funcionesOpciones.onExportarDatos
+                                }
+                                onCambiarConfiguracion={
+                                    props.funcionesOpciones.onCambiarConfiguracion
+                                }
+                            />
+                        </Col>
+                    </Row>
+                </Container>
             </CardHeader>
 
             <CardBody>

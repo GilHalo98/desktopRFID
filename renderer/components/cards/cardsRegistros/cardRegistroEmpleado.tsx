@@ -37,6 +37,39 @@ export default function CardRegistroEmpleado(
         }
     }
 ) {
+    // Hook indicador de componente en carga.
+    const [
+        enCarga,
+        setEnCarga
+    ] = React.useState(true);
+
+    // Imagen del empleado.
+    const [
+        recursos,
+        setRecursos
+    ] = React.useState([]);
+
+    // Consultamos la imagen del empleado.
+    React.useEffect(() => {
+        consultarImagenEmpleado(
+            setRecursos,
+            () => {},
+            setEnCarga,
+            {
+                id:props.registro.idImagenVinculada
+            }
+        );
+    }, []);
+
+    const controlImagen = {
+        display: (enCarga? 'none' : '')
+    };
+
+    const controlSpinner = {
+        display: (enCarga? '' : 'none')
+    };
+
+    // Renderizamos la barra de opciones del registro en el card.
     function renderBarraOpcionesRegistro() {
         if(typeof props.funcionesRegistros == 'undefined') {
             return <></>;
@@ -56,33 +89,6 @@ export default function CardRegistroEmpleado(
             }
         />;
     }
-
-    const [
-        enCarga,
-        setEnCarga
-    ] = React.useState(true);
-
-    const [
-        recursos,
-        setRecursos
-     ] = React.useState([]);
-
-    React.useEffect(() => {
-        consultarImagenEmpleado(
-            setRecursos,
-            () => {},
-            setEnCarga,
-            {id:props.registro.idImagenVinculada}
-        );
-    }, []);
-
-    const controlImagen = {
-        display: (enCarga? 'none' : '')
-    };
-
-    const controlSpinner = {
-        display: (enCarga? '' : 'none')
-    };
 
     return(
         <Card className='cardEmpleado' color='dark'>

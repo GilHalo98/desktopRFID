@@ -26,6 +26,8 @@ const GetHistorialActividadMaquina = async (
 
 const GetHistorialUsosMaquina = async (
     parametros?: {
+        limit?: number,
+        offset?: number,
         id?: number,
         descripcionDispositivo?: string,
         semanaReporte?: string

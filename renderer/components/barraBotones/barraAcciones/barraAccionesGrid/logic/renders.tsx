@@ -5,10 +5,11 @@ import {
 
 // Iconos usados.
 import {
-    mdiCog,
+    mdiRefreshCircle,
     mdiAccountPlus,
     mdiSerialPort,
-    mdiRefreshCircle
+    mdiFileExport,
+    mdiCog,
 } from '@mdi/js';
 
 // Componente para mostrar los iconos.
@@ -102,8 +103,31 @@ const renderizarProbarSerial = (
     );
 };
 
+// Renderiza el boton de exportar datos.
+const renderizarExportarDatos = (
+    onExportarDatos?: Function
+) => {
+    if(typeof onExportarDatos == 'undefined') {
+        return null;
+    }
+
+    return(
+        <Button
+            className='botonIcono'
+            outline
+            color='warning'
+            onClick={() => {
+                onExportarDatos();
+            }}
+        >
+            <Icon path={mdiFileExport} size={1} />
+        </Button>
+    );
+};
+
 export {
     renderizarAgregarRegistro,
+    renderizarExportarDatos,
     renderizarRefrescarGrid,
     renderizarProbarSerial,
     renderizarOpciones

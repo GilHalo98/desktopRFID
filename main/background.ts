@@ -3,6 +3,9 @@ import { app, ipcMain, ipcRenderer } from 'electron'
 import serve from 'electron-serve'
 import { createWindow } from './helpers'
 
+// Manipulacion de archivos.
+import { readFileSync } from 'fs';
+
 // Manipulación de puerto serial
 import {
     ByteLengthParser,
@@ -161,4 +164,18 @@ ipcMain.on('estatus_dispositivo', (
 ) => {
     evento.returnValue = estatusDispositivo;
     estatusDispositivo = 0;
+});
+
+/**
+ * Manipulacion de archivos locales.
+*/
+ipcMain.on('cargar_imagen', async (evento, args) => {
+    const imagenB64 = readFileSync(
+        args.path,
+        {
+            encoding: 'base64'
+        }
+    );
+
+    evento.returnValue = imagenB64;
 });

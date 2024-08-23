@@ -38,7 +38,7 @@ const consultarRegistrosDispositivos = (
             console.log(error);
         },
         () => {
-            setListaRegistros(null);
+            setListaRegistros([]);
             setEnCarga(true);
         },
         () => {
@@ -127,8 +127,11 @@ const consultarReporteOperadoresMaquina = (
 // Consultamos el reporte de usos.
 const consultarReporteUsosMaquina = (
     setListaRegistros: Function,
+    setTotalPaginasUsosMaquina: Function,
     setEnCarga: Function,
     querry: {
+        limit?: number,
+        offset?: number,
         id?: number,
         descripcionDispositivo?: string,
         semanaReporte?: string
@@ -139,6 +142,9 @@ const consultarReporteUsosMaquina = (
     return ConsultaHistorialUsosMaquina(
         (respuesta: any) => {
             setListaRegistros(respuesta.registros);
+            setTotalPaginasUsosMaquina(Math.ceil(
+                respuesta.totalRegistros / querry.limit
+            ));
         },
         querry,
         (error: any) => {

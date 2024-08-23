@@ -108,13 +108,25 @@ export default function CardHeaderDashboardActividad(
         return color;
     };
 
+    const renderHeader = () => {
+        let texto = 'Cargando...';
+
+        if (props.registros[props.indexRegistro]) {
+            texto = 'Reporte de '+ props.registros[
+                props.indexRegistro
+            ].descripcionDispositivo;
+        }
+
+        return(
+            <CardHeader className='text-white'>
+                {texto}
+            </CardHeader>
+        );
+    };
+
     return(
         <Card color="dark">
-            <CardHeader className='text-white'>
-                Reporte de {
-                    props.registros[props.indexRegistro].descripcionDispositivo
-                }
-            </CardHeader>
+            {renderHeader()}
 
             <CardBody>
                 <Container>

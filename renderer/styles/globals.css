@@ -219,7 +219,42 @@
         border-bottom: 40px;
         border-color: #FFBC26;
     }
+
+    /*
+    * Estilo del spinner de carga
+    */
+    .spiinerCarga {
+        width: 200px;
+        height: 200px;
+        /* background-color: red; */
+    }
+
+    /*
+    * Estilo para el archivo de reportes.
+    */
+
+    .mainDiv * {
+        font-size: 1.5mm;
+    }
+
+    .tablaTools * {
+        font-size: 1mm;
+    }
+
+    .tablaReferencias * {
+        font-size: 1mm;
+        text-align: center;
+    }
+
+    .apartadoGeneral * {
+        text-align: center;
+    }
+
+    .dibujo {
+        margin: 10px;
+    }
 }
+
 
 @layer components {
 }

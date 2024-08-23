@@ -29,31 +29,31 @@ function numeroDiaANombreDia(dia: number) {
     let nombreDia: string = undefined;
 
     switch(dia) {
-        case 0:
+        case 1:
             nombreDia = 'Lunes';
             break;
 
-        case 1:
+        case 2:
             nombreDia = 'Martes';
             break;
 
-        case 2:
+        case 3:
             nombreDia = 'Miercoles';
             break;
 
-        case 3:
+        case 4:
             nombreDia = 'Jueves';
             break;
 
-        case 4:
+        case 5:
             nombreDia = 'Viernes';
             break;
 
-        case 5:
+        case 6:
             nombreDia = 'Sabado';
             break;
 
-        case 6:
+        case 7:
             nombreDia = 'Domingo';
             break;
 
@@ -62,11 +62,59 @@ function numeroDiaANombreDia(dia: number) {
     }
 
     return nombreDia;
-}
+};
+
+function deserealizarSemana(semana: string) {
+    // Primero convertimos todos los literales a minusculas.
+    const datoSerializado = semana.toLowerCase();
+
+    // Si existe una semana, deserealizamos el
+    // dato, primero partimos el string, de
+    // año-semana a [año, semana].
+    const semanaReporte = datoSerializado.split('-w');
+
+    // Creamos las instancias de las fechas.
+    const fechaA = new Date();
+    const fechaB = new Date();
+
+    // Establecemos la fecha de inicio de semana.
+    fechaA.setFullYear(
+        parseInt(semanaReporte[0]),
+        0,
+        (parseInt(semanaReporte[1]) * 7) - 6
+    );
+
+    fechaA.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+    // Establecemos la fecha de fin de semana.
+    fechaB.setFullYear(
+        parseInt(semanaReporte[0]),
+        0,
+        (parseInt(semanaReporte[1]) * 7)
+    );
+
+
+    fechaB.setHours(
+        23,
+        59,
+        59,
+        0  
+    );
+
+    return [
+        fechaA, fechaB
+    ];
+};
 
 export {
     bin2dec,
     dec2bin,
     msToTime,
-    numeroDiaANombreDia
+    numeroDiaANombreDia,
+    deserealizarSemana
 };

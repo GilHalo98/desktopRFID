@@ -15,6 +15,7 @@ import {
 // Renders de los botones.
 import {
     renderizarAgregarRegistro,
+    renderizarExportarDatos,
     renderizarRefrescarGrid,
     renderizarProbarSerial,
     renderizarOpciones
@@ -25,7 +26,8 @@ export default function BarraAccionesGrid(
         onAgregarRegistro?: Function,
         onRefrescarGrid?: Function,
         onProbarSerial?: Function,
-        onCambiarConfiguracion?: Function
+        onCambiarConfiguracion?: Function,
+        onExportarDatos?: Function
     }
 ) {
     return (
@@ -34,12 +36,16 @@ export default function BarraAccionesGrid(
                 funcionesOpciones.onAgregarRegistro
             )}
 
-            {renderizarProbarSerial(
-                funcionesOpciones.onProbarSerial
-            )}
-
             {renderizarRefrescarGrid(
                 funcionesOpciones.onRefrescarGrid
+            )}
+
+            {renderizarExportarDatos(
+                funcionesOpciones.onExportarDatos
+            )}
+
+            {renderizarProbarSerial(
+                funcionesOpciones.onProbarSerial
             )}
 
             {renderizarOpciones(

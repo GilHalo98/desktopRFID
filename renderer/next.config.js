@@ -9,6 +9,7 @@ module.exports = {
     },
 
     trailingSlash: true,
+    swcMinify: false,
 
     images: {
         unoptimized: true,
@@ -23,5 +24,5 @@ module.exports = {
 
     webpack: (config) => {
         return config
-    },
+    }
 };

@@ -84,6 +84,8 @@ function ConsultaHistorialActividadMaquina(
 function ConsultaHistorialUsosMaquina(
     onOk: Function,
     parametrosBusqueda?: {
+        limit?: number,
+        offset?: number,
         id?: number,
         descripcionDispositivo?: string,
         semanaReporte?: string
