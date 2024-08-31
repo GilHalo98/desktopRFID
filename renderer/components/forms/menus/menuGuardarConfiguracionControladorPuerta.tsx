@@ -22,17 +22,12 @@ import {
 
 // Funciones del form.
 import {
-    guardarConfiguracionChecador, guardarConfiguracionControladorPuerta
+    guardarConfiguracionControladorPuerta
 } from './logic/guardarConfiguracionIoT';
-
-// Modelo de datos.
-import {
-    DispositivoIoT
-} from '../../../utils/API/modelos/dispositivoIoT';
 
 export default function MenuGuardarConfiguracionControladorPuerta(
     props: {
-        registro: DispositivoIoT,
+        registro: DispositivoIoTSocket,
         toggleModal: Function
     }
 ) {

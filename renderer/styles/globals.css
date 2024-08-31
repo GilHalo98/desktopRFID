@@ -8,15 +8,14 @@
 
 @layer base {
     .prueba {
-        width: 200%;
-        height: 200%;
-        background-color: red;
+        position: absolute;
+        top: 0px;
     }
 
     ::-webkit-scrollbar {
         display: none;
     }
-    
+
     .tituloLogin {
         font-size: 40px;
         color: #FFFFFF;
@@ -41,6 +40,7 @@
         font-weight: bold;
         min-width: 500px;
         min-height: 500px;
+        background-color: rgba(44, 49, 54, 0.8);
     }
 
     .cabeceraTablaRegistros {
@@ -170,7 +170,7 @@
         margin-bottom: 10px;
     }
 
-    .botonLogout {
+    .botonLogout, .botonCompactarSideBar {
         border: none;
     }
 
@@ -229,29 +229,141 @@
         /* background-color: red; */
     }
 
+    /* Estilo de graficos */
+    .graficoActividadMaquina {
+        height: 50vh;
+    }
+
+    /* Estilo de la barra de navegacion de las paginas de los dibujos */
+
+    .navReportesDibujos {
+        overflow-x: scroll;
+    }
+
+    .botonNavReportesDibujo {
+        transition:
+            all 0.2s;
+
+        padding: 4px 100px 4px 100px;
+
+        font-weight: bolder;
+
+        border: 0px;
+        border-radius: 0px;
+        white-space: nowrap;
+
+        color: rgb(33, 37, 41);
+        background-color: #FFBC26;
+        border-bottom: #FFBC26 5px solid;
+    }
+
+    .botonNavReportesDibujo.active  {
+        font-weight: bolder;
+        color: rgb(33, 37, 41);
+        background-color: #FFBC26;
+        border-bottom: #0085FC 5px solid;
+    }
+
+    .botonNavReportesDibujo:hover {
+        font-weight: bolder;
+        color: rgb(33, 37, 41);
+        background-color: #FFBC26;
+        border-bottom: #0085FC 5px solid;
+    }
+
     /*
     * Estilo para el archivo de reportes.
     */
-
-    .mainDiv * {
-        font-size: 1.5mm;
+    .cuerpoReporte * {
+        box-sizing: content-box;
+        width: 100%;
+        font-size: 9pt;
+        font-family: Arial, Helvetica, sans-serif;
     }
 
-    .tablaTools * {
-        font-size: 1mm;
+    .cuerpoReporte {
+        display: grid;
+        grid-template-columns: 2fr 3fr;
+        gap: 20px;
     }
 
-    .tablaReferencias * {
-        font-size: 1mm;
+    .apartadoReferenciasNotas {
+        display: grid;
+        grid-template-columns: 2fr 3fr;
+    }
+
+    .apartadoMembreteProyecto {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+    }
+
+    .datosCliente {
+        border: black solid 1pt;
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .datosOperacion {
+        border: black solid 1pt;
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    .apartadoHerramientas {
+        grid-column: 1;
+        grid-row: 3;
+    }
+
+    .datosGenerales {
+        border: black solid 1pt;
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .apartadoDibujo {
+        border: black solid 1pt;
+        grid-column: 2;
+        grid-row: span 2;
+    }
+
+    .datosReferencias {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .notas {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .proyecto {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .cuerpoReporte ul {
+        padding: 5px;
+    }
+
+    .apartadoReferenciasNotas ul {
+        padding: 5px;
+    }
+
+    .tablaHerramientas {
+        white-space: nowrap;
+    }
+
+    .tablaHerramientas thead th {
+        background: none;
+    }
+
+    .tablaHerramientas .tituloTabla {
         text-align: center;
     }
 
-    .apartadoGeneral * {
-        text-align: center;
-    }
-
-    .dibujo {
-        margin: 10px;
+    .tablaHerramientas tbody td {
+        font-size: 7pt;
+        background: none;
     }
 }
 

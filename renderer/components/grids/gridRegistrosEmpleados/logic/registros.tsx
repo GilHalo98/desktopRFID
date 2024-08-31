@@ -144,10 +144,14 @@ const guardarRegistro = (
         // Los campos para identificar los dias empiezan en el index
         // 18 hasta el 24, iteramos entre cada uno de ellos.
         for (let index = 18; index <= 24; index++) {
+            // Desempaquetamos los datos.
+            const id: string = evento.target[index].id;
+            const checked: string = evento.target[index].checked? '1' : '0';
+
             // Agregamos el valor si el dia es laborado o descanso.
             datosRegistro.append(
-                evento.target[index].id,
-                evento.target[index].checked? 1 : 0
+                id,
+                checked
             );
 
             // Si el dia es laborado, mandamos la hora de entrada
@@ -183,10 +187,14 @@ const guardarRegistro = (
         for (let index = 14; index <= 48; index++) {
             // Si el campo es de tipo check.
             if (evento.target[index].className == 'form-check-input') {
-                // Agregamos el valor del campo.
+                // Desempaquetamos los datos.
+                const id: string = evento.target[index].id;
+                const checked: string = evento.target[index].checked? '1' : '0';
+
+                // Agregamos el valor si el dia es laborado o descanso.
                 datosRegistro.append(
-                    evento.target[index].id,
-                    evento.target[index].checked? 1 : 0
+                    id,
+                    checked
                 );
 
                 // Si el dia es dia descansado, entonces
@@ -285,10 +293,14 @@ const modificarRegistro = (
         // Los campos para identificar los dias empiezan en el index
         // 18 hasta el 24, iteramos entre cada uno de ellos.
         for (let index = 18; index <= 24; index++) {
+            // Desempaquetamos los datos.
+            const id: string = evento.target[index].id;
+            const checked: string = evento.target[index].checked? '1' : '0';
+
             // Agregamos el valor si el dia es laborado o descanso.
             datosModificaion.append(
-                evento.target[index].id,
-                evento.target[index].checked? 1 : 0
+                id,
+                checked
             );
 
             // Si el dia es laborado, mandamos la hora de entrada
@@ -324,12 +336,15 @@ const modificarRegistro = (
         for (let index = 14; index <= 48; index++) {
             // Si el campo es de tipo check.
             if (evento.target[index].className == 'form-check-input') {
-                // Agregamos el valor del campo.
-                datosModificaion.append(
-                    evento.target[index].id,
-                    evento.target[index].checked ? 1 : 0
-                );
+                // Desempaquetamos los datos.
+                const id: string = evento.target[index].id;
+                const checked: string = evento.target[index].checked? '1' : '0';
 
+                // Agregamos el valor si el dia es laborado o descanso.
+                datosModificaion.append(
+                    id,
+                    checked
+                );
                 // Si el dia es dia descansado, entonces
                 // saltamos los proximos 4 campos que indican hora de
                 // entrada, salida y hora de descanso.

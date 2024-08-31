@@ -53,7 +53,7 @@ export default function TablaParaStatusDispositivos(
             tiempoRefrescamiento?: number,
             guardarConfiguracion: Function
         },
-        children?: any
+        children?: any[]
     }
 ) {
     // Estado del modal de opciones de la tabla.

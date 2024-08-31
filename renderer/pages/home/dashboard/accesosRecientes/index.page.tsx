@@ -8,20 +8,18 @@ import {
     Card
 } from "reactstrap";
 
+import * as THREE from 'three';
+
 // Componentes propios.
 import ListaAccesosRecientes from "../../../../components/listas/listaAccesosRecientes/listaAccesosRecientes";
 import SideBarLayout from "../../../../components/Layout/sideBarLayout";
+import IndicadorCargaSpinner from "../../../../components/cargas/indicadorCargaSpinner";
 
 export default function AccesosRecientes() {
+
+
     return (
         <React.Fragment>
-            <Container fluid>
-                <Row>
-                    <Col>
-                        <ListaAccesosRecientes/>
-                    </Col>
-                </Row>
-            </Container>
         </React.Fragment>
     );
 };

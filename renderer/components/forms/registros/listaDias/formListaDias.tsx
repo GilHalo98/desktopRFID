@@ -136,7 +136,7 @@ export default function FormListaDias(
                                                     diasDescanso[index]
                                                 }
                                                 onChange={(evento: SyntheticEvent) => {
-                                                    const input = evento.target as HTMLButtonElement;
+                                                    const input = evento.target as HTMLInputElement;
 
                                                     diasDescanso[
                                                         index

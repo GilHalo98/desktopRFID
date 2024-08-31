@@ -49,7 +49,7 @@ export default function GraficoActividadMaquina(
 
             <CardBody>
                 <DonutChart
-                    style={{"height": "50vh"}}
+                    className='graficoActividadMaquina'
                     data={datos}
                     colors={['green', 'gray']}
                     category="tiempo"

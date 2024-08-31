@@ -64,6 +64,18 @@ export default function FormRegistroRol(
                 </Input>
             </FormGroup>
 
+            <FormGroup>
+                <Label for="bitRol">
+                    Bit de rol
+                </Label>
+
+                <Input
+                    id="descripcionRol"
+                    name="campoBitRol"
+                    type="number"
+                />
+            </FormGroup>
+
             <br/>
 
             <Container>

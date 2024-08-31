@@ -30,10 +30,11 @@ import {
 } from '@mdi/js';
 
 // Paginas a las que se pueden accesar desde el sidebar.
-const paginas = [{
+const paginas: Vista[] = [{
         id: "apartadoDashboard",
         descripcion: 'Dashboard',
         icono: mdiViewDashboard,
+        rolesValidos: [1],
         subdivicion: [{
             id: "1.1",
             url: "/home/dashboard/actividadMaquinas",
@@ -55,6 +56,7 @@ const paginas = [{
         id: "apartadoRegistros", 
         descripcion: 'Registros',
         icono: mdiDatabase,
+        rolesValidos: [1],
         subdivicion: [{
             id: "2.1",
             url: "/home/registros/listaReportes",
@@ -141,26 +143,31 @@ const paginas = [{
         id: "apartadoReportes",
         descripcion: 'Reportes',
         icono: mdiClipboardEdit,
+        rolesValidos: [1, 5],
         subdivicion: [{
             id: "3.1",
             url: "/home/reportes/horasTrabajadas",
             descripcion: "Horas trabajadas",
-            icono: mdiArchiveClock
+            icono: mdiArchiveClock,
+            rolesValidos: [1],
         }, {
             id: "3.2",
             url: "/home/reportes/historialActividadMaquinas",
             descripcion: "Historial de actividad de maquinas",
-            icono: mdiArchiveCog
+            icono: mdiArchiveCog,
+            rolesValidos: [1],
         }, {
             id: "3.3",
             url: "/home/reportes/dibujos",
             descripcion: "Reportes de dibujos",
-            icono: mdiFileCad
+            icono: mdiFileCad,
+            rolesValidos: [1, 5],
         }]
     }, {
         id: "apartadoEmpleados",
         descripcion: 'Empleados',
         icono: mdiAccountGroup,
+        rolesValidos: [1],
         subdivicion: [{
             id: "4.1",
             url: "/home/empleados/registrosEmpleados",

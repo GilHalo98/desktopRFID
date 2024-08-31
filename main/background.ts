@@ -4,7 +4,7 @@ import serve from 'electron-serve'
 import { createWindow } from './helpers'
 
 // Manipulacion de archivos.
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 
 // Manipulación de puerto serial
 import {
@@ -170,12 +170,27 @@ ipcMain.on('estatus_dispositivo', (
  * Manipulacion de archivos locales.
 */
 ipcMain.on('cargar_imagen', async (evento, args) => {
-    const imagenB64 = readFileSync(
-        args.path,
-        {
-            encoding: 'base64'
-        }
+    // Si es un directorio relativo, resolvemos por uno absoluto.
+    const directorioAbsoluto = path.resolve(
+        __dirname,
+        args.path
     );
 
-    evento.returnValue = imagenB64;
+    // Verificamos que exista el archivo.
+    if(existsSync(directorioAbsoluto)) {
+        // Si el archivo existe, cargamos los datos del archivo.
+        const imagenB64 = readFileSync(
+            directorioAbsoluto,
+            {
+                encoding: 'base64'
+            }
+        );
+
+        // Retornamos los datos del archivo.
+        evento.returnValue = imagenB64;
+
+    } else {
+        // Si no existe, retornamos indefinido.
+        evento.returnValue = undefined;
+    }
 });

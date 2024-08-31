@@ -4,20 +4,27 @@
 import React from 'react';
 
 // Iconos del header.
-import { mdiFileDocumentPlus, mdiFileMinus, mdiPrinter } from '@mdi/js';
+import {
+    mdiFileDocumentPlus,
+    mdiFileDocumentMinus,
+    mdiContentCopy,
+    mdiPrinter
+} from '@mdi/js';
 
 // Componente del icono.
 import Icon from '@mdi/react';
 
 // Componentes de reacstrap
 import {
-    Button,
     Container, Row, Col,
-    Card, CardHeader, CardBody, ButtonGroup, Table
+    Card, CardHeader, CardBody,
+    ButtonGroup, Button, UncontrolledTooltip
 } from 'reactstrap';
+import NavegacionReporteDibujos from '../../navegacion/navegacionReporteDibujos/navegacionReporteDibujos';
 
 export default function CardHeaderReporteDibujo(
     props: {
+        deshabilitarAgregarPagina: boolean
         paginas: Pagina[]
         indexPaginaActual: number
         setIndexPaginaActual: Function
@@ -25,6 +32,7 @@ export default function CardHeaderReporteDibujo(
             onEliminarPagina: Function
             onImprimirArchivo: Function
             onAgregarNuevaPagina: Function
+            onCopiarContenidoPagina: Function
         }
     }
 ) {
@@ -35,13 +43,24 @@ export default function CardHeaderReporteDibujo(
                 <CardHeader className="text-white">
                     <Container>
                         <Row>
-                            <Col>
+                            <Col style={{
+                            }}>
                                 Reportes
                             </Col>
 
-                            <Col sm={2}>
+                            <Col style={{
+                                textAlign:'right'
+                            }}>
                                 <ButtonGroup>
-                                    <Button color="success" size='sm' outline
+                                    {/* Boton para agregar pagina */}
+                                    <Button outline
+                                        id="botonAgregarPagina"
+                                        color="success"
+                                        size="sm"
+                                        disabled={
+                                            props.deshabilitarAgregarPagina
+                                        }
+                                        target={'botonAgregarPagina'}
                                         style={{
                                             border: 'none'
                                         }}
@@ -50,22 +69,77 @@ export default function CardHeaderReporteDibujo(
                                         }}
                                     >
                                         <Icon path={mdiFileDocumentPlus} size={1}/>
+
+                                        <UncontrolledTooltip
+                                            placement="bottom"
+                                            target="botonAgregarPagina"
+                                        >
+                                            Agregar pagina
+                                        </UncontrolledTooltip>
                                     </Button>
 
-                                    <Button color="danger" size='sm' outline
+                                    {/* Boton para copiar contenido de otra pagina */}
+                                    <Button outline
+                                        id="botonCopiarContenidoPagina"
+                                        color="primary"
+                                        size="sm"
+                                        disabled={
+                                            props.paginas.length <= 1?
+                                            true : false
+                                        }
+                                        target={'botonCopiarContenidoPagina'}
                                         style={{
                                             border: 'none'
                                         }}
                                         onClick={() => {
-                                            props.funcionesOpciones.onEliminarPagina(
-                                                props.indexPaginaActual
-                                            );
+                                            props.funcionesOpciones.onCopiarContenidoPagina();
                                         }}
                                     >
-                                        <Icon path={mdiFileMinus} size={1}/>
+                                        <Icon path={mdiContentCopy} size={1}/>
+
+                                        <UncontrolledTooltip
+                                            placement="bottom"
+                                            target="botonCopiarContenidoPagina"
+                                        >
+                                            Copiar contenido de otra pagina
+                                        </UncontrolledTooltip>
                                     </Button>
 
-                                    <Button color="primary" size='sm' outline
+                                    {/* Boton para eliminar pagina */}
+                                    <Button outline
+                                        id="botonEliminarPagina"
+                                        color="danger"
+                                        size="sm"
+                                        disabled={
+                                            props.paginas.length <= 0?
+                                            true : false
+                                        }
+                                        style={{
+                                            border: 'none'
+                                        }}
+                                        onClick={() => {
+                                            props.funcionesOpciones.onEliminarPagina();
+                                        }}
+                                    >
+                                        <Icon path={mdiFileDocumentMinus} size={1}/>
+
+                                        <UncontrolledTooltip
+                                            placement="bottom"
+                                            target="botonEliminarPagina"
+                                        >
+                                            Eliminar pagina
+                                        </UncontrolledTooltip>
+                                    </Button>
+
+                                    {/* Boton para imprimir paginas */}
+                                    <Button outline
+                                        id="botonImprimirPagina"
+                                        color="primary"
+                                        size="sm"
+                                        disabled={
+                                            props.paginas.length <= 0?
+                                            true : false
+                                        }
                                         style={{
                                             border: 'none'
                                         }}
@@ -74,6 +148,13 @@ export default function CardHeaderReporteDibujo(
                                         }}
                                     >
                                         <Icon path={mdiPrinter} size={1} />
+
+                                        <UncontrolledTooltip
+                                            placement="bottom"
+                                            target="botonImprimirPagina"
+                                        >
+                                            Imprimir paginas
+                                        </UncontrolledTooltip>
                                     </Button>
                                 </ButtonGroup>
                             </Col>
@@ -82,45 +163,12 @@ export default function CardHeaderReporteDibujo(
                 </CardHeader>
 
                 {/* Barra de navegacion para las paginas */}
-                <CardBody className="text-white">
-                    <Table dark responsive borderless>
-                        <tbody>
-                            <tr>
-                            {props.paginas.map((
-                                pagina: Pagina,
-                                index: number
-                            ) => {                                
-                                return(
-                                    <td
-                                        style={{padding: '0%'}}
-                                    >
-                                        <Button
-                                            block
-                                            outline
-                                            color='warning'
-                                            style={{
-                                                border: '0px',
-                                                borderRadius: '0px',
-                                                whiteSpace: 'nowrap'
-                                            }}
-                                            active={
-                                                index == props.indexPaginaActual?
-                                                    true : false
-                                            }
-                                            onClick={() => {
-                                                props.setIndexPaginaActual(
-                                                    index
-                                                );
-                                            }}
-                                        >
-                                            Pagina {index + 1}
-                                        </Button>
-                                    </td>
-                                );
-                            })}
-                            </tr>
-                        </tbody>
-                    </Table>
+                <CardBody>
+                    <NavegacionReporteDibujos
+                        indexPaginaActual={props.indexPaginaActual}
+                        setIndexPaginaActual={props.setIndexPaginaActual}
+                        paginas={props.paginas}
+                    />
                 </CardBody>
             </Card>
         </React.Fragment>

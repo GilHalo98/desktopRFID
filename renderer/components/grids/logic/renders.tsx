@@ -1,13 +1,5 @@
-// Componentes de reactstrap.
-import {
-    Container, Row, Col,
-    Card, CardBody, CardTitle, CardSubtitle, CardText, CardHeader,
-} from "reactstrap";
-
 // Componentes de los renders.
 import BarraAccionesGrid from '../../barraBotones/barraAcciones/barraAccionesGrid/barraAccionesGrid';
-import ModalOpcionesGrid from '../../modals/modalGrid/modalOpcionesGrid';
-import BarraAccionesTabla from "../../barraBotones/barraAcciones/barraAccionesTabla/barraAccionesTabla";
 import Paginacion from "../../paginacion/paginacion";
 
 // Renderiza la paginacion del grid.
@@ -92,5 +84,6 @@ const renderBarraOpciones = (
 };
 
 export {
-    renderPaginacion
+    renderPaginacion,
+    renderBarraOpciones
 };

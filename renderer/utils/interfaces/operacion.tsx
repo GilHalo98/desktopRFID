@@ -1,0 +1,3 @@
+interface Operacion {
+    actual: string
+};

@@ -12,16 +12,17 @@ import {
 
 // Iconos.
 import { mdiTrashCan } from "@mdi/js";
+
+// Componente para cargar iconos.
 import Icon from "@mdi/react";
-import TablaParaHerramienta from "../tablaParaHerramientas";
 
 // Componentes propios.
-
-// Modelo de datos.
+import TablaParaHerramienta from "../tablaParaHerramientas";
 
 export default function TablaHerramienta(
     props: {
         pagina: Pagina
+        maximoDatos: number
         funcionesOpciones: {
             onAgregarHerramienta: Function
             onRemoverHerramienta: Function
@@ -29,8 +30,8 @@ export default function TablaHerramienta(
         }
         datosOpciones: {
             listaTooling: string[]
-            tiposHerramientas: string[]
-            medidaHerramienta: string[]
+            herramientas: ItemHerramienta[]
+            medidaHerramienta: Object
             operacionHerramienta: string[]
         }
         children?: any
@@ -40,11 +41,39 @@ export default function TablaHerramienta(
         return <></>
     }
 
+    const renderizarOpcionesMedidas = (herramienta: Herramienta) => {
+        if(!herramienta) {
+            return <></>;
+        }
+
+        const indexItem = props.datosOpciones.herramientas.findIndex(
+            (item: ItemHerramienta) => {
+                return herramienta.tipo == item.nombre;
+            }
+        );
+
+        const listaMedidas: string[] = props.datosOpciones.medidaHerramienta[
+            props.datosOpciones.herramientas[indexItem].unidad
+        ];
+
+        return listaMedidas.map((medida: string) => {
+            return(
+                <option value={medida}>
+                    {medida}
+                </option>
+            );
+        });
+    };
+
     return (
         <React.Fragment>
-            <TablaParaHerramienta agregarHerramienta={
-                props.funcionesOpciones.onAgregarHerramienta
-            }>
+            <TablaParaHerramienta
+                maximoDatos={props.maximoDatos}
+                totalDatos={props.pagina.herramientas.length}
+                agregarHerramienta={
+                    props.funcionesOpciones.onAgregarHerramienta
+                }
+            >
 
                 {props.pagina.herramientas.map((
                     herramienta: Herramienta,
@@ -92,8 +121,8 @@ export default function TablaHerramienta(
                                         );
                                     }}
                                 >
-                                    {props.datosOpciones.tiposHerramientas.map((registro: string) => {
-                                        return <option value={registro}>{registro}</option>
+                                    {props.datosOpciones.herramientas.map((registro: ItemHerramienta) => {
+                                        return <option value={registro.nombre}>{registro.nombre}</option>
                                     })}
                                 </Input>
                             </td>
@@ -115,9 +144,7 @@ export default function TablaHerramienta(
                                         );
                                     }}
                                 >
-                                    {props.datosOpciones.medidaHerramienta.map((registro: string) => {
-                                        return <option value={registro}>{registro}</option>
-                                    })}
+                                    {renderizarOpcionesMedidas(herramienta)}
                                 </Input>
                             </td>
 

@@ -25,6 +25,65 @@ function msToTime(s: number) {
     return hrs + ':' + mins + ':' + secs;
 };
 
+function numeroMesANombreMes(mes: number) {
+    let nombreMes: string = undefined;
+
+    switch(mes) {
+        case 0:
+            nombreMes = 'Enero';
+            break;
+
+        case 1:
+            nombreMes = 'Febrero';
+            break;
+
+        case 2:
+            nombreMes = 'Marzo';
+            break;
+
+        case 3:
+            nombreMes = 'Abril';
+            break;
+
+        case 4:
+            nombreMes = 'Mayo';
+            break;
+
+        case 5:
+            nombreMes = 'Junio';
+            break;
+
+        case 6:
+            nombreMes = 'Julio';
+            break;
+
+        case 7:
+            nombreMes = 'Agosto';
+            break;
+
+        case 8:
+            nombreMes = 'Septiembre';
+            break;
+
+        case 9:
+            nombreMes = 'Octubre';
+            break;
+
+        case 10:
+            nombreMes = 'Noviembre';
+            break;
+
+        case 11:
+            nombreMes = 'Diciembre';
+            break;
+
+        default:
+            break;
+    }
+
+    return nombreMes;
+}
+
 function numeroDiaANombreDia(dia: number) {
     let nombreDia: string = undefined;
 
@@ -103,7 +162,7 @@ function deserealizarSemana(semana: string) {
         23,
         59,
         59,
-        0  
+        0
     );
 
     return [
@@ -116,5 +175,6 @@ export {
     dec2bin,
     msToTime,
     numeroDiaANombreDia,
+    numeroMesANombreMes,
     deserealizarSemana
 };

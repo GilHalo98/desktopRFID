@@ -5,21 +5,11 @@ import React from 'react';
 
 // Componentes de reactstrap.
 import {
-    Card, CardHeader, CardBody,
-    Container, Row, Col,
-    Button,
-    Nav, NavItem, NavLink, ButtonGroup, Table
+    Container, Row, Col
 } from 'reactstrap';
 
 // Componentes propios.
 import CardHeaderDashboardActividad from '../cards/cardHeader/cardHeaderDashboardActividad';
-import ModalOpcionesGrid from '../modals/modalGrid/modalOpcionesGrid';
-
-// Funcionalidad del grid.
-import {
-    renderPaginacion,
-    renderTitulo
-} from "./logic/renders";
 
 // Modelo de datos.
 import {

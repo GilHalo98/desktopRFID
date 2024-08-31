@@ -25,14 +25,9 @@ import {
     guardarConfiguracionChecador
 } from './logic/guardarConfiguracionIoT';
 
-// Modelo de datos.
-import {
-    DispositivoIoT
-} from '../../../utils/API/modelos/dispositivoIoT';
-
 export default function MenuGuardarConfiguracionChecador(
     props: {
-        registro: DispositivoIoT,
+        registro: DispositivoIoTSocket,
         toggleModal: Function
     }
 ) {

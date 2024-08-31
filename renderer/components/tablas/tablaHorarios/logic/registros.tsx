@@ -9,10 +9,6 @@ import {
     Horario
 } from "../../../../utils/API/modelos/horario";
 
-import {
-    Empleado
-} from "../../../../utils/API/modelos/horario";
-
 // Importamos la interfaz con la API.
 import {
     ConsultaHorario,

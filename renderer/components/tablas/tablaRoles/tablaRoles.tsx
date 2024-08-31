@@ -168,6 +168,7 @@ export default function TablaReportes(
     const cabeceras = [
         'ID',
         'Rol',
+        'Bit de Rol',
         'Descripción del Rol',
         'Fecha de registro',
         'Ultima modificacion'
@@ -367,12 +368,14 @@ export default function TablaReportes(
                         ['id'],
                         ['rolTrabajador'],
                         ['descripcionRol'],
+                        ['bitRol'],
                         ['fechaRegistroRol'],
                     ]}
                     nombresCampos={[
                         'id',
                         'Rol',
                         'Descripcion del Rol',
+                        'Bit de Rol',
                         'fecha de registro',
                     ]}
                 />

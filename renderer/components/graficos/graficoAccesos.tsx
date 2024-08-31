@@ -4,7 +4,7 @@
 import React from 'react';
 
 import {
-    ReporteAccesosPorDia
+    AccesosPorDia
 } from '../../utils/API/interface/dashboard';
 import { funcionRefresh } from '../../utils/refresh';
 
@@ -25,7 +25,7 @@ export default function GraficoAccesos(
     const [tiempoRefresh, setTiempoRefresh] = React.useState(1);
 
     React.useEffect(() => {
-        ReporteAccesosPorDia(setReporteAccesosPorDia);
+        AccesosPorDia(setReporteAccesosPorDia);
     }, [refresh]);
 
     function formatearReporte(rawData: any) {        

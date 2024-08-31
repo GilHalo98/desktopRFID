@@ -11,23 +11,44 @@ import {
 // Componente para renderizar los iconos.
 import Icon from '@mdi/react';
 
+const validarRol = (rol: number, rolesValidos: number[]) => {
+    if(!rolesValidos) {
+        return true
+    }
+
+    if(rolesValidos.length <= 0) {
+        return true;
+    }
+
+    if(rolesValidos.includes(rol)) {
+        return true;
+    }
+
+    return false;
+};
+
 // Funcion para renderizar la navegacion.
 const renderizarNavegacion = (
     paginaActual: string,
-    paginas: {
-        id: string,
-        descripcion: string,
-        icono: string,
-        url?: string,
-        subdivicion?: any[]
-    }[],
+    paginas: Vista[],
+    rolUsuario: number,
     modoCompacto?: boolean
 ) => {
     /*
     * Funcion para renderizar el contenido de la barra
     * de navegación.
     */
-    return(paginas.map((pagina) => {
+    return(paginas.map((pagina: Vista) => {
+        // Recuperamos los roles validos para el ingreso de la pagina.
+        const rolValido: boolean = validarRol(
+            rolUsuario,
+            pagina.rolesValidos
+        );
+
+        if(!rolValido) {
+            return <></>;
+        }
+
         // Por cada pagina, si esta no tiene sub-divición, entonces
         // se renderiza como un link.
         if(!pagina.subdivicion) {
@@ -39,7 +60,10 @@ const renderizarNavegacion = (
                     <Button
                         id={paginaUrl}
                         className="botonBarraNavegacion"
-                        active={paginaActual == pagina.url ? true : false}
+                        active={
+                            paginaActual == pagina.url?
+                                true : false
+                        }
                         key={pagina.id}
                         href={pagina.url}
                         aria-current="page"
@@ -75,6 +99,16 @@ const renderizarNavegacion = (
 
         // Generamos las sub-diviciones.
         const subDiviciones = pagina.subdivicion.map((subpagina) => {
+            // Recuperamos los roles validos para el ingreso de la pagina.
+            const rolValido: boolean = validarRol(
+                rolUsuario,
+                subpagina.rolesValidos
+            );
+
+            if(!rolValido) {
+                return <></>;
+            }
+
             // Si la pagina activa se encuentra en la sub-divicion.
             if(paginaActual == subpagina.url) {
                 // Activamos el collapside de la subdivicion.

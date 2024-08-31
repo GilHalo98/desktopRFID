@@ -59,6 +59,7 @@ function RegistrarRol(
 
     // Realizamos el request.
     PostRol(formRegistro).then((respuesta) => {
+        console.log(respuesta);
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);

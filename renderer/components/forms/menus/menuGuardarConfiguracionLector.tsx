@@ -27,10 +27,6 @@ import {
 
 // Modelo de datos.
 import {
-    DispositivoIoT
-} from '../../../utils/API/modelos/dispositivoIoT';
-
-import {
     Zona
 } from '../../../utils/API/modelos/zona';
 
@@ -39,10 +35,12 @@ export default function MenuGuardarConfiguracionIoT(
         elementosOpciones: {
             listaZonas:  Zona[]
         },
-        registro: DispositivoIoT,
+        registro: DispositivoIoTSocket,
         toggleModal: Function
     }
 ) {
+    console.log(props.registro);
+
     // Hooks de datos a guardar en la tarjeta.
     const [
         mostrarTodosLosPuertos,
@@ -160,7 +158,7 @@ export default function MenuGuardarConfiguracionIoT(
                     id="bitZona"
                     name="campoBitZona"
                     type="select"
-                    defaultValue={props.registro.zona.bitZona}
+                    defaultValue={props.registro.bitZona}
                 >
                     {props.elementosOpciones.listaZonas.map((zona: Zona) => {
                         return(

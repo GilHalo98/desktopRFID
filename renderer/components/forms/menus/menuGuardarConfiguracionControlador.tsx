@@ -25,10 +25,6 @@ import {
     guardarConfiguracionControlador
 } from './logic/guardarConfiguracionIoT';
 
-// Modelo de datos.
-import {
-    DispositivoIoT
-} from '../../../utils/API/modelos/dispositivoIoT';
 import {
     Rol
 } from '../../../utils/API/modelos/rol';
@@ -38,7 +34,7 @@ export default function MenuGuardarConfiguracionControlador(
         elementosOpciones: {
             listaRoles:  Rol[]
         }
-        registro: DispositivoIoT,
+        registro: DispositivoIoTSocket,
         toggleModal: Function
     }
 ) {

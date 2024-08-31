@@ -10,6 +10,7 @@ import { Rol } from "../../../../utils/API/modelos/rol";
 const renderDatosEmpleado = (empleado: Empleado) => {
     if(typeof(empleado) != "undefined" ) {
         return <Display
+            tituloDisplay={""}
             registro={empleado}
             nombresCampos={[
                 'ID del empleado',
@@ -31,6 +32,7 @@ const renderDatosEmpleado = (empleado: Empleado) => {
 const renderDatosRol = (rol: Rol) => {
     if(typeof(rol) != "undefined" ) {
         return <Display
+            tituloDisplay={""}
             registro={rol}
             nombresCampos={[
                 'ID del rol',
@@ -52,6 +54,7 @@ const renderDatosRol = (rol: Rol) => {
 const renderDatosPermiso = (permiso: Permiso) => {
     if(typeof(permiso) != "undefined" ) {
         return <Display
+            tituloDisplay={""}
             registro={permiso}
             nombresCampos={[
                 'ID del permiso',

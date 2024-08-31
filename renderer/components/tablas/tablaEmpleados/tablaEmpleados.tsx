@@ -280,7 +280,7 @@ export default function TablaEmpleados(
     };
 
     const parametrosBusqueda = {
-        setIdEmpleado: setIdEmpleado,
+        setId: setIdEmpleado,
         setNombres: setNombres,
         setApellidoPaterno: setApellidoPaterno,
         setApellidoMaterno: setApellidoMaterno,

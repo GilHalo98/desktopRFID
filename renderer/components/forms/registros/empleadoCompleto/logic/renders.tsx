@@ -306,7 +306,7 @@ function renderRegistroEmpleado(
     registro?: Empleado
 ) {
     if(!registro) {
-        registro = {};
+        registro = {} as Empleado;
     }
 
     // Desempaquetamos todos los datos del registro.
@@ -451,7 +451,7 @@ function renderRegistroUsuario(
     registro?: Usuario
 ) {
     if(!registro) {
-        registro = {};
+        registro = {} as Usuario;
     }
 
     // Desempaquetamos los datos.
@@ -485,9 +485,13 @@ function renderRegistroUsuario(
                     id="autogenerarNombreUsuario"
                     name="checkAutoGenerarUsername"
                     type="switch"
-                    onClick={(evento) => {setAutoGenerarUsername(
-                        evento.target.checked
-                    )}}
+                    onClick={(evento: SyntheticEvent) => {
+                        const input = evento.target as HTMLInputElement;
+
+                        setAutoGenerarUsername(
+                            input.checked
+                        )
+                    }}
                 />
 
                 <Label switch>
@@ -525,9 +529,13 @@ function renderRegistroUsuario(
                                 id="autogenerarPassword"
                                 name="checkAutoGenerarPassword"
                                 type="switch"
-                                onClick={(evento) => {setAutoGenerarPassword(
-                                    evento.target.checked
-                                )}}
+                                onClick={(evento: SyntheticEvent) => {
+                                    const input = evento.target as HTMLInputElement;
+            
+                                    setAutoGenerarPassword(
+                                        input.checked
+                                    )
+                                }}
                             />
 
                             <Label switch>
@@ -541,9 +549,13 @@ function renderRegistroUsuario(
                             <Input
                                 id="mostrarPassword"
                                 type="checkbox"
-                                onClick={(evento) => {setMostrarContra(
-                                    evento.target.checked
-                                )}}
+                                onClick={(evento: SyntheticEvent) => {
+                                    const input = evento.target as HTMLInputElement;
+            
+                                    setMostrarContra(
+                                        input.checked
+                                    )
+                                }}
                             />
 
                             <Label check>
@@ -571,7 +583,7 @@ function renderRegistroHorario(
     registro?: HorarioCompleto
 ) {
     if(!registro) {
-        registro = {};
+        registro = {} as HorarioCompleto;
     }
 
     // Desempaquetamos los datos.

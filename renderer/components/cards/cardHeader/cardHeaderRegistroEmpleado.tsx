@@ -7,28 +7,20 @@ import React from 'react';
 import {
     Card, CardHeader, CardBody,
     Container, Row, Col,
-    Button,
-    Nav, NavItem, NavLink, ButtonGroup, Table
 } from 'reactstrap';
 
 // Componentes propios.
-import FormBusquedaDashboardActividad from '../../forms/busqueda/formBusquedaDashboardActividad';
+import FormBusquedaEmpleado from '../../forms/busqueda/formBusquedaEmpleado';
+import BarraAccionesGrid from '../../barraBotones/barraAcciones/barraAccionesGrid/barraAccionesGrid';
 
 // Funcionalidad del grid.
-import {
-    funcionRefresh
-} from '../../../utils/refresh';
 
 // Enumeradores.
-import { ESTATUS_DISPOSITIVOS } from '../../../utils/statusDispositivos';
 
 // Modelo de datos.
-import { DispositivoIoT } from '../../../utils/API/modelos/dispositivoIoT';
-import { renderBarraOpciones } from '../../tablas/logic/renders';
-import FormBusquedaEmpleado from '../../forms/busqueda/formBusquedaEmpleado';
-import { Rol } from '../../../utils/API/modelos/rol';
-import BarraAccionesTabla from '../../barraBotones/barraAcciones/barraAccionesTabla/barraAccionesTabla';
-import BarraAccionesGrid from '../../barraBotones/barraAcciones/barraAccionesGrid/barraAccionesGrid';
+import {
+    Rol
+} from '../../../utils/API/modelos/rol';
 
 export default function CardHeaderRegistroEmpleado(
     props: {

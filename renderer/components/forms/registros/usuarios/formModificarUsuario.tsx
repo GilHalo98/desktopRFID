@@ -1,5 +1,5 @@
 // funcionalidad de React.
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 
 // Componentes de reacstrap
 import {
@@ -212,9 +212,13 @@ export default function FormModificarUsuario(
                 <Input
                     name="checkAutoGenerarUsername"
                     type="switch"
-                    onClick={(evento) => {setAutoGenerarUsername(
-                        evento.target.checked
-                    )}}
+                    onClick={(evento: SyntheticEvent) => {
+                        const input = evento.target as HTMLInputElement;
+
+                        setAutoGenerarUsername(
+                            input.checked
+                        )
+                    }}
                 />
 
                 <Label switch>
@@ -269,9 +273,13 @@ export default function FormModificarUsuario(
                             <Input
                                 name="checkAutoGenerarPassword"
                                 type="switch"
-                                onClick={(evento) => {setAutoGenerarPassword(
-                                    evento.target.checked
-                                )}}
+                                onClick={(evento: SyntheticEvent) => {
+                                    const input = evento.target as HTMLInputElement;
+
+                                    setAutoGenerarPassword(
+                                        input.checked
+                                    )
+                                }}
                             />
 
                             <Label switch>
@@ -284,9 +292,13 @@ export default function FormModificarUsuario(
                         <FormGroup check>
                             <Input
                                 type="checkbox"
-                                onClick={(evento) => {setMostrarContra(
-                                    evento.target.checked
-                                )}}
+                                onClick={(evento: SyntheticEvent) => {
+                                    const input = evento.target as HTMLInputElement;
+
+                                    setMostrarContra(
+                                        input.checked
+                                    )
+                                }}
                             />
 
                             <Label check>

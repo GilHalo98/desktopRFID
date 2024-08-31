@@ -19,7 +19,7 @@ function guardarDatos(
     registro: Empleado,
     registrosVinculados: {
         rol: Rol,
-        permisos: Permiso
+        permiso: Permiso
     }
 ) {
     /**

@@ -1,6 +1,6 @@
 interface Programa {
     programador: string
-    rutaPrograma: string
-    tiempoPrograma: string
-    nombrePrograma: string
+    ruta: string
+    tiempo: string
+    nombre: string
 };

@@ -1,11 +1,5 @@
 import React from 'react';
 
-// Componentes de reactstrap.
-import {
-    Container, Row, Col,
-    Table
-} from 'reactstrap';
-
 // Componentes de tremor.
 import {
     Tracker, Card
@@ -14,7 +8,7 @@ import { msToTime, numeroDiaANombreDia } from '../../utils/conversiones';
 import { HorasTrabajadas } from '../../utils/API/respuestas/horasTrabajadas';
 
 interface Tracker {
-    color: CustomColor;
+    color: "slate" | "gray" | "zinc" | "neutral" | "stone" | "red" | "orange" | "amber" | "yellow" | "lime" | "green" | "emerald" | "teal" | "cyan" | "sky" | "blue" | "indigo" | "violet" | "purple" | "fuchsia" | "pink" | "rose";
     tooltip: string;
 };
 
@@ -37,7 +31,7 @@ export default function DisplayHorasTrabajadas(
             tiempoDescanso: number,
             tiempoTrabajo: number
         }) => {
-            let color: CustomColor = 'red';
+            let color: "slate" | "gray" | "zinc" | "neutral" | "stone" | "red" | "orange" | "amber" | "yellow" | "lime" | "green" | "emerald" | "teal" | "cyan" | "sky" | "blue" | "indigo" | "violet" | "purple" | "fuchsia" | "pink" | "rose" = 'red';
             let tooltip: string = 'No hay datos registrados';
 
             if(dato.esDescanso) {

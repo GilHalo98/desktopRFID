@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 
 import {
     Container, Row, Col,
@@ -16,7 +16,10 @@ export default function FormLogin(
     }
 ) {
 
-    const [mostrarPassword, setMostrarPassword] = React.useState(false);
+    const [
+        mostrarPassword,
+        setMostrarPassword
+    ] = React.useState(false);
 
     const controlInput = {
         display: (props.enCarga? 'none' : '')
@@ -43,8 +46,10 @@ export default function FormLogin(
                                 name="nombreDeUsuario"
                                 placeholder="Nombre de usuario"
                                 type="text"
-                                onChange={(input) => {
-                                    props.setUserName(input.target.value);
+                                onChange={(evento: SyntheticEvent) => {
+                                    const input = evento.target as HTMLTextAreaElement;
+
+                                    props.setUserName(input.value);
                                 }}
                             />
                         </FormGroup>
@@ -56,8 +61,10 @@ export default function FormLogin(
                                 name="passwordDeUsuario"
                                 placeholder="Contraseña de usuario"
                                 type={controlMostrarPassword(mostrarPassword)}
-                                onChange={(input) => {
-                                    props.setPassword(input.target.value);
+                                onChange={(evento: SyntheticEvent)=> {
+                                    const input = evento.target as HTMLTextAreaElement;
+
+                                    props.setPassword(input.value);
                                 }}
                             />
                         </FormGroup>
@@ -68,8 +75,12 @@ export default function FormLogin(
                                     <FormGroup
                                         switch
                                         style={{color: 'white'}}
-                                        onChange={(input) => {
-                                            props.setRecordarSesion(input.target.checked);
+                                        onChange={(evento: SyntheticEvent) => {
+                                            const input = evento.target as HTMLInputElement;
+
+                                            props.setRecordarSesion(
+                                                input.checked
+                                            );
                                         }}
                                     >
                                         <Input
@@ -89,8 +100,12 @@ export default function FormLogin(
                                     >
                                         <Input
                                             type="checkbox"
-                                            onClick={(evento) => {
-                                                setMostrarPassword(evento.target.checked);
+                                            onClick={(evento: SyntheticEvent) => {
+                                                const input = evento.target as HTMLInputElement;
+
+                                                setMostrarPassword(
+                                                    input.checked
+                                                );
                                             }}
                                         />
 

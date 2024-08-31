@@ -1,33 +1,69 @@
 'use client'
-import logo from '../../public/images/logo.png'
 
+// React
+import React from 'react';
+
+// Logotipo o membrete de la empresa.
+import logo from '../../public/images/logo.png';
+
+// Iconos.
 import {
     mdiLogout,
     mdiMenuClose,
     mdiMenuOpen
 } from '@mdi/js';
 
+// Componente de next para renderizar imagenes.
 import Image from 'next/image';
+
 // Datos a usar en el componente.
 import paginas from './logic/poblarSideBar';
-import { useRouter, push } from 'next/router';
+
+// Enrutador de next.
+import {
+    useRouter
+} from 'next/router';
 
 // Componentes de React.
 import {
-    Button,
-    Nav, NavLink, NavItem,
-    UncontrolledCollapse, UncontrolledTooltip,
-    Container, Col, Row, ButtonGroup
+    ButtonGroup, Button,
+    Nav, NavItem
 } from 'reactstrap';
-import React from 'react';
+
+// Componente para renderizar los iconos.
 import Icon from '@mdi/react';
+
+// Logica de la vista.
 import renderizarNavegacion from './logic/renderizarNavegacion';
 
 export default function SideBar(
     props: any
 ) {
     // Hook del menu.
-    const [menuCompacto, setMenuCompacto] = React.useState(false);
+    const [
+        menuCompacto,
+        setMenuCompacto
+    ] = React.useState(false);
+
+    // Hooks del rol del usuario.
+    const [
+        rol,
+        setRol
+    ] = React.useState(undefined);
+
+    // React useEffect que carga el rol del usuario.
+    React.useEffect(() => {
+        if(window.sessionStorage.getItem('rol')) {
+            setRol(
+                parseInt(window.sessionStorage.getItem('rol'))
+            );
+        }
+    }, []);
+
+    // Refrescamos el componente.
+    React.useEffect(() => {
+        console.log('refrescamiento del componente');
+    }, [rol]);
 
     // Instanciamos un ruter.
     const ruter = useRouter();
@@ -43,8 +79,7 @@ export default function SideBar(
         <Nav
             className={
                 estadoBarra
-                + " nav nav-pills bg-dark border-bottom"
-                + " border-body v-pills-tabContent"
+                + " nav nav-pills bg-dark v-pills-tabContent"
             }
         >
             { /* Mostramos el logo de la empresa en el sidebar */ }
@@ -80,7 +115,7 @@ export default function SideBar(
                             sessionStorage.removeItem('token');
 
                             // Movemos la pagina a la vista login.
-                            push('/');
+                            ruter.push('/');
                         }}
                         size='sm'
                     >
@@ -88,7 +123,7 @@ export default function SideBar(
                     </Button>
 
                     <Button
-                        className='botonLogout'
+                        className='botonCompactarSideBar'
                         color='warning'
                         size='sm'
                         outline
@@ -117,6 +152,7 @@ export default function SideBar(
             {renderizarNavegacion(
                 paginaActual,
                 paginas,
+                rol,
                 menuCompacto
             )}
         </Nav>

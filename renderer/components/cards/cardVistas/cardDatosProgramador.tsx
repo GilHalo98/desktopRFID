@@ -3,10 +3,15 @@ import React, { SyntheticEvent } from 'react';
 
 // Componentes de reactstrap.
 import {
-    Button,
-    Container, Row, Col,
-    Card, CardBody, CardHeader, CardText, CardTitle, Spinner, Input, Table
+    Input, Label,
+    Card, CardBody,
+    Container, Row, Col, InputGroup,
 } from 'reactstrap';
+
+// Modelos de datos.
+import {
+    Empleado
+} from '../../../utils/API/modelos/empleado';
 
 export default function CardDatosProgramador(
     props: {
@@ -15,7 +20,7 @@ export default function CardDatosProgramador(
             onGuardarCambios: Function
         }
         datosOpciones: {
-            listaProgramadores: string[]
+            listaProgramadores: Empleado[]
         }
     }
 ) {
@@ -32,41 +37,57 @@ export default function CardDatosProgramador(
                             <Col style={{
                                 textAlign: 'center'
                             }}>
-                                Programador:
-                                <Input
-                                    id="programador"
-                                    type="select"
-                                    value={props.pagina.programa.programador}
-                                    onChange={(evento: SyntheticEvent) => {
-                                        const input = evento.target as HTMLSelectElement;
+                                <Label>
+                                    Programador:
+                                </Label>
 
-                                        props.funcionesOpciones.onGuardarCambios(
-                                            input.value,
-                                            'programa',
-                                            'programador'
-                                        );
-                                    }}
-                                >
-                                    {props.datosOpciones.listaProgramadores.map((programador: string) => {
-                                        return <option value={programador}>{programador}</option>
-                                    })}
-                                </Input>
+                                    <Input
+                                        id="programador"
+                                        type="text"
+                                        list="empleados"
+                                        value={props.pagina.programa.programador}
+                                        onChange={(evento: SyntheticEvent) => {
+                                            const input = evento.target as HTMLSelectElement;
+
+                                            props.funcionesOpciones.onGuardarCambios(
+                                                input.value,
+                                                'programa',
+                                                'programador'
+                                            );
+                                        }}
+                                    />
+
+                                    <datalist id="empleados">
+                                        {props.datosOpciones.listaProgramadores.map((
+                                            registro: Empleado
+                                        ) => {
+                                            return(
+                                                <option value={
+                                                    `${registro.nombres} ${registro.apellidoPaterno} ${registro.apellidoMaterno}`
+                                                }/>
+                                            );
+                                        })}
+                                    </datalist>
                             </Col>
-                        </Row>
 
-                        <Row>
-                            <Col style={{textAlign: 'center'}}>
-                                <b>Ruta del programa:</b>
+                            <Col style={{
+                                textAlign: 'center'
+                            }}>
+                                <Label>
+                                    Ruta del programa:
+                                </Label>
+
                                 <Input
                                     id="rutaPrograma"
                                     type="file"
+                                    accept=".gcode"
                                     onChange={(evento: SyntheticEvent) => {
-                                        const input = evento.target as HTMLTextAreaElement;
+                                        const input = evento.target as HTMLInputElement;
 
                                         props.funcionesOpciones.onGuardarCambios(
-                                            input.value,
+                                            input.files[0].path,
                                             'programa',
-                                            'rutaPrograma'
+                                            'ruta'
                                         );
                                     }}
                                 />
@@ -76,57 +97,50 @@ export default function CardDatosProgramador(
                         <br/>
 
                         <Row>
-                            <Col>
-                                <Table dark responsive borderless>
-                                    <thead style={{
-                                        textAlign: 'center'
-                                    }}>
-                                        <tr>
-                                            <th>Programa</th>
-                                            <th>Tiempo de programa estimado</th>
-                                        </tr>
-                                    </thead>
+                            <Col style={{
+                                textAlign: 'center'
+                            }}>
+                                <Label>
+                                    Programa
+                                </Label>
 
-                                    <tbody style={{
-                                        textAlign: 'center'
-                                    }}>
-                                        <tr>
-                                            <td>
-                                                <Input
-                                                    id="idPrograma"
-                                                    type="text"
-                                                    value={props.pagina.programa.nombrePrograma}
-                                                    onChange={(evento: SyntheticEvent) => {
-                                                        const input = evento.target as HTMLTextAreaElement;
+                                <Input
+                                    id="idPrograma"
+                                    type="text"
+                                    value={props.pagina.programa.nombre}
+                                    onChange={(evento: SyntheticEvent) => {
+                                        const input = evento.target as HTMLTextAreaElement;
 
-                                                        props.funcionesOpciones.onGuardarCambios(
-                                                            input.value,
-                                                            'programa',
-                                                            'nombrePrograma'
-                                                        );
-                                                    }}
-                                                />
-                                            </td>
+                                        props.funcionesOpciones.onGuardarCambios(
+                                            input.value,
+                                            'programa',
+                                            'nombre'
+                                        );
+                                    }}
+                                />
+                            </Col>
 
-                                            <td>
-                                                <Input
-                                                    id="tiempoPrograma"
-                                                    type="time"
-                                                    value={props.pagina.programa.tiempoPrograma}
-                                                    onChange={(evento: SyntheticEvent) => {
-                                                        const input = evento.target as HTMLTextAreaElement;
+                            <Col style={{
+                                textAlign: 'center'
+                            }}>
+                                <Label>
+                                    Tiempo de programa estimado
+                                </Label>
 
-                                                        props.funcionesOpciones.onGuardarCambios(
-                                                            input.value,
-                                                            'programa',
-                                                            'tiempoPrograma'
-                                                        );
-                                                    }}
-                                                />
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </Table>
+                                <Input
+                                    id="tiempoPrograma"
+                                    type="time"
+                                    value={props.pagina.programa.tiempo}
+                                    onChange={(evento: SyntheticEvent) => {
+                                        const input = evento.target as HTMLTextAreaElement;
+
+                                        props.funcionesOpciones.onGuardarCambios(
+                                            input.value,
+                                            'programa',
+                                            'tiempo'
+                                        );
+                                    }}
+                                />
                             </Col>
                         </Row>
                     </Container>

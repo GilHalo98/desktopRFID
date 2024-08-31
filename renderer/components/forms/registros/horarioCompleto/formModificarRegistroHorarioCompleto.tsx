@@ -113,10 +113,12 @@ export default function FormModificarRegistroHorarioCompleto(
                         <Input
                             type="checkbox"
                             id="horarioSimilar"
-                            onChange={(evento: SyntheticEvent) => {
-                                const input = evento.target as HTMLButtonElement;
-
-                                setDiasSimilares(input.checked)
+                            onClick={(evento: SyntheticEvent) => {
+                                const input = evento.target as HTMLInputElement;
+        
+                                setDiasSimilares(
+                                    input.checked
+                                )
                             }}
                         />
 

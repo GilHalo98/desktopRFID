@@ -34,26 +34,38 @@ import {
 } from '../../../utils/API/interface/tipoDispositivo';
 
 // Componentes propios.
-import BarraAccionesDispositivoControladorPuerta from '../../barraBotones/barraAcciones/barraAccionesDispositivos/barraAccionesDispositivoControladorPuerta';
-import BarraAccionesDispositivoControlador from '../../barraBotones/barraAcciones/barraAccionesDispositivos/barraAccionesDispositivoControlador';
-import BarraAccionesDispositivoChecador from '../../barraBotones/barraAcciones/barraAccionesDispositivos/barraAccionesDispositivoChecador';
-import BarraAccionesDispositivoLector from '../../barraBotones/barraAcciones/barraAccionesDispositivos/barraAccionesDispositivoLector';
-import ModalGuardarConfiguracionControlador from '../../modals/modalOpciones/modalGuardarConfiguracionControlador';
-import ModalGuardarConfiguracionChecador from '../../modals/modalOpciones/modalGuardarConfiguracionChecador';
-import MenuGuardarConfiguracionControlador from '../../forms/menus/menuGuardarConfiguracionControlador';
-import MenuGuardarConfiguracionChecador from '../../forms/menus/menuGuardarConfiguracionChecador';
-import ModalConexionSerial from '../../modals/modalGrid/modalConexionSerial';
 import TablaParaStatusDispositivos from '../tablaParaStatusDispositivos';
-
-// Modelo de datos.
-import { TipoDispositivo } from '../../../utils/API/modelos/tipoDispositivo';
-import { Zona } from '../../../utils/API/modelos/zona';
-import { ConsultaRol } from '../../../utils/API/interface/rol';
-import { Rol } from '../../../utils/API/modelos/rol';
-import ModalGuardarConfiguracionLector from '../../modals/modalOpciones/modalGuardarConfiguracionLector';
+import ModalConexionSerial from '../../modals/modalGrid/modalConexionSerial';
 import MenuGuardarConfiguracionLector from '../../forms/menus/menuGuardarConfiguracionLector';
+import MenuGuardarConfiguracionChecador from '../../forms/menus/menuGuardarConfiguracionChecador';
+import MenuGuardarConfiguracionControlador from '../../forms/menus/menuGuardarConfiguracionControlador';
+import ModalGuardarConfiguracionLector from '../../modals/modalOpciones/modalGuardarConfiguracionLector';
+import ModalGuardarConfiguracionChecador from '../../modals/modalOpciones/modalGuardarConfiguracionChecador';
+import ModalGuardarConfiguracionControlador from '../../modals/modalOpciones/modalGuardarConfiguracionControlador';
 import MenuGuardarConfiguracionControladorPuerta from '../../forms/menus/menuGuardarConfiguracionControladorPuerta';
 import ModalGuardarConfiguracionControladorPuerta from '../../modals/modalOpciones/modalGuardarConfiguracionControladorPuerta';
+import BarraAccionesDispositivoLector from '../../barraBotones/barraAcciones/barraAccionesDispositivos/barraAccionesDispositivoLector';
+import BarraAccionesDispositivoChecador from '../../barraBotones/barraAcciones/barraAccionesDispositivos/barraAccionesDispositivoChecador';
+import BarraAccionesDispositivoControlador from '../../barraBotones/barraAcciones/barraAccionesDispositivos/barraAccionesDispositivoControlador';
+import BarraAccionesDispositivoControladorPuerta from '../../barraBotones/barraAcciones/barraAccionesDispositivos/barraAccionesDispositivoControladorPuerta';
+
+
+// Modelo de datos.
+import {
+    TipoDispositivo
+} from '../../../utils/API/modelos/tipoDispositivo';
+
+import {
+    Zona
+} from '../../../utils/API/modelos/zona';
+
+import {
+    ConsultaRol
+} from '../../../utils/API/interface/rol';
+
+import {
+    Rol
+} from '../../../utils/API/modelos/rol';
 
 export default function TablaReportes(
     props: {}
@@ -84,7 +96,7 @@ export default function TablaReportes(
     const [
         listaRegistros,
         setListaRegistros
-    ] = React.useState([]);
+    ] = React.useState([] as DispositivoIoTSocket[]);
 
     // Hooks de la barra de busqueda.
     const [
@@ -133,17 +145,17 @@ export default function TablaReportes(
     const [
         listaZonas,
         setListaZonas
-    ] = React.useState([]);
+    ] = React.useState([] as Zona[]);
 
     const [
         listaTiposDispositivos,
         setListaTiposDispositivos
-    ] = React.useState([]);
+    ] = React.useState([] as TipoDispositivo[]);
 
     const [
         listaRoles,
         setListaRoles
-    ] = React.useState([]);
+    ] = React.useState([] as Rol[]);
 
     // Hooks de los estados de los modals.
     const [
@@ -501,8 +513,7 @@ export default function TablaReportes(
                 toggleModal={() => {setEstadoModalConexionSerial(
                     !estadoModalConexionSerial
                 )}}
-            >
-            </ModalConexionSerial>
+            />
 
             {/*
                 Modal para guardar la configuracion en

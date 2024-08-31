@@ -15,7 +15,7 @@ import { funcionRefresh } from '../../../utils/refresh';
 
 // Interfaz de API.
 import {
-    ConsultaAccesosRecientes, ReporteAccesosPorDia
+    AccesosPorDia
 } from '../../../utils/API/interface/dashboard'
 
 export default function ListaAccesosRecientes(
@@ -42,7 +42,7 @@ export default function ListaAccesosRecientes(
     React.useEffect(() => {
         console.log('refresh');
 
-        ReporteAccesosPorDia(
+        AccesosPorDia(
             (data: any) => {
                 setListaRegistros(data.registros);
             },

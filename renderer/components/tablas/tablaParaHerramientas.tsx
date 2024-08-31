@@ -6,6 +6,7 @@ import React from "react";
 // Componentes de reacstrap
 import {
     Button, Table,
+    UncontrolledTooltip,
     Container, Col, Row,
     Card, CardBody, CardHeader,
 } from "reactstrap";
@@ -20,6 +21,8 @@ import Icon from "@mdi/react";
 
 export default function TablaParaHerramienta(
     props: {
+        maximoDatos: number
+        totalDatos: number
         agregarHerramienta: Function
         children?: any
     }
@@ -38,15 +41,27 @@ export default function TablaParaHerramienta(
                                 textAlign: 'right'
                             }}>
                                 <Button
+                                    id="botonAgregarHerramienta"
                                     outline
                                     size="sm"
                                     color="success"
+                                    disabled={
+                                        props.totalDatos < props.maximoDatos?
+                                            false : true
+                                    }
                                     onClick={() => {
                                         props.agregarHerramienta();
                                     }}
                                     style={{border: 'none'}}
                                 >
                                     <Icon path={mdiPlus} size={1}/>
+
+                                    <UncontrolledTooltip
+                                        placement="right"
+                                        target="botonAgregarHerramienta"
+                                    >
+                                        Agregar herramienta
+                                    </UncontrolledTooltip>
                                 </Button>
                             </Col>
                         </Row>

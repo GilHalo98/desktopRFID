@@ -30,6 +30,7 @@ const formatearRegistros = (
         [
             ['id'],
             ['rolTrabajador'],
+            ['bitRol'],
             ['descripcionRol'],
             ['fechaRegistroRol'],
             ['fechaModificacionRol']
@@ -95,6 +96,10 @@ const guardarRegistro = (
         'idPermisoVinculado',
         evento.target[2].value
     );
+    datosRegistro.append(
+        'bitRol',
+        evento.target[3].value
+    );
 
     // Registramos el permiso en la base de datos.
     RegistrarRol(
@@ -135,6 +140,10 @@ const modificarRegistro = (
     datosModificaion.append(
         'idPermisoVinculado',
         evento.target[2].value
+    );
+    datosModificaion.append(
+        'bitRol',
+        evento.target[3].value
     );
 
     // Registramos el permiso en la base de datos.
