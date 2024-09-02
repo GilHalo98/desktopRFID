@@ -13,8 +13,6 @@ import CardVistaLogin from '../components/cards/cardLogin/cardLogin';
 export default function Login() {
     return (
         <React.Fragment>
-            <Prueba/>
-
             <CardVistaLogin/>
         </React.Fragment>
     );

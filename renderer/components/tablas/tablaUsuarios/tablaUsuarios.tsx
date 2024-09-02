@@ -4,7 +4,6 @@
 import React from 'react';
 
 // Componentes propios.
-import ModalVisualizarRegistro from '../../modals/modalOpciones/modalVisualizarRegistro';
 import ModalModificarRegistro from '../../modals/modalOpciones/modalModificarRegistro';
 import FormModificarUsuario from '../../forms/registros/usuarios/formModificarUsuario';
 import FormRegistroUsuario from '../../forms/registros/usuarios/formRegistroUsuario';
@@ -30,13 +29,13 @@ import {
 } from './logic/autogen';
 
 // Modelo de datos.
-import { Usuario } from '../../../utils/API/modelos/usuario';
-
-// Se eliminara
 import {
-    RemoverUsuario
-} from '../../../utils/API/interface/usuarios';
-import { Empleado } from '../../../utils/API/modelos/empleado';
+    Usuario
+} from '../../../utils/API/modelos/usuario';
+
+import {
+    Empleado
+} from '../../../utils/API/modelos/empleado';
 
 export default function TablaUsuarios(
     props: {}
