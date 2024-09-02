@@ -4,10 +4,14 @@ import jsPDF from "jspdf";
 // Plantilla del documento de salida.
 import Plantilla from "../../../plantillasDocumentos/reporte";
 
+// Funciones para validar registros.
+import {
+    validarPaginas
+} from "./validar";
 
 // DataTest.
 import {
-    NoDibujos
+    NoDibujos,
 } from "./testData";
 
 // Co-rutina que cuenta el numero de operaciones por registros de dibujos.
@@ -84,12 +88,21 @@ const insertarPaginas = async (
         // Renderizamos todas las hojas, eliminamos la ultima hoja
         // y guardamos el archivo final.
         Promise.all(paginasRenderizadas).then((respuesta) => {
+            // Eliminamos todas las hojas sobradas.
             while(paginas.length - documento.getNumberOfPages() < 0) {
                 documento.deletePage(documento.getNumberOfPages());
             }
 
-            documento.save('prueba.pdf');
+            // Instanciamos la fecha de hoy.
+            const fecha: Date = new Date();
 
+            // Preparamos el nombre del archivo de salida.
+            const nombreArchivo: string = `AC-RMC-${fecha.getTime()}.pdf`;
+
+            // Guardamos el archivo.
+            documento.save(nombreArchivo);
+
+            // Cerramos el modal.
             toggleModalGenerarReporte();
 
         }).catch(error => {
@@ -101,10 +114,7 @@ const insertarPaginas = async (
 // Rutina para imprimir el arhcivo en un formato PDF.
 const onImprimirArchivo = async (
     paginas: Pagina[],
-    paginasNoOk: {
-        pagina: Pagina,
-        numeroPagina: number
-    }[],
+    paginasNoOk: PaginaNoOk[],
     setPaginasNoOk: Function,
     orientacionHoja: "p" | "portrait" | "l" | "landscape",
     unidadesHoja: "pt" | "px" | "in" | "mm" | "cm" | "ex" | "em" | "pc",
@@ -113,36 +123,16 @@ const onImprimirArchivo = async (
     setProgresoRenderizado: Function,
     toggleModalGenerarReporte: Function
 ) => {
-    // Flusheamos la lista.
-    paginasNoOk.splice(0, paginasNoOk.length);
 
-    // Verificamos que los datos de las paginas esten completos para
-    // generar el reporte de manera correcta.
-    paginas.map((
-        registro: Pagina,
-        index: number
-    ) => {
-        if(!registro.dibujo.directorio) {
-            paginasNoOk.push({
-                pagina: registro,
-                numeroPagina: (index + 1)
-            });
-            return;
-        }
-
-        if(!registro.dibujo.tipo) {
-            paginasNoOk.push({
-                pagina: registro,
-                numeroPagina: (index + 1)
-            });
-            return;
-        }
-    });
-
-    setPaginasNoOk(paginasNoOk);
+    // Validamos las paginas.
+    const paginasValidadas: boolean = await validarPaginas(
+        paginas,
+        paginasNoOk,
+        setPaginasNoOk
+    )
 
     // Verificamos que todas las paginas esten correctas.
-    if(paginasNoOk.length > 0) {
+    if(!paginasValidadas) {
         toggleModalError();
         return;
     }

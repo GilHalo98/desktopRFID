@@ -17,10 +17,7 @@ import {
 
 export default function ModalDatosIncompletosDibujo(
     props: {
-        paginas: {
-            pagina: Pagina,
-            numeroPagina: number
-        }[],
+        paginasNoOk: PaginaNoOk[],
         modalActivo: boolean,
         toggleModal: Function
     }
@@ -38,7 +35,7 @@ export default function ModalDatosIncompletosDibujo(
                     fontSize: '28px',
                     fontWeight: 'bolder'
                 }}>
-                    Datos incompletos en {props.paginas.length} paginas
+                    Datos incompletos en {props.paginasNoOk.length} paginas
                 </CardHeader>
 
                 {/*Body, muestra la informacioón importante de la alerta.*/}
@@ -63,7 +60,7 @@ export default function ModalDatosIncompletosDibujo(
                                     fontSize: '20px'
                                 }}>
                                     ¡Faltan datos en {
-                                        props.paginas.length
+                                        props.paginasNoOk.length
                                     } paginas para poder generar el archivo del reporte!
                                 </CardTitle>
                             </Col>
@@ -93,13 +90,10 @@ export default function ModalDatosIncompletosDibujo(
                                 <List type="unstyled" style={{
                                     textAlign: 'center'
                                 }}>
-                                    {props.paginas.map((registro: {
-                                        pagina: Pagina,
-                                        numeroPagina: number
-                                    }) => {
+                                    {props.paginasNoOk.map((registro: PaginaNoOk) => {
                                         return(
                                             <li>
-                                                Pagina {registro.numeroPagina}
+                                                Pagina {registro.numeroPagina} razón: <b>{registro.razon}</b>
                                             </li>
                                         );
                                     })}

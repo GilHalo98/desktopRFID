@@ -22,10 +22,7 @@ export default function GridParaReporteDeDibujos(
     props: {
         enCarga: boolean
         paginas: Pagina[]
-        paginasNoOk: {
-            pagina: Pagina
-            numeroPagina: number
-        }[]
+        paginasNoOk: PaginaNoOk[]
         indexPaginaActual: number
         setIndexPaginaActual: Function
         funcionesOpciones: {
@@ -102,7 +99,7 @@ export default function GridParaReporteDeDibujos(
             </Container>
 
             <ModalDatosIncompletosDibujo
-                paginas={props.paginasNoOk}
+                paginasNoOk={props.paginasNoOk}
                 modalActivo={estadoModalFaltaDatosDibujo}
                 toggleModal={() => {
                     setEstadoModalFaltaDatosDibujo(

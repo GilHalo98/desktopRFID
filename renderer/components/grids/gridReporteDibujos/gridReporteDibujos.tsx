@@ -56,10 +56,7 @@ export default function GridReporteDibujos() {
     const [
         paginasNoOk,
         setPaginasNoOk,
-    ] = React.useState([] as {
-        pagina: Pagina,
-        numeroPagina: number
-    }[]);
+    ] = React.useState([] as PaginaNoOk[]);
 
     // Hooks de datos de consultas.
     const [

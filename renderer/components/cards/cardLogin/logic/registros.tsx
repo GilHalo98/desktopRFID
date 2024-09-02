@@ -24,8 +24,6 @@ const iniciarSesion = (
     return LoginUsuario(
         datosLogin,
         (respuesta: any) => {
-            console.log(respuesta);
-
             // Si la autorizacion fue existorsa.
             if(respuesta.authorization) {
                 // Guardamos el token de acceso.

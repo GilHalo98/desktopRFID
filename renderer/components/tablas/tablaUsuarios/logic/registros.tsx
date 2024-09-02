@@ -131,7 +131,7 @@ const modificarRegistro = (
     );
     datosModificaion.append(
         'password',
-        evento.target[3].value
+        evento.target[2].value
     );
     datosModificaion.append(
         'idRegistroEmpleadoVinculado',

@@ -158,8 +158,8 @@ const paginas: Vista[] = [{
             rolesValidos: [1],
         }, {
             id: "3.3",
-            url: "/home/reportes/dibujos",
-            descripcion: "Reportes de dibujos",
+            url: "/home/reportes/mastercam",
+            descripcion: "Reportes de MasterCam",
             icono: mdiFileCad,
             rolesValidos: [1, 5],
         }]

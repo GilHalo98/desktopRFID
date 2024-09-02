@@ -5,17 +5,18 @@ import React from 'react';
 
 // Componentes de reactstrap.
 import {
-    Card,
-    Container, Row, Col, CardHeader, Spinner, CardBody, CardText, Alert
+    Container, Row, Col
 } from 'reactstrap';
 
 // Componentes propios.
-import ListaHistorialUsosMaquina from '../../listas/listaHistorialUsosMaquina/listaHistorialUsosMaquina';
-import CardHeaderHistorialActividad from '../../cards/cardHeader/cardHeaderHistorialActividad';
-import GridParaReporteDeActividadDeMaquina from '../gridParaReporteDeActividadDeMaquina';
-import CardRegistroEmpleado from '../../cards/cardsRegistros/cardRegistroEmpleado';
-import DisplayOperadoresMaquina from '../../displays/displayOperadoresMaquina';
+import IndicadorCargaSpinner from '../../cargas/indicadorCargaSpinner';
 import GraficoActividadMaquina from '../../graficos/graficoActividadMaquina';
+import DisplayOperadoresMaquina from '../../displays/displayOperadoresMaquina';
+import CardRegistroEmpleado from '../../cards/cardsRegistros/cardRegistroEmpleado';
+import GridParaReporteDeActividadDeMaquina from '../gridParaReporteDeActividadDeMaquina';
+import AlertaFaltaRegistrosParaReporte from '../../alertas/alertaFaltaRegistrosParaReporte';
+import CardHeaderHistorialActividad from '../../cards/cardHeader/cardHeaderHistorialActividad';
+import ListaHistorialUsosMaquina from '../../listas/listaHistorialUsosMaquina/listaHistorialUsosMaquina';
 
 // Funcionalidad.
 import {
@@ -29,15 +30,14 @@ import {
 import {
     ReporteOperadoresMaquina
 } from '../../../utils/API/respuestas/reporteOperadoresMaquina';
-import AlertaFaltaRegistrosParaReporte from '../../alertas/alertaFaltaRegistrosParaReporte';
-import IndicadorCargaSpinner from '../../cargas/indicadorCargaSpinner';
 
 export default function GridReporteActividadMaquina(
     props: {}
 ) {
     // Hook que indcia si la pagina esta cargando contenido.
     const [
-        enCarga, setEnCarga
+        enCarga,
+        setEnCarga
     ] = React.useState(true);
 
     // Hooks para refrescar la vista.

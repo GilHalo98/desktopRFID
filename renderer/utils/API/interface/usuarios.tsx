@@ -138,6 +138,8 @@ function ModificarUsuario(
 
     // Realizamos el request.
     PutUsuario(parametrosBusqueda, formRegistro).then((respuesta) => {
+        console.log(respuesta);
+        console.log(parametrosBusqueda);
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);

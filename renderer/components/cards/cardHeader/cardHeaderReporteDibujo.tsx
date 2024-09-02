@@ -8,7 +8,7 @@ import {
     mdiFileDocumentPlus,
     mdiFileDocumentMinus,
     mdiContentCopy,
-    mdiPrinter
+    mdiFileMove
 } from '@mdi/js';
 
 // Componente del icono.
@@ -147,13 +147,13 @@ export default function CardHeaderReporteDibujo(
                                             props.funcionesOpciones.onImprimirArchivo();
                                         }}
                                     >
-                                        <Icon path={mdiPrinter} size={1} />
+                                        <Icon path={mdiFileMove} size={1} />
 
                                         <UncontrolledTooltip
                                             placement="bottom"
                                             target="botonImprimirPagina"
                                         >
-                                            Imprimir paginas
+                                            Generar Documento PDF
                                         </UncontrolledTooltip>
                                     </Button>
                                 </ButtonGroup>
