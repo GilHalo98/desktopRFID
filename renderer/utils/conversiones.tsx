@@ -170,11 +170,40 @@ function deserealizarSemana(semana: string) {
     ];
 };
 
+const separarTiempo = (tiempo: string) => {
+    /**
+     * Separa el tiempo en formato HH:MM:SS a
+     * HH horas MM minutos SS segundos
+     */
+    const partes = tiempo.split(':');
+
+    let tiempoSeparado: string = '';
+
+    if((partes[0] != '00') && (partes[0] != '0')) {
+        tiempoSeparado = tiempoSeparado.concat(`${partes[0]} horas `);
+    }
+
+    if(partes[1]) {
+        if((partes[1] != '00') && (partes[1] != '0')) {
+            tiempoSeparado = tiempoSeparado.concat(`${partes[1]} minutos `);
+        }
+    }
+
+    if(partes[2]) {
+        if((partes[2] != '00') && (partes[2] != '0')) {
+            tiempoSeparado = tiempoSeparado.concat(`${partes[2]} segundos`);
+        }
+    }
+
+    return tiempoSeparado;
+};
+
 export {
     bin2dec,
     dec2bin,
     msToTime,
     numeroDiaANombreDia,
     numeroMesANombreMes,
-    deserealizarSemana
+    deserealizarSemana,
+    separarTiempo
 };

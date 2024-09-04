@@ -29,6 +29,8 @@ import {
 import {
     msToTime
 } from '../../../utils/conversiones';
+import TrackerDatos from '../../graficos/trackerDatos';
+import { formatearDatosTracker } from './logic/rutinas';
 
 export default function TablaHorasTrabajadas(
     props: {}
@@ -237,8 +239,9 @@ export default function TablaHorasTrabajadas(
                 return('¡No existe registro de horario para este empleado!');
             }
 
-            return <DisplayHorasTrabajadas
+            return <TrackerDatos
                 registros={horasTrabajadas}
+                formaterDatosTracker={formatearDatosTracker}
             />;
         },
         "Horas trabajadas totales": (tiempoTrabajoTotal?: number) => {

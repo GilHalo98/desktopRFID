@@ -7,10 +7,13 @@ import React from 'react';
 import {
     Table, Button, Alert,
     Container, Row, Col,
-    Card, CardBody, CardTitle, CardSubtitle, CardText, CardHeader, List, ListGroupItem, ListGroup,
+    List, ListGroupItem, ListGroup,
+    Card, CardBody, CardTitle, CardSubtitle, CardText, CardHeader,
 } from 'reactstrap';
-import BarraAccionesLista from '../barraBotones/barraAcciones/barraAccionesLista/barraAccionesLista';
+
+// Componentes propios.
 import ModalOpcionesLista from '../modals/modalOpciones/modalOpcionesLista';
+import BarraAccionesLista from '../barraBotones/barraAcciones/barraAccionesLista/barraAccionesLista';
 
 export default function Lista(
     props: {
@@ -18,7 +21,10 @@ export default function Lista(
         children: any
     }
 ) {
-    const [estadoModalOpciones, setEstadoModalOpciones] = React.useState(false);
+    const [
+        estadoModalOpciones,
+        setEstadoModalOpciones
+    ] = React.useState(false);
 
     return(
         <Card color='dark'>

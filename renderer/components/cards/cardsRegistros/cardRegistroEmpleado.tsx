@@ -6,9 +6,9 @@ import Image from 'next/image';
 
 // Componentes de reactstrap.
 import {
-    Button,
+    Spinner,
     Container, Row, Col,
-    Card, CardBody, CardHeader, CardText, CardTitle, Spinner
+    Card, CardBody, CardHeader, CardText, CardTitle
 } from 'reactstrap';
 
 // Componentes propios.
@@ -20,7 +20,9 @@ import {
 } from "./logic/registros";
 
 // Importando modelo de datos.
-import { Empleado } from '../../../utils/API/modelos/empleado';
+import {
+    Empleado
+} from '../../../utils/API/modelos/empleado';
 
 import {
     Recurso
@@ -56,7 +58,7 @@ export default function CardRegistroEmpleado(
             () => {},
             setEnCarga,
             {
-                id:props.registro.idImagenVinculada
+                id: props.registro.idImagenVinculada
             }
         );
     }, []);

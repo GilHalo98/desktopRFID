@@ -234,6 +234,43 @@
         height: 50vh;
     }
 
+    /* Estilo de la subNavegacion */
+    .subNavegacion {
+        overflow-x: scroll;
+        margin: 15px;
+    }
+
+    .botonSubNavegacion {
+        transition:
+            all 0.2s;
+
+        padding: 4px 100px 4px 100px;
+
+        font-weight: bolder;
+
+        border: 0px;
+        border-radius: 0px;
+        white-space: nowrap;
+
+        color: rgb(33, 37, 41);
+        background-color: #FFBC26;
+        border-bottom: #FFBC26 5px solid;
+    }
+
+    .botonSubNavegacion.active  {
+        font-weight: bolder;
+        color: rgb(33, 37, 41);
+        background-color: #FFBC26;
+        border-bottom: #0085FC 5px solid;
+    }
+
+    .botonSubNavegacion:hover {
+        font-weight: bolder;
+        color: rgb(33, 37, 41);
+        background-color: #FFBC26;
+        border-bottom: #0085FC 5px solid;
+    }
+
     /* Estilo de la barra de navegacion de las paginas de los dibujos */
 
     .navReportesDibujos {

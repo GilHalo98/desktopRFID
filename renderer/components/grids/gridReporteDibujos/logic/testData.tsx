@@ -58,7 +58,9 @@ const medidaHerramienta: Object = {
 const operacionHerramienta: string[] = [
     '',
     'Desbaste',
-    'Acabado'
+    'Acabado',
+    'Roscado',
+    'Rimado'
 ];
 
 const montajes: string[] = [
