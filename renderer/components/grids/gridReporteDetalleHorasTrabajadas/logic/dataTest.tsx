@@ -108,6 +108,35 @@ for (let i = 1; i <= 7; i++) {
     });
 }
 
+const horasTotalReporte: {
+    a: string
+    b: string
+    total: number
+}[] = [];
+
+for (let i = 0; i < 5; i++) {
+    horasTotalReporte.push({
+        a: '9:00',
+        b: '11:00',
+        total: 2 * (3.6e+6)
+    });
+    
+}
+
+const listaZonas: string[] = [
+    'Baño',
+    'Oficinas de ingeniería',
+    'Comedor'
+];
+
+const listaMaquinas: string[] = [
+    'CNC 1',
+    'CNC 2',
+    'Prensa Hidraulica',
+    'Cortadora laser',
+    'Montacargas'
+];
+
 export {
     contenidoSubNavegacion,
     registroEmpleado,
@@ -118,5 +147,8 @@ export {
     fechaPrueba,
     datosTracker,
     datosIntentosAccesos,
-    datosIntentosUsos
+    datosIntentosUsos,
+    horasTotalReporte,
+    listaZonas,
+    listaMaquinas
 }

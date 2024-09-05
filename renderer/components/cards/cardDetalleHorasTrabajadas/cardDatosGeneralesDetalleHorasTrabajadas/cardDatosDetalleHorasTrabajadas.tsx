@@ -8,7 +8,7 @@ import {
     Table,
     ButtonGroup, Button,
     Container, Col, Row,
-    Card, CardBody, CardHeader, CardText, CardTitle, UncontrolledTooltip,
+    Card, CardBody, CardHeader, CardText, CardTitle, UncontrolledTooltip, Badge,
 } from 'reactstrap';
 
 // Iconos usados.
@@ -136,11 +136,19 @@ export default function CardDatosDetalleHorasTrabajadas(
                             </td>
 
                             <td>
-                                {props.datos.retrasos}
+                                <Badge color='danger' style={{
+                                    width: '100%'
+                                }}>
+                                    {props.datos.retrasos}
+                                </Badge>
                             </td>
 
                             <td>
-                                {props.datos.faltas}
+                                <Badge style={{
+                                    width: '100%'
+                                }}>
+                                    {props.datos.faltas}
+                                </Badge>
                             </td>
                         </tr>
                     </tbody>

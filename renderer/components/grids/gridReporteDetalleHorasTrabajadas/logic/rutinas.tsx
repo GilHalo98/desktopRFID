@@ -15,7 +15,7 @@ const formatearDatosTracker = (datos: any[]) => {
         let color: "slate" | "gray" | "zinc" | "neutral" | "stone" | "red" | "orange" | "amber" | "yellow" | "lime" | "green" | "emerald" | "teal" | "cyan" | "sky" | "blue" | "indigo" | "violet" | "purple" | "fuchsia" | "pink" | "rose" = 'red';
 
         color = 'green';
-        let tooltip: string = dato.descripcion;
+        let tooltip: string = `${dato.descripcion} a las ${dato.hora}`;
 
         datosFormateados.push({
             color: color,

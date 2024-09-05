@@ -21,7 +21,8 @@ export default function Paginacion(
         offset: number,
         registrosPorPagina: number,
         setPaginaActual: Function,
-        setOffset: Function
+        setOffset: Function,
+        sendToTop?: boolean
     }
 ) {
     // Generamos los botones de la paginacion.
@@ -30,6 +31,9 @@ export default function Paginacion(
         props.paginaActual,
         3
     );
+
+    // Indicamos que si al cambiar de pagina mandamos el enfoque al top.
+    const toTop: string = props.sendToTop? '#' : '';
 
     return(
         <Container>
@@ -41,8 +45,8 @@ export default function Paginacion(
                             props.paginaActual == 1
                         }>
                             <PaginationLink
+                                href={toTop}
                                 first
-                                href="#"
                                 onClick={() => {
                                     primeraPagina(
                                         props.setPaginaActual,
@@ -56,7 +60,7 @@ export default function Paginacion(
                             props.paginaActual == 1
                         }>
                             <PaginationLink
-                                href="#"
+                                href={toTop}
                                 previous
                                 onClick={() => {
                                     anteriorPagina(
@@ -76,7 +80,7 @@ export default function Paginacion(
                                     active={pagina == props.paginaActual}
                                 >
                                     <PaginationLink
-                                        href="#"
+                                        href={toTop}
                                         key={index}
                                         onClick={() => {
                                             haciaPagina(
@@ -97,7 +101,7 @@ export default function Paginacion(
                             props.paginaActual == props.totalPaginas
                         }>
                             <PaginationLink
-                                href="#"
+                                href={toTop}
                                 next
                                 onClick={() => {
                                     siguientePagina(
@@ -115,7 +119,7 @@ export default function Paginacion(
                             props.paginaActual == props.totalPaginas
                         }>
                             <PaginationLink
-                                href="#"
+                                href={toTop}
                                 last
                                 onClick={() => {
                                     ultimaPagina(

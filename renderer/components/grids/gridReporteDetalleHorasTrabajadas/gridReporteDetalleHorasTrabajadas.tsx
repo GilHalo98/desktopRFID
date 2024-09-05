@@ -18,8 +18,12 @@ import {
     contenidoSubNavegacion,
     datosGenerales,
     datosIntentosAccesos,
+    datosIntentosUsos,
     datosTracker,
     fechaPrueba,
+    horasTotalReporte,
+    listaMaquinas,
+    listaZonas,
     registroEmpleado,
     reporteChequeos,
     reporteDescansos,
@@ -29,16 +33,19 @@ import {
 // Componentes propios.
 import TrackerDatos from '../../graficos/trackerDatos';
 import SubNavegacion from '../../navegacion/subNavegacion';
+import ListaReportes from '../../listas/listaReportes/listaReportes';
 import CardRegistroEmpleado from '../../cards/cardsRegistros/cardRegistroEmpleado';
 import GridParaReporteDetalleHorasTrabajadas from '../gridParaReporteDetalleHorasTrabajadas';
+import ListaHorasTotalReportes from '../../listas/listaHorasTotalReportes/listaHorasTotalReportes';
 import CardDatosDetalleHorasTrabajadas from '../../cards/cardDetalleHorasTrabajadas/cardDatosGeneralesDetalleHorasTrabajadas/cardDatosDetalleHorasTrabajadas';
 import CardResumenDatosDetalleHorasTrabajadas from '../../cards/cardDetalleHorasTrabajadas/cardResumenDatosDetalleHorasTrabajadas/cardResumenDatosDetalleHorasTrabajadas';
 import CardReportesChicoDetalleHorasTrabajadas from '../../cards/cardDetalleHorasTrabajadas/cardReportesChicoDetalleHorasTrabajadas/cardReportesChicoDetalleHorasTrabajadas';
 
 // Rutinas
-import { formatearDatosTracker } from './logic/rutinas';
-import ListaReportes from '../../listas/listaReportes/listaReportes';
-
+import {
+    formatearDatosTracker
+} from './logic/rutinas';
+import { msToTime, separarTiempo } from '../../../utils/conversiones';
 
 export default function GridReporteDetalleHorasTrabajadas(
     props: {}
@@ -130,7 +137,7 @@ export default function GridReporteDetalleHorasTrabajadas(
             {/* Registros de reportes. */}
             <Row>
                 {/* Resumen de registros de reportes. */}
-                <Col md={12} lg={3}>
+                <Col md={12} lg={4}>
                     <Row>
                         <Col>
                             <CardReportesChicoDetalleHorasTrabajadas
@@ -169,33 +176,85 @@ export default function GridReporteDetalleHorasTrabajadas(
 
                     <Row>
                         <Col>
-                            <ListaReportes datos={datosIntentosAccesos}/>
+                            <ListaReportes
+                                titulo="Accesos a zonas"
+                                datos={datosIntentosAccesos}
+                            />
                         </Col>
                     </Row>
 
                     <Row>
                         <Col>
-                            <Card color='dark'>
-                                a
-                            </Card>
+                            <ListaReportes
+                                titulo="Usos de maquinas"
+                                datos={datosIntentosUsos}
+                            />
                         </Col>
                     </Row>
                 </Col>
 
                 {/* Regristros de reportes de zonas y maquinas */}
-                <Col md={12} lg={9}>
+                <Col md={12} lg={8}>
                     <Row>
-                        <Col>
-                            <Card color='dark'>
-                                a
-                            </Card>
-                        </Col>
+                        {listaZonas.map((nombre: string) => {
+                            return(
+                                <Col md={12} lg={6}>
+                                    <ListaHorasTotalReportes
+                                        titulo={nombre}
+                                        datos={horasTotalReporte.map((
+                                            registro: {
+                                                a: string
+                                                b: string
+                                                total: number
+                                            }
+                                        ) => {
+                                            return {
+                                                Entrada: registro.a,
+                                                Salida: registro.b,
+                                                Total: separarTiempo(msToTime(
+                                                    registro.total
+                                                ))
+                                            }
+                                        })}
+                                        headers={[
+                                            'Entrada',
+                                            'Salida',
+                                            'Total'
+                                        ]}
+                                    />
+                                </Col>
+                            );
+                        })}
 
-                        <Col>
-                            <Card color='dark'>
-                                a
-                            </Card>
-                        </Col>
+                        {listaMaquinas.map((nombre: string) => {
+                            return(
+                                <Col md={12} lg={6}>
+                                    <ListaHorasTotalReportes
+                                        titulo={nombre}
+                                        datos={horasTotalReporte.map((
+                                            registro: {
+                                                a: string
+                                                b: string
+                                                total: number
+                                            }
+                                        ) => {
+                                            return {
+                                                Inicio: registro.a,
+                                                Fin: registro.b,
+                                                Total: separarTiempo(msToTime(
+                                                    registro.total
+                                                ))
+                                            }
+                                        })}
+                                        headers={[
+                                            'Inicio',
+                                            'Fin',
+                                            'Total'
+                                        ]}
+                                    />
+                                </Col>
+                            );
+                        })}
                     </Row>
                 </Col>
             </Row>
