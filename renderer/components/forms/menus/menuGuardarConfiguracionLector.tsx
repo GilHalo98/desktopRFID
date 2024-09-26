@@ -39,8 +39,6 @@ export default function MenuGuardarConfiguracionIoT(
         toggleModal: Function
     }
 ) {
-    console.log(props.registro);
-
     // Hooks de datos a guardar en la tarjeta.
     const [
         mostrarTodosLosPuertos,
@@ -188,9 +186,6 @@ export default function MenuGuardarConfiguracionIoT(
                                 name="accionesOpcionales"
                                 type="radio"
                                 defaultChecked
-                                onChange={(input) => {
-                                    setMostrarTodosLosPuertos(input.target.checked);
-                                }}
                             />
                         </Col>
 
@@ -203,9 +198,6 @@ export default function MenuGuardarConfiguracionIoT(
                                 id="bloquearPuertaAlCerrar"
                                 name="accionesOpcionales"
                                 type="radio"
-                                onChange={(input) => {
-                                    setMostrarTodosLosPuertos(input.target.checked);
-                                }}
                             />
                         </Col>
 
@@ -218,13 +210,25 @@ export default function MenuGuardarConfiguracionIoT(
                                 id="desbloquearPuertaAlAbrir"
                                 name="accionesOpcionales"
                                 type="radio"
-                                onChange={(input) => {
-                                    setMostrarTodosLosPuertos(input.target.checked);
-                                }}
                             />
                         </Col>
                     </Row>
                 </Container>
+            </FormGroup>
+
+            <br/>
+
+            {/* Indicamos si se genera el reporte de salida de zona. */}
+            <FormGroup check>
+                <Input
+                    id="generarReporteSalidaZona"
+                    name="reporteSalidaZona"
+                    type="checkbox"
+                />
+
+                <Label check>
+                    Generar reporte de salida de zona en vez de acceso a zona.
+                </Label>
             </FormGroup>
 
             <br/>

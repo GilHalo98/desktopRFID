@@ -19,7 +19,9 @@ module.exports = {
       blue: colors.blue,
       green: colors.green,
       red: colors.red,
-      yellow: colors.yellow
+      yellow: colors.yellow,
+      cyan: colors.cyan,
+      lime: colors.lime
     },
     transparent: "transparent",
     current: "currentColor",

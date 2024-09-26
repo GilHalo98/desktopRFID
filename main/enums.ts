@@ -78,8 +78,11 @@ export enum EVENTOS_GUARDADO_CONFIGURACION_LECTOR {
     // Cambia la accion opcional realizada por el dispositivo.
     CAMBIAR_ACCION_OPCIONAL = '9\r',
 
+    // Cambia el tipo de registro a realizar.
+    CAMBIAR_REGISTRAR_REPORTE_SALIDA = '10\r',
+
     // Evento de finalizacion de configuracion
-    FINALIZAR_CONFIGURACIO = '10\r'
+    FINALIZAR_CONFIGURACIO = '11\r'
 };
 
 export enum EVENTOS_GUARDADO_CONFIGURACION_CHECADOR {

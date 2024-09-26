@@ -131,6 +131,7 @@ export default function CardDatosProgramador(
                                     id="tiempoPrograma"
                                     type="time"
                                     value={props.pagina.programa.tiempo}
+                                    defaultValue={"00:00:00"}
                                     onChange={(evento: SyntheticEvent) => {
                                         const input = evento.target as HTMLTextAreaElement;
 

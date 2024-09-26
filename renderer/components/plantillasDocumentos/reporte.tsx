@@ -73,8 +73,8 @@ export default function Plantilla(
         }}>
             <div className="datosCliente">
                 <div className="apartadoMembreteProyecto">
-                    <Image
-                        src={logo}
+                    <img
+                        src={logo.src}
                         height={60}
                         width={81}
                     />

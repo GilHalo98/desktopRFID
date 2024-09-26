@@ -46,7 +46,7 @@ const GetHorarioCompleto = async (
         idRolVinculado?: number,
     }
 ) => {
-    return ENDPOINTS.HORARIO.CONSULTA_COMPLETO(parametros);
+    return ENDPOINTS.HORARIO.COMPLETO.CONSULTA(parametros);
 };
 
 const PutHorarioCompleto = async (
@@ -55,7 +55,7 @@ const PutHorarioCompleto = async (
     },
     formModificacion: FormData
 ) => {
-    return ENDPOINTS.HORARIO.MODIFICAR_COMPLETO(parametros, formModificacion);
+    return ENDPOINTS.HORARIO.COMPLETO.MODIFICAR(parametros, formModificacion);
 };
 
 export {

@@ -8,6 +8,11 @@ import {
     Tracker
 } from '@tremor/react';
 
+// Modelo de datos.
+import {
+    Reporte
+} from '../../utils/API/modelos/reporte';
+
 export default function TrackerDatos (
     props: {
         registros: any[]

@@ -14,15 +14,28 @@ function bin2dec(
     return decimal;
 };
 
-function msToTime(s: number) {
+function msToTime(s: number, enTexto:boolean = false) {
+    if(typeof s == 'undefined') {
+        return "";
+    }
+
+    if(s <= 0) {
+        return "";
+    }
+
     var ms = s % 1000;
+
     s = (s - ms) / 1000;
+
     var secs = s % 60;
+
     s = (s - secs) / 60;
+
     var mins = s % 60;
+
     var hrs = (s - mins) / 60;
 
-    return hrs + ':' + mins + ':' + secs;
+    return `${hrs}:${mins}:${secs}`;
 };
 
 function numeroMesANombreMes(mes: number) {
@@ -123,7 +136,44 @@ function numeroDiaANombreDia(dia: number) {
     return nombreDia;
 };
 
+function rangoSemana() {
+    // Instanciamos dos fechas.
+    const fechaA = new Date();
+    const fechaB = new Date();
+
+    // Les quitamos el offset del timezone.
+    const timeZone = fechaA.getTimezoneOffset();
+
+    const offsetHoras = Math.floor(timeZone / 60);
+    const offsetMinutos = Math.floor(timeZone / (60 * 60));
+
+    // Calculamos el dia en el que inicia la semana.
+    fechaA.setDate(fechaA.getDate() - fechaA.getDay());
+
+    // La primera va a tener hora de 00:00:00
+    fechaA.setHours(0, 0, 0);
+
+    // Calculamos el dia en el que termina la semana.
+    fechaB.setDate(fechaB.getDate() + (6 - fechaB.getDay()));
+
+    // La segunda tendra hora de 23:59:59
+    fechaB.setHours(23, 59, 59);
+
+    return [fechaA, fechaB];
+};
+
 function deserealizarSemana(semana: string) {
+    // Si la variable seman no esta definida o es nula.
+    if(!semana) {
+        return [undefined, undefined]
+    }
+
+    // Si el dato de la variable esta vacio.
+    if(semana == '') {
+        // Retornamos el ragno de la semana actual.
+        return [undefined, undefined]
+    }
+
     // Primero convertimos todos los literales a minusculas.
     const datoSerializado = semana.toLowerCase();
 
@@ -140,7 +190,7 @@ function deserealizarSemana(semana: string) {
     fechaA.setFullYear(
         parseInt(semanaReporte[0]),
         0,
-        (parseInt(semanaReporte[1]) * 7) - 6
+        (parseInt(semanaReporte[1]) * 7) - 7
     );
 
     fechaA.setHours(
@@ -154,7 +204,7 @@ function deserealizarSemana(semana: string) {
     fechaB.setFullYear(
         parseInt(semanaReporte[0]),
         0,
-        (parseInt(semanaReporte[1]) * 7)
+        (parseInt(semanaReporte[1]) * 7) - 1
     );
 
 
@@ -162,7 +212,7 @@ function deserealizarSemana(semana: string) {
         23,
         59,
         59,
-        0
+        0  
     );
 
     return [
@@ -175,6 +225,15 @@ const separarTiempo = (tiempo: string) => {
      * Separa el tiempo en formato HH:MM:SS a
      * HH horas MM minutos SS segundos
      */
+
+    if(typeof tiempo == 'undefined') {
+        return '0';
+    }
+
+    if(tiempo == '') {
+        return '0';
+    }
+
     const partes = tiempo.split(':');
 
     let tiempoSeparado: string = '';
@@ -198,12 +257,57 @@ const separarTiempo = (tiempo: string) => {
     return tiempoSeparado;
 };
 
+const fechaStrATiempo = (fechaStr: string) => {
+    if(typeof fechaStr == 'undefined') {
+        return "";
+    }
+
+    if(fechaStr == '') {
+        return "";
+    }
+
+    const fechaTiempo: string[] = fechaStr.split('T');
+
+    const tiempo = fechaTiempo[1].split('.')[0];
+
+    return tiempo;
+};
+
+const a12HorasTiempo = (tiempo: string) => {
+    /**
+     * Separa el tiempo en formato HH:MM:SS a
+     * HH horas MM minutos SS segundos
+     */
+
+    if(typeof tiempo == 'undefined') {
+        return '0';
+    }
+
+    if(tiempo == '') {
+        return '0';
+    }
+
+    const partes: string [] = tiempo.split(':');
+
+    const horas: number = parseInt(partes[0]);
+    const minutos: string = partes[1];
+
+    if((horas / 12) > 1) {
+        return `${horas % 12}:${minutos} PM`;
+    }
+
+    return `${horas}:${minutos} AM`;
+};
+
 export {
     bin2dec,
     dec2bin,
     msToTime,
+    a12HorasTiempo,
+    rangoSemana,
+    separarTiempo,
+    fechaStrATiempo,
+    deserealizarSemana,
     numeroDiaANombreDia,
     numeroMesANombreMes,
-    deserealizarSemana,
-    separarTiempo
 };

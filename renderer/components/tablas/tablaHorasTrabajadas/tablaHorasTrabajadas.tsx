@@ -6,7 +6,6 @@ import React from 'react';
 // Componentes propios.
 import ModalHorasTrabajadasDetalle from '../../modals/modalInformacionDetalle/modalHorasTrabajadasDetalle';
 import FormBusquedaHorasTrabajadas from '../../forms/busqueda/formBusquedaHorasTrabajadas';
-import DisplayHorasTrabajadas from '../../displays/displayHorasTrabajadas';
 import TablaParaHorasTrabajadas from '../tablaParaHorasTrabajadas';
 
 // Importamos la funcionalidad de la tabla.
@@ -282,6 +281,7 @@ export default function TablaHorasTrabajadas(
                     !estadoModalVisualizarDetalle
                 )}}
                 registro={registroOperacion}
+                semanaReporte={semanaReporte}
             />
 
             { /*Barra de busqueda del TipoReporte*/ }

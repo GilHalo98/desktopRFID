@@ -65,6 +65,7 @@ const renderizarCardsEmpleados = (
                     registro={registro}
                     indexRegistro={index}
                     funcionesRegistros={funcionesRegistros}
+                    mostrarDatosEmpleado={true}
                 />
             </Col>
         );

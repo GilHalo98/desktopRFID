@@ -6,20 +6,26 @@ import Image from 'next/image';
 
 // Componentes de reactstrap.
 import {
-    Spinner,
+    List,
     Container, Row, Col,
     Card, CardBody, CardHeader, CardText, CardTitle
 } from 'reactstrap';
 
 // Componentes propios.
-import BarraOpcionesRegistroEmpleado from '../../barraBotones/barraOpciones/BarraOpcionesRegistrosEmpleado/barraOpcionesRegistroEmpleado';
+import IndicadorCargaSpinner from '../../cargas/indicadorCargaSpinner';
 
 // Logica del componente.
 import {
-    consultarImagenEmpleado
+    consultarImagenEmpleado,
+    consultarRolEmpleado
 } from "./logic/registros";
 
-// Importando modelo de datos.
+// Renders de componentes.
+import {
+    renderBarraOpcionesRegistro
+} from './logic/renders';
+
+// Modelos de datos.
 import {
     Empleado
 } from '../../../utils/API/modelos/empleado';
@@ -28,15 +34,20 @@ import {
     Recurso
 } from '../../../utils/API/modelos/recurso';
 
+import {
+    Rol
+} from '../../../utils/API/modelos/rol';
+
 export default function CardRegistroEmpleado(
     props: {
         registro: Empleado,
-        indexRegistro: number,
+        indexRegistro?: number,
         funcionesRegistros?: {
             onGuardarDatosTarjeta?: Function,
             onVisualizarRegistro?: Function,
             onModificarRegistro?: Function
         }
+        mostrarDatosEmpleado?: boolean
     }
 ) {
     // Hook indicador de componente en carga.
@@ -45,52 +56,45 @@ export default function CardRegistroEmpleado(
         setEnCarga
     ] = React.useState(true);
 
-    // Imagen del empleado.
+    // Datos del componente.
     const [
-        recursos,
-        setRecursos
-    ] = React.useState([]);
+        recurso,
+        setRecurso
+    ] = React.useState({} as Recurso);
+
+    const [
+        registroRol,
+        setRegistroRol
+    ] = React.useState({} as Rol)
 
     // Consultamos la imagen del empleado.
     React.useEffect(() => {
-        consultarImagenEmpleado(
-            setRecursos,
-            () => {},
-            setEnCarga,
-            {
-                id: props.registro.idImagenVinculada
-            }
-        );
-    }, []);
+        console.log('refresh COMPONENTE');
 
-    const controlImagen = {
-        display: (enCarga? 'none' : '')
-    };
-
-    const controlSpinner = {
-        display: (enCarga? '' : 'none')
-    };
-
-    // Renderizamos la barra de opciones del registro en el card.
-    function renderBarraOpcionesRegistro() {
-        if(typeof props.funcionesRegistros == 'undefined') {
-            return <></>;
+        if(typeof props.registro.idImagenVinculada != 'undefined') {
+            // Consultamos los datos del componente.
+            consultarImagenEmpleado(
+                setRecurso,
+                setEnCarga,
+                {
+                    limit: 1,
+                    id: props.registro.idImagenVinculada
+                },
+                () => {
+                    // Realizamos la consulta concatenada.
+                    consultarRolEmpleado(
+                        setRegistroRol,
+                        setEnCarga,
+                        {
+                            limit: 1,
+                            id: props.registro.idRolVinculado
+                        }
+                    )
+                }
+            );
         }
 
-        return <BarraOpcionesRegistroEmpleado
-            registro={props.registro}
-            indexRegistro={props.indexRegistro}
-            onGuardarDatosTarjeta={
-                props.funcionesRegistros.onGuardarDatosTarjeta
-            }
-            onVisualizarRegistro={
-                props.funcionesRegistros.onVisualizarRegistro
-            }
-            onModificarRegistro={
-                props.funcionesRegistros.onModificarRegistro
-            }
-        />;
-    }
+    }, [props.registro]);
 
     return(
         <Card className='cardEmpleado' color='dark'>
@@ -104,63 +108,49 @@ export default function CardRegistroEmpleado(
                 }
             </CardHeader>
 
-            <CardBody>
-                <Container>
-                    <Row style={controlImagen}>
-                        <Col>
-                            {recursos.map((imagen: Recurso) => {
-                                const imagenB64 = window.btoa(imagen.data);
-                                return(
-                                    <img
-                                        key={
-                                            'imagen-'
-                                            + props.registro.id
-                                        }
-                                        src={
-                                            `data:${imagen.tipo}
-                                            ;base64,${imagenB64}`
-                                        }
-                                    />
-                                );
-                            })}
-                        </Col>
-                    </Row>
-
-                    <Row style={controlSpinner}>
-                        <Col/>
-                            <Col xs='auto'>
-                                <Spinner
-                                    color="warning"
-                                    style={{
-                                        height: '100px',
-                                        width: '100px'
-                                    }}
-                                />
-                            </Col>
-                        <Col/>
-                    </Row>
-                </Container>
-            </CardBody>
-
-            <CardBody>
-                <CardTitle style={{textAlign: 'center'}}>
-                    Fecha de registro: {
-                        props.registro.fechaRegistroEmpleado.split('T')[0]
+            {/* Rendrizamos la imagen del empleado. */}
+            {enCarga?
+                <IndicadorCargaSpinner/> : recurso.data? <img
+                    key={
+                        'imagen-'
+                        + props.registro.id
                     }
-                </CardTitle>
-
-                <CardText style={{textAlign: 'center'}}>
-                    Rol del empleado: {props.registro.idRolVinculado}
-                </CardText>
-            </CardBody>
+                    src={
+                        `data:${recurso.tipo}
+                        ;base64,${window.btoa(recurso.data)}`
+                    }
+                    width="100%"
+                /> : <></>
+            }
 
             <CardBody>
+
+                {enCarga? <></> : props.mostrarDatosEmpleado?
+                    <List>
+                        <li>
+                            Fecha de registro: {
+                                props.registro.fechaRegistroEmpleado
+                            }
+                        </li>
+
+                        <li>
+                            Rol de empleado: {
+                                registroRol.rolTrabajador
+                            }
+                        </li>
+                    </List> : <></>
+                }
+
                 <Row>
-                    <Col/>
-                    <Col>
-                        {renderBarraOpcionesRegistro()}
+                    <Col style={{
+                        textAlign: 'center'
+                    }}>
+                        {renderBarraOpcionesRegistro(
+                            props.registro,
+                            props.indexRegistro,
+                            props.funcionesRegistros
+                        )}
                     </Col>
-                    <Col/>
                 </Row>
             </CardBody>
         </Card>

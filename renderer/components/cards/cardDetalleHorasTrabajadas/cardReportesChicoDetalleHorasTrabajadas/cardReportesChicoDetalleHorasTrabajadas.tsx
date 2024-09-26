@@ -9,24 +9,48 @@ import {
     Card, CardBody, CardHeader, CardText, CardTitle
 } from 'reactstrap';
 
+import {
+    ReporteChequeoResumen
+} from '../../../../utils/API/respuestas/reporteChequeoResumen';
+
+// Funcionalidad propia
+import {
+    a12HorasTiempo,
+    fechaStrATiempo,
+    msToTime,
+    separarTiempo
+} from '../../../../utils/conversiones';
+
 export default function CardReportesChicoDetalleHorasTrabajadas(
     props: {
-        titulo: string,
-        datos: {
-            a: {
-                nombre: string,
-                hora: string,
-                estatus: number
-            }
-            b: {
-                nombre: string,
-                hora: string,
-                estatus: number
-            }
-        }
+        titulo: string
+        datos: ReporteChequeoResumen
         seleccionarColorBadge?: Function
     }
 ) {
+    // Desempaquetamos los datos.
+    const descripcionA = props.datos.a?
+        props.datos.a.reporte.descripcionReporte : '';
+
+    const descripcionB = props.datos.b?
+        props.datos.b.reporte.descripcionReporte : '';
+
+    const estatusA = props.datos.a?
+        props.datos.a.reporte.idTipoReporteVinculado : '';
+
+    const estatusB = props.datos.b?
+        props.datos.b.reporte.idTipoReporteVinculado : '';
+
+    const fechaReporteA = props.datos.a?
+        a12HorasTiempo(fechaStrATiempo(
+            props.datos.a.fechaRegistroReporteChequeo
+        )) : '';
+
+    const fechaReporteB = props.datos.b?
+        a12HorasTiempo(fechaStrATiempo(
+            props.datos.b.fechaRegistroReporteChequeo
+        )) : '';
+
     return(
         <Card className="text-white" color="dark" style={{
             marginBottom: '10px'
@@ -40,42 +64,42 @@ export default function CardReportesChicoDetalleHorasTrabajadas(
                     <tbody>
                         <tr>
                             <td>
-                                {props.datos.a.nombre}
+                                {descripcionA}
                             </td>
 
                             <td>
                                 <Badge
                                     color={props.seleccionarColorBadge?
                                         props.seleccionarColorBadge(
-                                            props.datos.a.estatus
+                                            estatusA
                                         ) : ''
                                     }
                                     style={{
                                         width: '100%'
                                     }}
                                 >
-                                    {props.datos.a.hora}
+                                    {fechaReporteA}
                                 </Badge>
                             </td>
                         </tr>
 
                         <tr>
                             <td>
-                                {props.datos.b.nombre}
+                                {descripcionB}
                             </td>
 
                             <td>
                                 <Badge
                                     color={props.seleccionarColorBadge?
                                         props.seleccionarColorBadge(
-                                            props.datos.b.estatus
+                                            estatusB
                                         ) : ''
                                     }
                                     style={{
                                         width: '100%'
                                     }}
                                 >
-                                    {props.datos.b.hora}
+                                    {fechaReporteB}
                                 </Badge>
                             </td>
                         </tr>

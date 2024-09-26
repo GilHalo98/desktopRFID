@@ -35,6 +35,12 @@ export default function Paginacion(
     // Indicamos que si al cambiar de pagina mandamos el enfoque al top.
     const toTop: string = props.sendToTop? '#' : '';
 
+    // el total de paginas es menor que 1, entonces no se
+    // renderiza el componente.
+    if(props.totalPaginas <= 1) {
+        return <></>;
+    }
+
     return(
         <Container>
             <Row>

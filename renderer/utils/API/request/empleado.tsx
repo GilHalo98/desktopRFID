@@ -42,7 +42,7 @@ const DeleteEmpleado = async (
 const PostEmpleadoCompleto = async (
     formRegistro: FormData
 ) => {
-    return ENDPOINTS.EMPLEADO.REGISTRAR_COMPLETO(formRegistro);
+    return ENDPOINTS.EMPLEADO.COMPLETO.REGISTRAR(formRegistro);
 };
 
 const GetEmpleadoCompleto = async (
@@ -57,7 +57,7 @@ const GetEmpleadoCompleto = async (
         idRolVinculado?: number,
     }
 ) => {
-    return ENDPOINTS.EMPLEADO.CONSULTA_COMPLETO(parametros);
+    return ENDPOINTS.EMPLEADO.COMPLETO.CONSULTA(parametros);
 };
 
 const PutEmpleadoCompleto = async (
@@ -66,7 +66,7 @@ const PutEmpleadoCompleto = async (
     },
     formModificacion: FormData
 ) => {
-    return ENDPOINTS.EMPLEADO.MODIFICAR_COMPLETO(parametros, formModificacion);
+    return ENDPOINTS.EMPLEADO.COMPLETO.MODIFICAR(parametros, formModificacion);
 };
 
 export {

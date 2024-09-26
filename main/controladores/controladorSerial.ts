@@ -200,7 +200,8 @@ export const guardarConfiguracionDispositivoLector = async (
             ipApi: string,
             versionApi: string,
             apiKey: string,
-            accionOpcional: string
+            accionOpcional: string,
+            registrarSalida: string
         },
         datosDispositivo: {
             path: string,
@@ -250,6 +251,9 @@ export const guardarConfiguracionDispositivoLector = async (
         ], [
             EVENTOS_GUARDADO_CONFIGURACION_LECTOR.CAMBIAR_ACCION_OPCIONAL,
             args.configuracion.accionOpcional.toString()
+        ], [
+            EVENTOS_GUARDADO_CONFIGURACION_LECTOR.CAMBIAR_REGISTRAR_REPORTE_SALIDA,
+            args.configuracion.registrarSalida.toString()
         ]];
 
         // Inicalizamos el puerto serial.

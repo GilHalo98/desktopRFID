@@ -3,12 +3,15 @@
 // React.
 import React from 'react';
 
+// Componente de link de next.
+import Link from 'next/link';
+
 // Componentes de reacstrap.
 import {
-    Table,
     ButtonGroup, Button,
     Container, Col, Row,
-    Card, CardBody, CardHeader, CardText, CardTitle, UncontrolledTooltip, Badge,
+    Table, UncontrolledTooltip, Badge,
+    Card, CardBody, CardHeader, CardText, CardTitle
 } from 'reactstrap';
 
 // Iconos usados.
@@ -19,24 +22,35 @@ import {
 
 // Componente para mostrar los iconos.
 import Icon from '@mdi/react';
-import { msToTime, separarTiempo } from '../../../../utils/conversiones';
 
-// Componentes propios.
+// Funciones de tiempo
+import {
+    msToTime,
+    separarTiempo,
+    deserealizarSemana,
+    rangoSemana
+} from '../../../../utils/conversiones';
 
 // Modelo de datos.
+import {
+    ReporteGeneral
+} from '../../../../utils/API/respuestas/reporteGeneral';
 
 export default function CardDatosDetalleHorasTrabajadas(
     props: {
-        datos: {
-            tiempoLaboralTotal: number
-            tiempoExtraTotal: number
-            retrasos: number
-            faltas: number
+        datos: ReporteGeneral
+        semanaReporte: string
+        href: string
+        funcionesOpciones: {
+            onGoBack: Function
+            onRefresh: Function
         }
-        fechaReporteA: string,
-        fechaReporteB: string
     }
 ) {
+    // Rango del reporte de la semana.
+    const rangoSemanaReporte = props.semanaReporte?
+        deserealizarSemana(props.semanaReporte) : rangoSemana();
+
     return(
         <Card className="text-white" color="dark" style={{
             marginBottom: '10px'
@@ -50,20 +64,30 @@ export default function CardDatosDetalleHorasTrabajadas(
 
                         <Col style={{textAlign:'right'}}>
                             <ButtonGroup size="sm">
-                                <Button
-                                    id="botonRegresar"
-                                    className='botonIcono'
-                                    outline
-                                    color='success'
-                                >
-                                    <Icon path={mdiArrowLeftCircle} size={1} />
-                                </Button>
+                                <Link href={{
+                                    pathname: props.href
+                                }}>
+                                    <Button
+                                        id="botonRegresar"
+                                        className='botonIcono'
+                                        outline
+                                        color='success'
+                                        onClick={() => {
+                                            props.funcionesOpciones.onGoBack();
+                                        }}
+                                    >
+                                        <Icon path={mdiArrowLeftCircle} size={1} />
+                                    </Button>
+                                </Link>
 
                                 <Button
                                     id="botonRefresacar"
                                     className='botonIcono'
                                     outline
                                     color='primary'
+                                    onClick={() => {
+                                        props.funcionesOpciones.onRefresh();
+                                    }}
                                 >
                                     <Icon path={mdiRefreshCircle} size={1} />
                                 </Button>
@@ -92,9 +116,9 @@ export default function CardDatosDetalleHorasTrabajadas(
                     textAlign: 'center'
                 }}>
                     Reporte laboral y de accesos del dia <b>{
-                        props.fechaReporteA
+                        rangoSemanaReporte[0].toLocaleDateString()
                     }</b> al <b>{
-                        props.fechaReporteB
+                        rangoSemanaReporte[1].toLocaleDateString()
                     }</b>
                 </CardTitle>
 
@@ -108,7 +132,7 @@ export default function CardDatosDetalleHorasTrabajadas(
                             </td>
 
                             <td>
-                                Tiempo Extra Total
+                                Extras
                             </td>
 
                             <td>
@@ -124,27 +148,36 @@ export default function CardDatosDetalleHorasTrabajadas(
                     <tbody>
                         <tr>
                             <td>
-                                {separarTiempo(
-                                    msToTime(props.datos.tiempoLaboralTotal))
-                                }
+                                {separarTiempo(msToTime(
+                                    props.datos.tiempoTrabajoTotal?
+                                        props.datos.tiempoTrabajoTotal : 0
+                                ))}
                             </td>
 
                             <td>
-                                {separarTiempo(
-                                    msToTime(props.datos.tiempoExtraTotal))
-                                }
-                            </td>
-
-                            <td>
-                                <Badge color='danger' style={{
+                                <Badge color={props.datos.extras <= 0?
+                                    '' : 'info'
+                                } style={{
                                     width: '100%'
                                 }}>
-                                    {props.datos.retrasos}
+                                    {props.datos.extras}
                                 </Badge>
                             </td>
 
                             <td>
-                                <Badge style={{
+                                <Badge color={props.datos.retraso <= 0?
+                                    '' : 'warning'
+                                } style={{
+                                    width: '100%'
+                                }}>
+                                    {props.datos.retraso}
+                                </Badge>
+                            </td>
+
+                            <td>
+                                <Badge color={props.datos.faltas <= 0?
+                                    '' : 'danger'
+                                } style={{
                                     width: '100%'
                                 }}>
                                     {props.datos.faltas}

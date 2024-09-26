@@ -1,4 +1,8 @@
+// React.
 import React from 'react';
+
+// Componente link de next.
+import Link from 'next/link';
 
 import {
     Button,
@@ -9,7 +13,9 @@ import {
 } from 'reactstrap';
 
 // Logica de la vista.
-import { renderDetalleHorasTrabajadas } from './logic/renders';
+import {
+    renderDetalleHorasTrabajadas
+} from './logic/renders';
 
 // Modelo de datos.
 import {
@@ -21,7 +27,8 @@ export default function ModalHorasTrabajadasDetalle(
         nombreTabla: string,
         modalActivo: boolean,
         toggleModal: Function,
-        registro: ReporteHorasTrabajadas
+        registro: ReporteHorasTrabajadas,
+        semanaReporte: string
     }
 ) {
     if(!props.registro) {
@@ -44,6 +51,26 @@ export default function ModalHorasTrabajadasDetalle(
                     <CardTitle className='tituloModalOpcionesTabla'>
                         Reporte de horas trabajadas de {props.registro.nombres}
                     </CardTitle>
+
+                    <Link href={{
+                        pathname: '/home/reportes/horasTrabajadas/horasTrabajadasDetalle',
+                        query: {
+                            id: props.registro.id,
+                            semanaReporte: props.semanaReporte
+                        }
+                    }}>
+                        <Button
+                            block
+                            outline
+                            size='sm'
+                            color='info'
+                            style={{
+                                border: 'none'
+                            }}
+                        >
+                            Ir a detalle
+                        </Button>
+                    </Link>
 
                     <Table hover dark responsive>
                         <thead className='cabeceraTablaRegistros'>

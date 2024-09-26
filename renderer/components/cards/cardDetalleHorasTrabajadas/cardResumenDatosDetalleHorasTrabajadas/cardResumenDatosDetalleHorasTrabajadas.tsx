@@ -16,18 +16,20 @@ import {
     separarTiempo
 } from '../../../../utils/conversiones';
 
+// Modelo de datos
+import {
+    ReporteResumen
+} from '../../../../utils/API/respuestas/reporteResumen';
+
 export default function CardResumenDatosDetalleHorasTrabajadas(
     props: {
-        datos: {
-            accesosBanio: number
-            accesosComedor: number
-            accesosOficina: number
-            inicioActividades: number
-            finActividades: number
-            totalActividades: number
-        }
+        datos: ReporteResumen
     }
 ) {
+    // Desempaquetamos los datos del reporte.
+    const zonas: string[] = props.datos.accesos? Object.keys(props.datos.accesos) : [];
+    const dispositivos: string[] = props.datos.actividades? Object.keys(props.datos.actividades) : [];
+
     return(
         <Card className="text-white" color="dark" style={{
             marginBottom: '10px'
@@ -42,56 +44,28 @@ export default function CardResumenDatosDetalleHorasTrabajadas(
                         <Col>
                             <Table responsive dark>
                                 <tbody>
-                                    <tr>
-                                        <td>
-                                            Accesos al Baño
-                                        </td>
+                                    {dispositivos.map((dispositivo: string) => {
+                                        if(props.datos.actividades[dispositivo] > 0) {
+                                            return(
+                                                <tr>
+                                                    <td>
+                                                        Actividades en {dispositivo}
+                                                    </td>
 
-                                        <td>
-                                            <Badge
-                                                color="info"
-                                                style={{
-                                                    width: '100%'
-                                                }}
-                                            >
-                                                {props.datos.accesosBanio}
-                                            </Badge>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>
-                                            Accesos al Comedor
-                                        </td>
-
-                                        <td>
-                                            <Badge
-                                                color="info"
-                                                style={{
-                                                    width: '100%'
-                                                }}
-                                            >
-                                                {props.datos.accesosComedor}
-                                            </Badge>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>
-                                            Accesos a la Oficina
-                                        </td>
-
-                                        <td>
-                                            <Badge
-                                                color="info"
-                                                style={{
-                                                    width: '100%'
-                                                }}
-                                            >
-                                                {props.datos.accesosOficina}
-                                            </Badge>
-                                        </td>
-                                    </tr>
+                                                    <td>
+                                                        <Badge
+                                                            color="success"
+                                                            style={{
+                                                                width: '100%'
+                                                            }}
+                                                        >
+                                                            {props.datos.actividades[dispositivo]}
+                                                        </Badge>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        }
+                                    })}
                                 </tbody>
                             </Table>
                         </Col>
@@ -101,58 +75,28 @@ export default function CardResumenDatosDetalleHorasTrabajadas(
                         <Col>
                             <Table responsive dark>
                                 <tbody>
-                                    <tr>
-                                        <td>
-                                            Inicio de actividades
-                                        </td>
+                                    {zonas.map((zona: string) => {
+                                        if(props.datos.accesos[zona] > 0) {
+                                            return(
+                                                <tr>
+                                                    <td>
+                                                        Accesos en {zona}
+                                                    </td>
 
-                                        <td>
-                                            <Badge
-                                                color="info"
-                                                style={{
-                                                    width: '100%'
-                                                }}
-                                            >
-                                                {props.datos.inicioActividades}
-                                            </Badge>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>
-                                            Fin de actividades
-                                        </td>
-
-                                        <td>
-                                            <Badge
-                                                color="info"
-                                                style={{
-                                                    width: '100%'
-                                                }}
-                                            >
-                                                {props.datos.finActividades}
-                                            </Badge>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>
-                                            Total en actividades
-                                        </td>
-
-                                        <td>
-                                            <Badge
-                                                color="info"
-                                                style={{
-                                                    width: '100%'
-                                                }}
-                                            >
-                                                {separarTiempo(msToTime(
-                                                    props.datos.totalActividades
-                                                ))}
-                                            </Badge>
-                                        </td>
-                                    </tr>
+                                                    <td>
+                                                        <Badge
+                                                            color="success"
+                                                            style={{
+                                                                width: '100%'
+                                                            }}
+                                                        >
+                                                            {props.datos.accesos[zona]}
+                                                        </Badge>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        }
+                                    })}
                                 </tbody>
                             </Table>
                         </Col>
@@ -161,4 +105,4 @@ export default function CardResumenDatosDetalleHorasTrabajadas(
             </CardBody>
         </Card>
     );
-}
+};
