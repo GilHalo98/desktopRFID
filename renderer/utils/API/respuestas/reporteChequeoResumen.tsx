@@ -6,6 +6,13 @@ import {
     ReporteChequeo
 } from "../modelos/reporteChequeo"
 
+export interface ReporteChequeoResumenCompleto {
+    entrada: ReporteChequeoVinculada
+    salida: ReporteChequeoVinculada
+    inicioDescanso: ReporteChequeoVinculada
+    finDescanso: ReporteChequeoVinculada
+}
+
 export interface ReporteChequeoResumen {
     a: ReporteChequeoVinculada
     b: ReporteChequeoVinculada

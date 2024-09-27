@@ -8,6 +8,11 @@ import {
     Card, Row, Col, Container
 } from 'reactstrap';
 
+// Interfaz de datos pasados como querry.
+import {
+    ParsedUrlQuery
+} from "querystring";
+
 // DataTest
 import {
     contenidoSubNavegacion
@@ -29,7 +34,8 @@ import CardReportesChicoDetalleHorasTrabajadas from '../../cards/cardDetalleHora
 
 // Rutinas
 import {
-    formatearDatosTracker
+    formatearDatosTracker,
+    onGenerarDocumento
 } from './logic/rutinas';
 
 // Funciones de tiempo.
@@ -68,11 +74,6 @@ import {
 import {
     ReporteChequeoResumen
 } from '../../../utils/API/respuestas/reporteChequeoResumen';
-
-// Interfaz de datos pasados como querry.
-import {
-    ParsedUrlQuery
-} from "querystring";
 
 export default function GridReporteDetalleHorasTrabajadas(
     props: {
@@ -262,6 +263,15 @@ export default function GridReporteDetalleHorasTrabajadas(
                             onGoBack: () => {},
                             onRefresh: () => {
                                 setRefresh(!refresh);
+                            },
+                            onGenerarDocumento: () => {
+                                onGenerarDocumento(
+                                    idEmpleado,
+                                    semanaReporte,
+                                    "portrait",
+                                    "pt",
+                                    "letter"
+                                );
                             }
                         }}
                     />

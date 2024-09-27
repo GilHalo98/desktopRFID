@@ -2,7 +2,7 @@
 import jsPDF from "jspdf";
 
 // Plantilla del documento de salida.
-import Plantilla from "../../../plantillasDocumentos/reporte";
+import PlantillaReporteMasterCam from "../../../plantillasDocumentos/plantillaReporteMasterCam";
 
 // Funciones para validar registros.
 import {
@@ -57,7 +57,7 @@ const insertarPaginas = async (
         // Agregamos la renderizacion de una nueva hoja a la lista
         // de paginas renderizadas.
         paginasRenderizadas.push(
-            await documento.html(Plantilla(
+            await documento.html(PlantillaReporteMasterCam(
                 paginas[index],
                 conteo[paginas[index].dibujo.nombre],
                 documento

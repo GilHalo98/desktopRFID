@@ -6,8 +6,9 @@ import {
     ConsultaHorasTrabajadasDetalleGeneral,
     ConsultaHorasTrabajadasDetalleTracker,
     ConsultaHorasTrabajadasDetalleResumen,
+    ReporteCompletoHorasTrabajadasDetalle,
     ConsultaHorasTrabajadasDetalleChequeos,
-    ConsultaHorasTrabajadasDetalleRegistrosReporte
+    ConsultaHorasTrabajadasDetalleRegistrosReporte,
 } from "../../../../utils/API/interface/reportes"
 
 // Modelo de datos.
@@ -30,6 +31,10 @@ import {
 import {
     ReporteChequeoResumen
 } from "../../../../utils/API/respuestas/reporteChequeoResumen";
+
+import {
+    ReporteHorasTrabajadasDetalle
+} from "../../../../utils/interfaces/reporteHorasTrabajadasDetalle";
 
 const ConsultaRegistroEmpleado = (
     setRegistro: Function,
@@ -252,7 +257,27 @@ const ReporteHorasTrabajadasDetalleRegistrosReporte = (
     );
 };
 
+// Consulta los datos del reporte.
+const ConsultarDatosReporte = (
+    generarReporte: Function,
+    querry?: {
+        idEmpleadoVinculado?: string,
+        semanaReporte?: string
+    }
+) => {
+    ReporteCompletoHorasTrabajadasDetalle(
+        (respuesta: ReporteHorasTrabajadasDetalle) => {
+            generarReporte(respuesta);
+        },
+        querry,
+        (error: any) => {
+            console.log(error);
+        }
+    );
+};
+
 export {
+    ConsultarDatosReporte,
     ConsultaRegistroEmpleado,
     ReporteHorasTrabajadasDetalleGeneral,
     ReporteHorasTrabajadasDetalleTracker,

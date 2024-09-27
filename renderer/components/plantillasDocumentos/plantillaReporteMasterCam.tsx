@@ -4,9 +4,6 @@ import React from "react";
 // Logotipo o membrete de la empresa.
 import logo from '../../public/images/logo.png';
 
-// Componente de next para renderizar imagenes.
-import Image from 'next/image';
-
 // Para la manipulacion del archivo pdf.
 import jsPDF from "jspdf";
 
@@ -21,7 +18,7 @@ import {
     numeroMesANombreMes
 } from '../../utils/conversiones';
 
-export default function Plantilla(
+export default function PlantillaReporteMasterCam(
     pagina: Pagina,
     totalOperaciones: number,
     documento: jsPDF

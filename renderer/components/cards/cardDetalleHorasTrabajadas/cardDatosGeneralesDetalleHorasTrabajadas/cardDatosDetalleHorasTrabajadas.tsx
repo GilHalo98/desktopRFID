@@ -16,8 +16,9 @@ import {
 
 // Iconos usados.
 import {
+    mdiFileExport,
+    mdiRefreshCircle,
     mdiArrowLeftCircle,
-    mdiRefreshCircle
 } from '@mdi/js';
 
 // Componente para mostrar los iconos.
@@ -28,7 +29,9 @@ import {
     msToTime,
     separarTiempo,
     deserealizarSemana,
-    rangoSemana
+    rangoSemana,
+    numeroDiaANombreDia,
+    numeroMesANombreMes
 } from '../../../../utils/conversiones';
 
 // Modelo de datos.
@@ -44,12 +47,32 @@ export default function CardDatosDetalleHorasTrabajadas(
         funcionesOpciones: {
             onGoBack: Function
             onRefresh: Function
+            onGenerarDocumento: Function
         }
     }
 ) {
     // Rango del reporte de la semana.
     const rangoSemanaReporte = props.semanaReporte?
         deserealizarSemana(props.semanaReporte) : rangoSemana();
+
+    const textoReporte: string = rangoSemanaReporte? `Reporte del día ${
+        numeroDiaANombreDia(rangoSemanaReporte[0].getDay() == 0?
+            7 : rangoSemanaReporte[0].getDay())
+    } ${
+        rangoSemanaReporte[0].getDate()
+    } de ${
+        numeroMesANombreMes(rangoSemanaReporte[0].getMonth())
+    } del ${
+        rangoSemanaReporte[0].getFullYear()
+    } al día ${
+        numeroDiaANombreDia(rangoSemanaReporte[1].getDay())
+    } ${
+        rangoSemanaReporte[1].getDate()
+    } de ${
+        numeroMesANombreMes(rangoSemanaReporte[1].getMonth())
+    } del ${
+        rangoSemanaReporte[1].getFullYear()
+    }.` : 'Cargando datos...';
 
     return(
         <Card className="text-white" color="dark" style={{
@@ -64,6 +87,10 @@ export default function CardDatosDetalleHorasTrabajadas(
 
                         <Col style={{textAlign:'right'}}>
                             <ButtonGroup size="sm">
+                                {/*
+                                    Retornamos a la pagina de la lista
+                                    de horas trabajadas.
+                                */}
                                 <Link href={{
                                     pathname: props.href
                                 }}>
@@ -80,6 +107,25 @@ export default function CardDatosDetalleHorasTrabajadas(
                                     </Button>
                                 </Link>
 
+                                {/*
+                                    Generamos un documento con el
+                                    reporte de las horas trabajadas.
+                                */}
+                                <Button
+                                    id="botonGenerarDocumentoPDF"
+                                    className='botonIcono'
+                                    outline
+                                    color='primary'
+                                    onClick={() => {
+                                        props.funcionesOpciones.onGenerarDocumento();
+                                    }}
+                                >
+                                    <Icon path={mdiFileExport} size={1} />
+                                </Button>
+
+                                {/*
+                                    Refrescamos los datos de la vista.
+                                */}
                                 <Button
                                     id="botonRefresacar"
                                     className='botonIcono'
@@ -102,6 +148,13 @@ export default function CardDatosDetalleHorasTrabajadas(
 
                             <UncontrolledTooltip
                                 placement="bottom"
+                                target="botonGenerarDocumentoPDF"
+                            >
+                                Generar Documento PDF
+                            </UncontrolledTooltip>
+
+                            <UncontrolledTooltip
+                                placement="bottom"
                                 target="botonRefresacar"
                             >
                                 Refrescar pagina
@@ -115,11 +168,7 @@ export default function CardDatosDetalleHorasTrabajadas(
                 <CardTitle style={{
                     textAlign: 'center'
                 }}>
-                    Reporte laboral y de accesos del dia <b>{
-                        rangoSemanaReporte[0].toLocaleDateString()
-                    }</b> al <b>{
-                        rangoSemanaReporte[1].toLocaleDateString()
-                    }</b>
+                    {textoReporte}
                 </CardTitle>
 
                 <Table responsive dark style={{

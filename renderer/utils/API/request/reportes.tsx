@@ -51,7 +51,7 @@ const GetHistorialOperadoresMaquina = async (
 /**
  * Requests de la vista del reporte de horas trabajadas a detalle.
  */
-const getHorasTrabajadasDetalleGeneral = async (
+const GetHorasTrabajadasDetalleGeneral = async (
     parametros?: {
         idEmpleadoVinculado?: string,
         semanaReporte?: string
@@ -62,7 +62,7 @@ const getHorasTrabajadasDetalleGeneral = async (
     );
 };
 
-const getHorasTrabajadasDetalleTracker = async (
+const GetHorasTrabajadasDetalleTracker = async (
     parametros?: {
         idEmpleadoVinculado?: string,
         semanaReporte?: string,
@@ -74,7 +74,7 @@ const getHorasTrabajadasDetalleTracker = async (
     );
 };
 
-const getHorasTrabajadasDetalleChequeos = async (
+const GetHorasTrabajadasDetalleChequeos = async (
     parametros?: {
         idEmpleadoVinculado?: string,
         semanaReporte?: string,
@@ -86,7 +86,7 @@ const getHorasTrabajadasDetalleChequeos = async (
     );
 };
 
-const getHorasTrabajadasDetalleResumen = async (
+const GetHorasTrabajadasDetalleResumen = async (
     parametros?: {
         idEmpleadoVinculado?: string,
         semanaReporte?: string,
@@ -98,7 +98,7 @@ const getHorasTrabajadasDetalleResumen = async (
     );
 };
 
-const getHorasTrabajadasDetalleRegistrosReporte = async (
+const GetHorasTrabajadasDetalleRegistrosReporte = async (
     parametros?: {
         idEmpleadoVinculado?: string,
         semanaReporte?: string,
@@ -110,7 +110,7 @@ const getHorasTrabajadasDetalleRegistrosReporte = async (
     );
 };
 
-const getHorasTrabajadasDetalleIntentosAccesos = async (
+const GetHorasTrabajadasDetalleIntentosAccesos = async (
     parametros?: {
         limit?: number,
         offset?: number,
@@ -124,7 +124,7 @@ const getHorasTrabajadasDetalleIntentosAccesos = async (
     );
 };
 
-const getHorasTrabajadasDetalleAccesosZona = async (
+const GetHorasTrabajadasDetalleAccesosZona = async (
     parametros?: {
         limit?: number,
         offset?: number,
@@ -139,7 +139,7 @@ const getHorasTrabajadasDetalleAccesosZona = async (
     );
 };
 
-const getHorasTrabajadasDetalleIntentoActividad = async (
+const GetHorasTrabajadasDetalleIntentoActividad = async (
     parametros?: {
         limit?: number,
         offset?: number,
@@ -154,7 +154,7 @@ const getHorasTrabajadasDetalleIntentoActividad = async (
     );
 };
 
-const getHorasTrabajadasDetalleActividadDispositivo = async (
+const GetHorasTrabajadasDetalleActividadDispositivo = async (
     parametros?: {
         limit?: number,
         offset?: number,
@@ -174,13 +174,13 @@ export {
     GetHistorialUsosMaquina,
     GetHistorialActividadMaquina,
     GetHistorialOperadoresMaquina,
-    getHorasTrabajadasDetalleGeneral,
-    getHorasTrabajadasDetalleTracker,
-    getHorasTrabajadasDetalleResumen,
-    getHorasTrabajadasDetalleChequeos,
-    getHorasTrabajadasDetalleAccesosZona,
-    getHorasTrabajadasDetalleIntentosAccesos,
-    getHorasTrabajadasDetalleRegistrosReporte,
-    getHorasTrabajadasDetalleIntentoActividad,
-    getHorasTrabajadasDetalleActividadDispositivo,
+    GetHorasTrabajadasDetalleGeneral,
+    GetHorasTrabajadasDetalleTracker,
+    GetHorasTrabajadasDetalleResumen,
+    GetHorasTrabajadasDetalleChequeos,
+    GetHorasTrabajadasDetalleAccesosZona,
+    GetHorasTrabajadasDetalleIntentosAccesos,
+    GetHorasTrabajadasDetalleRegistrosReporte,
+    GetHorasTrabajadasDetalleIntentoActividad,
+    GetHorasTrabajadasDetalleActividadDispositivo,
 };

@@ -4,16 +4,22 @@ import {
     GetHistorialUsosMaquina,
     GetHistorialActividadMaquina,
     GetHistorialOperadoresMaquina,
-    getHorasTrabajadasDetalleGeneral,
-    getHorasTrabajadasDetalleTracker,
-    getHorasTrabajadasDetalleResumen,
-    getHorasTrabajadasDetalleChequeos,
-    getHorasTrabajadasDetalleAccesosZona,
-    getHorasTrabajadasDetalleIntentosAccesos,
-    getHorasTrabajadasDetalleRegistrosReporte,
-    getHorasTrabajadasDetalleIntentoActividad,
-    getHorasTrabajadasDetalleActividadDispositivo,
+    GetHorasTrabajadasDetalleGeneral,
+    GetHorasTrabajadasDetalleTracker,
+    GetHorasTrabajadasDetalleResumen,
+    GetHorasTrabajadasDetalleChequeos,
+    GetHorasTrabajadasDetalleAccesosZona,
+    GetHorasTrabajadasDetalleIntentosAccesos,
+    GetHorasTrabajadasDetalleRegistrosReporte,
+    GetHorasTrabajadasDetalleIntentoActividad,
+    GetHorasTrabajadasDetalleActividadDispositivo,
 } from "../request/reportes";
+
+// Modelo de datos de los reportes
+import {
+    ReporteHorasTrabajadasDetalle,
+    ReporteHorasTrabajadasDetallePorDia
+} from "../../interfaces/reporteHorasTrabajadasDetalle";
 
 function ConsultaHorasTrabajadas(
     onOk: Function,
@@ -34,8 +40,13 @@ function ConsultaHorasTrabajadas(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetHorasTrabajadas(
+        parametrosBusqueda
+    ));
+
     // Realizamos el request.
-    GetHorasTrabajadas(parametrosBusqueda).then((respuesta) => {
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -70,8 +81,13 @@ function ConsultaHistorialActividadMaquina(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetHistorialActividadMaquina(
+        parametrosBusqueda
+    ));
+
     // Realizamos el request.
-    GetHistorialActividadMaquina(parametrosBusqueda).then((respuesta) => {
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -108,8 +124,13 @@ function ConsultaHistorialUsosMaquina(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetHistorialUsosMaquina(
+        parametrosBusqueda
+    ));
+
     // Realizamos el request.
-    GetHistorialUsosMaquina(parametrosBusqueda).then((respuesta) => {
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -146,8 +167,13 @@ function ConsultaHistorialOperadoresMaquina(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetHistorialOperadoresMaquina(
+        parametrosBusqueda
+    ));
+
     // Realizamos el request.
-    GetHistorialOperadoresMaquina(parametrosBusqueda).then((respuesta) => {
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -185,10 +211,13 @@ function ConsultaHorasTrabajadasDetalleGeneral(
         onAntes();
     }
 
-    // Realizamos el request.
-    getHorasTrabajadasDetalleGeneral(
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetHorasTrabajadasDetalleGeneral(
         parametrosBusqueda
-    ).then((respuesta) => {
+    ));
+
+    // Realizamos el request.
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -223,10 +252,13 @@ function ConsultaHorasTrabajadasDetalleTracker(
         onAntes();
     }
 
-    // Realizamos el request.
-    getHorasTrabajadasDetalleTracker(
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetHorasTrabajadasDetalleTracker(
         parametrosBusqueda
-    ).then((respuesta) => {
+    ));
+
+    // Realizamos el request.
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -261,10 +293,13 @@ function ConsultaHorasTrabajadasDetalleResumen(
         onAntes();
     }
 
-    // Realizamos el request.
-    getHorasTrabajadasDetalleResumen(
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetHorasTrabajadasDetalleResumen(
         parametrosBusqueda
-    ).then((respuesta) => {
+    ));
+
+    // Realizamos el request.
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -299,10 +334,13 @@ function ConsultaHorasTrabajadasDetalleChequeos(
         onAntes();
     }
 
-    // Realizamos el request.
-    getHorasTrabajadasDetalleChequeos(
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetHorasTrabajadasDetalleChequeos(
         parametrosBusqueda
-    ).then((respuesta) => {
+    ));
+
+    // Realizamos el request.
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -340,10 +378,13 @@ function ConsultaHorasTrabajadasDetalleAccesosZona(
         onAntes();
     }
 
-    // Realizamos el request.
-    getHorasTrabajadasDetalleAccesosZona(
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetHorasTrabajadasDetalleAccesosZona(
         parametrosBusqueda
-    ).then((respuesta) => {
+    ));
+
+    // Realizamos el request.
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -380,10 +421,13 @@ function ConsultaHorasTrabajadasDetalleIntentosAccesos(
         onAntes();
     }
 
-    // Realizamos el request.
-    getHorasTrabajadasDetalleIntentosAccesos(
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetHorasTrabajadasDetalleIntentosAccesos(
         parametrosBusqueda
-    ).then((respuesta) => {
+    ));
+
+    // Realizamos el request.
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -406,7 +450,6 @@ function ConsultaHorasTrabajadasDetalleRegistrosReporte(
     onOk: Function,
     parametrosBusqueda?: {
         idEmpleadoVinculado?: string,
-        idZonaVinculada?: string,
         semanaReporte?: string,
         dia?: number
     },
@@ -419,10 +462,13 @@ function ConsultaHorasTrabajadasDetalleRegistrosReporte(
         onAntes();
     }
 
-    // Realizamos el request.
-    getHorasTrabajadasDetalleRegistrosReporte(
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetHorasTrabajadasDetalleRegistrosReporte(
         parametrosBusqueda
-    ).then((respuesta) => {
+    ));
+
+    // Realizamos el request.
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -460,10 +506,13 @@ function ConsultaHorasTrabajadasDetalleIntentoActividad(
         onAntes();
     }
 
-    // Realizamos el request.
-    getHorasTrabajadasDetalleIntentoActividad(
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetHorasTrabajadasDetalleIntentoActividad(
         parametrosBusqueda
-    ).then((respuesta) => {
+    ));
+
+    // Realizamos el request.
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -501,10 +550,13 @@ function ConsultaHorasTrabajadasDetalleActividadDispositivo(
         onAntes();
     }
 
-    // Realizamos el request.
-    getHorasTrabajadasDetalleActividadDispositivo(
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetHorasTrabajadasDetalleActividadDispositivo(
         parametrosBusqueda
-    ).then((respuesta) => {
+    ));
+
+    // Realizamos el request.
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -523,6 +575,203 @@ function ConsultaHorasTrabajadasDetalleActividadDispositivo(
     });
 };
 
+/**
+ * Request para el reporte completo.
+ */
+
+async function consultarReportesPorDia (
+    dia: number,
+    promesas: any [],
+    parametrosBusqueda?: {
+        idEmpleadoVinculado?: string,
+        semanaReporte?: string
+    }
+) {
+    // Consultamos los datos dependientes del dia de la semana.
+    if(dia <= 7) {
+        // Consultamos los registros de chequeos.
+        promesas.push(Promise.resolve(GetHorasTrabajadasDetalleChequeos({
+            idEmpleadoVinculado: parametrosBusqueda.idEmpleadoVinculado,
+            semanaReporte: parametrosBusqueda.semanaReporte,
+            dia: dia
+        })));
+
+        const registrosReporte = await GetHorasTrabajadasDetalleRegistrosReporte({
+            idEmpleadoVinculado: parametrosBusqueda.idEmpleadoVinculado,
+            semanaReporte: parametrosBusqueda.semanaReporte,
+            dia: dia
+        });
+
+        // Desempaquetamos los datos de la consulta
+        const listaIdsZonas: string [] = registrosReporte.data.registrosZonas;
+        const listaIdsDispositivos: string [] = registrosReporte.data.registrosDispositivos;
+
+        // Por cada zona.
+        for(let i = 0; i < listaIdsZonas.length; i ++) {
+            // Desempaquetamos el id de la zona.
+            const idZona: string = listaIdsZonas[i];
+
+            // Consultamos la lista de accesos por zona.
+            promesas.push(Promise.resolve(
+                GetHorasTrabajadasDetalleAccesosZona({
+                    idEmpleadoVinculado: parametrosBusqueda.idEmpleadoVinculado,
+                    idZonaVinculada: idZona,
+                    semanaReporte: parametrosBusqueda.semanaReporte,
+                    dia: dia
+                })
+            ));
+        }
+
+        // Por cada dispositivo.
+        for(let i = 0; i < listaIdsDispositivos.length; i ++) {
+            // Desempaquetamos el id del dispositivo.
+            const idDispositivo: string = listaIdsDispositivos[i];
+
+            // Consultamos la lista de accesos por zona.
+            promesas.push(Promise.resolve(
+                GetHorasTrabajadasDetalleActividadDispositivo({
+                    idEmpleadoVinculado: parametrosBusqueda.idEmpleadoVinculado,
+                    idDispositivoVinculado: idDispositivo,
+                    semanaReporte: parametrosBusqueda.semanaReporte,
+                    dia: dia
+                })
+            ));
+        };
+
+        // Recursamos la funcion con el día siguiente.
+        await consultarReportesPorDia(
+            dia + 1,
+            promesas,
+            parametrosBusqueda
+        );
+    }
+};
+
+function ReporteCompletoHorasTrabajadasDetalle(
+    onOk: Function,
+    parametrosBusqueda?: {
+        idEmpleadoVinculado?: string,
+        semanaReporte?: string
+    },
+    onError?: Function,
+    onAntes?: Function,
+    onFinalizar?: Function
+) {
+    /**
+     * Esta interfaz recopila todos los request para generar un
+     * documento con el reporte de las horas trabajadas a detalle del
+     * empleado.
+     */
+
+    if(typeof onAntes != 'undefined') {
+        // Ejecutamos la funcion de antes de realizar el request.
+        onAntes();
+    }
+
+    // Instanciamos la lista de las promesas.
+    const promesas: any [] = [];
+
+    // Promesa de datos del empleado.
+
+    // Promesa de datos generales del reporte.
+    promesas.push(Promise.resolve(GetHorasTrabajadasDetalleGeneral(
+        parametrosBusqueda
+    )));
+
+    // Funcion recursiva asincrona para poder consultar los reportes
+    // por dia.
+    consultarReportesPorDia(
+        1,
+        promesas,
+        parametrosBusqueda
+    ).then(() => {
+        // Resolvemos todas las promesas.
+        Promise.all(promesas).then((respuestas: any []) => {
+            // Formateamos la respuesta como el reporte.
+            const reporte = {} as ReporteHorasTrabajadasDetalle;
+
+            // Dia del reporte.
+            let indexDia: number = -1;
+
+            // Inicializamos los reportes por dia.
+            reporte.porDia = [];
+            for(let i = 0; i < 7; i++) {
+                reporte.porDia.push({} as ReporteHorasTrabajadasDetallePorDia);
+                reporte.porDia[i].accesos = [];
+                reporte.porDia[i].actividades = [];
+            }
+
+            // Mapeamos los datos de las respuestas con el reporte.
+            respuestas.forEach((respuesta: any, index: number) => {
+                // Si es el primer reporte, este se mapea en el general.
+                if(index == 0) {
+                    // Guardamos el reporte general en reporte.
+                    reporte.general = respuesta.data.reporte;
+
+                } else {
+                    // Desempaquetamos el dia del reporte.
+                    indexDia = respuesta.config.params.dia - 1;
+
+                    // Desempaquetamos los datos para saber el tipo
+                    // de reporte a guardar.
+                    const idZona = respuesta.config.params.idZonaVinculada;
+                    const idEmpleado = respuesta.config.params.idEmpleadoVinculado;
+                    const idDispositivo = respuesta.config.params.idDispositivoVinculado;
+
+                    // Verificamos que el reporte sea de tipo acceso.
+                    if(typeof idZona != 'undefined') {
+                        reporte.porDia[
+                            indexDia
+                        ].accesos.push({
+                            idZonaVinculada: idZona,
+                            reporte: respuesta.data.reporte
+                        });
+
+                    } else {
+                        // Verificamos que el reporte sea de
+                        // tipo actividad.
+                        if(typeof idDispositivo != 'undefined') {
+                            reporte.porDia[
+                                indexDia
+                            ].actividades.push({
+                                idDispositivoVinculado: idDispositivo,
+                                reporte: respuesta.data.reporte
+                            });
+
+                        } else {
+                            // Verificamos que el reporte sea
+                            // de tipo chequeos.
+                            if(typeof idEmpleado != 'undefined') {
+                                reporte.porDia[
+                                    indexDia
+                                ].chequeos = respuesta.data.reporte;
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Ejecutamos la funcion onOk.
+            onOk(reporte);
+
+        }).catch(error => {
+            console.log(error);
+
+            if(typeof onError != 'undefined') {
+                // Al ocurrir un error con el reques, ejecutamos
+                // la función.
+                onError(error);
+            }
+
+        }).finally(() => {
+            if(typeof onFinalizar != 'undefined') {
+                // Al terminar el request, se ejecuta la función.
+                onFinalizar();
+            }
+        });
+    });
+};
+
 export {
     ConsultaHorasTrabajadas,
     ConsultaHistorialUsosMaquina,
@@ -531,6 +780,7 @@ export {
     ConsultaHorasTrabajadasDetalleGeneral,
     ConsultaHorasTrabajadasDetalleTracker,
     ConsultaHorasTrabajadasDetalleResumen,
+    ReporteCompletoHorasTrabajadasDetalle,
     ConsultaHorasTrabajadasDetalleChequeos,
     ConsultaHorasTrabajadasDetalleAccesosZona,
     ConsultaHorasTrabajadasDetalleIntentosAccesos,
