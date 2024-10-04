@@ -761,6 +761,15 @@ const ENDPOINTS = {
             });
         },
 
+        HORAS_TRABAJADAS_CON_DESCANSO: (parametros: any) => {
+            return REQUEST_HANDLER({
+                method: 'get',
+                url: URL_GENERALES.REPORTES + 'horasTrabajadas/conDescanso',
+                params: parametros,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
         HISTORIAL_ACTIVIDAD_MAQUINA: (parametros: any) => {
             return REQUEST_HANDLER({
                 method: 'get',
@@ -789,6 +798,15 @@ const ENDPOINTS = {
         },
 
         HORAS_TRABAJADAS_DETALLE: {
+            DIAS_HORARIO: (parametros: any) => {
+                return REQUEST_HANDLER({
+                    method: 'get',
+                    url: URL_GENERALES.REPORTES + 'horasTrabajadas/dias/horario',
+                    params: parametros,
+                    headers: { 'authorization': sessionStorage.getItem('token') }
+                });
+            },
+
             GENERAL: (parametros: any) => {
                 return REQUEST_HANDLER({
                     method: 'get',
@@ -797,6 +815,16 @@ const ENDPOINTS = {
                     headers: { 'authorization': sessionStorage.getItem('token') }
                 });
             },
+
+            GENERAL_CON_DESCANSO: (parametros: any) => {
+                return REQUEST_HANDLER({
+                    method: 'get',
+                    url: URL_GENERALES.REPORTES + 'horasTrabajadas/detalles/general/conDescanso',
+                    params: parametros,
+                    headers: { 'authorization': sessionStorage.getItem('token') }
+                });
+            },
+
             TRACKER: (parametros: any) => {
                 return REQUEST_HANDLER({
                     method: 'get',
@@ -805,6 +833,7 @@ const ENDPOINTS = {
                     headers: { 'authorization': sessionStorage.getItem('token') }
                 });
             },
+
             CHEQUEOS: (parametros: any) => {
                 return REQUEST_HANDLER({
                     method: 'get',
@@ -813,6 +842,16 @@ const ENDPOINTS = {
                     headers: { 'authorization': sessionStorage.getItem('token') }
                 });
             },
+
+            CHEQUEOS_CON_DESCANSO: (parametros: any) => {
+                return REQUEST_HANDLER({
+                    method: 'get',
+                    url: URL_GENERALES.REPORTES + 'horasTrabajadas/detalles/chequeos/conDescanso',
+                    params: parametros,
+                    headers: { 'authorization': sessionStorage.getItem('token') }
+                });
+            },
+
             RESUMEN: (parametros: any) => {
                 return REQUEST_HANDLER({
                     method: 'get',
@@ -821,6 +860,7 @@ const ENDPOINTS = {
                     headers: { 'authorization': sessionStorage.getItem('token') }
                 });
             },
+
             REGISTROS_CON_REPORTES: (parametros: any) => {
                 return REQUEST_HANDLER({
                     method: 'get',
@@ -829,6 +869,7 @@ const ENDPOINTS = {
                     headers: { 'authorization': sessionStorage.getItem('token') }
                 });
             },
+
             ACCESOS: {
                 INTENTOS: (parametros: any) => {
                     return REQUEST_HANDLER({
@@ -838,6 +879,7 @@ const ENDPOINTS = {
                         headers: { 'authorization': sessionStorage.getItem('token') }
                     });
                 },
+
                 ZONA: (parametros: any) => {
                     return REQUEST_HANDLER({
                         method: 'get',
@@ -847,6 +889,7 @@ const ENDPOINTS = {
                     });
                 }
             },
+
             ACTIVIDAD: {
                 INTENTOS: (parametros: any) => {
                     return REQUEST_HANDLER({
@@ -856,6 +899,7 @@ const ENDPOINTS = {
                         headers: { 'authorization': sessionStorage.getItem('token') }
                     });
                 },
+
                 DISPOSITIVO: (parametros: any) => {
                     return REQUEST_HANDLER({
                         method: 'get',

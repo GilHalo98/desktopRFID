@@ -17,8 +17,11 @@ function AccesosPorDia(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetAccesosPorDia(parametrosBusqueda));
+
     // Realizamos el request.
-    GetAccesosPorDia(parametrosBusqueda).then((respuesta) => {
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -50,8 +53,11 @@ function ActividadMaquina(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetActividadMaquina(parametrosBusqueda));
+
     // Realizamos el request.
-    GetActividadMaquina(parametrosBusqueda).then((respuesta) => {
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 

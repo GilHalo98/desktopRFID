@@ -23,8 +23,11 @@ function LoginUsuario(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(Login(datosLogin));
+
     // Realizamos el request.
-    Login(datosLogin).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);
@@ -63,8 +66,11 @@ function ConsultaUsuario(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetUsuario(parametrosBusqueda));
+
     // Realizamos el request.
-    GetUsuario(parametrosBusqueda).then((respuesta) => {
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -95,8 +101,11 @@ function RegistrarUsuario(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(PostUsuario(formRegistro));
+
     // Realizamos el request.
-    PostUsuario(formRegistro).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);
@@ -136,8 +145,14 @@ function ModificarUsuario(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(PutUsuario(
+        parametrosBusqueda,
+        formRegistro
+    ));
+
     // Realizamos el request.
-    PutUsuario(parametrosBusqueda, formRegistro).then((respuesta) => {
+    promesa.then((respuesta) => {
         console.log(respuesta);
         console.log(parametrosBusqueda);
         if(typeof onOk != 'undefined') {
@@ -178,8 +193,11 @@ function RemoverUsuario(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(DeleteUsuario(parametrosBusqueda));
+
     // Realizamos el request.
-    DeleteUsuario(parametrosBusqueda).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);

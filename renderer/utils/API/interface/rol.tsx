@@ -25,8 +25,11 @@ function ConsultaRol(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetRol(parametrosBusqueda));
+
     // Realizamos el request.
-    GetRol(parametrosBusqueda).then((respuesta) => {
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -57,8 +60,11 @@ function RegistrarRol(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(PostRol(formRegistro));
+
     // Realizamos el request.
-    PostRol(formRegistro).then((respuesta) => {
+    promesa.then((respuesta) => {
         console.log(respuesta);
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
@@ -99,8 +105,11 @@ function ModificarRol(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(PutRol(parametrosBusqueda, formRegistro));
+
     // Realizamos el request.
-    PutRol(parametrosBusqueda, formRegistro).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);
@@ -139,8 +148,11 @@ function RemoverRol(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(DeleteRol(parametrosBusqueda));
+
     // Realizamos el request.
-    DeleteRol(parametrosBusqueda).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);

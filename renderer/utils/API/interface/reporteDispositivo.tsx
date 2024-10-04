@@ -25,8 +25,11 @@ function ConsultaReporteDispositivo(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetReporteDispositivo(parametrosBusqueda));
+
     // Realizamos el request.
-    GetReporteDispositivo(parametrosBusqueda).then((respuesta) => {
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -57,8 +60,11 @@ function RegistrarReporteDispositivo(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(PostReporteDispositivo(formRegistro));
+
     // Realizamos el request.
-    PostReporteDispositivo(formRegistro).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);
@@ -98,8 +104,14 @@ function ModificarReporteDispositivo(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(PutReporteDispositivo(
+        parametrosBusqueda,
+        formRegistro
+    ));
+
     // Realizamos el request.
-    PutReporteDispositivo(parametrosBusqueda, formRegistro).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);
@@ -138,8 +150,11 @@ function RemoverReporteDispositivo(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(DeleteReporteDispositivo(parametrosBusqueda));
+
     // Realizamos el request.
-    DeleteReporteDispositivo(parametrosBusqueda).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);

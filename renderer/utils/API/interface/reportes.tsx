@@ -8,12 +8,17 @@ import {
     GetHorasTrabajadasDetalleTracker,
     GetHorasTrabajadasDetalleResumen,
     GetHorasTrabajadasDetalleChequeos,
+    GetHorasTrabajadasDetalleDiasHorario,
     GetHorasTrabajadasDetalleAccesosZona,
     GetHorasTrabajadasDetalleIntentosAccesos,
     GetHorasTrabajadasDetalleRegistrosReporte,
     GetHorasTrabajadasDetalleIntentoActividad,
     GetHorasTrabajadasDetalleActividadDispositivo,
 } from "../request/reportes";
+
+import {
+    GetEmpleado
+} from "../request/empleado";
 
 // Modelo de datos de los reportes
 import {
@@ -575,11 +580,51 @@ function ConsultaHorasTrabajadasDetalleActividadDispositivo(
     });
 };
 
+function ConsultaHorasTrabajadasDetalleDiasHorario(
+    onOk: Function,
+    parametrosBusqueda?: {
+        idEmpleadoVinculado?: string,
+        semanaReporte?: string
+    },
+    onError?: Function,
+    onAntes?: Function,
+    onFinalizar?: Function
+) {
+    if(typeof onAntes != 'undefined') {
+        // Ejecutamos la funcion de antes de realizar el request.
+        onAntes();
+    }
+
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetHorasTrabajadasDetalleDiasHorario(
+        parametrosBusqueda
+    ));
+
+    // Realizamos el request.
+    promesa.then((respuesta) => {
+        // Al cumplirse el request, se ejecuta la función.
+        onOk(respuesta.data);
+
+    }).catch((error) => {
+        if(typeof onError != 'undefined') {
+            // Al ocurrir un error con el reques, ejecutamos la función.
+            onError(error);
+        }
+
+    }).finally(() => {
+        if(typeof onFinalizar != 'undefined') {
+            // Al terminar el request, se ejecuta la función.
+            onFinalizar();
+        }
+
+    });
+};
+
 /**
  * Request para el reporte completo.
  */
 
-async function consultarReportesPorDia (
+async function consultarReportesPorDia(
     dia: number,
     promesas: any [],
     parametrosBusqueda?: {
@@ -672,6 +717,9 @@ function ReporteCompletoHorasTrabajadasDetalle(
     const promesas: any [] = [];
 
     // Promesa de datos del empleado.
+    promesas.push(Promise.resolve(GetEmpleado(
+        { id: parametrosBusqueda.idEmpleadoVinculado }
+    )));
 
     // Promesa de datos generales del reporte.
     promesas.push(Promise.resolve(GetHorasTrabajadasDetalleGeneral(
@@ -703,51 +751,67 @@ function ReporteCompletoHorasTrabajadasDetalle(
 
             // Mapeamos los datos de las respuestas con el reporte.
             respuestas.forEach((respuesta: any, index: number) => {
-                // Si es el primer reporte, este se mapea en el general.
-                if(index == 0) {
-                    // Guardamos el reporte general en reporte.
-                    reporte.general = respuesta.data.reporte;
+                /**
+                 * Evaluamos el index del reporte, dependidendo del index
+                 * guardamos el reporte.
+                 */
+                switch (index) {
+                    // Si es el primer reporte, se mapea a los
+                    // datos del empleado.
+                    case 0:
+                        reporte.datosEmpleado = respuesta.data.registros[0];
 
-                } else {
-                    // Desempaquetamos el dia del reporte.
-                    indexDia = respuesta.config.params.dia - 1;
+                        break;
 
-                    // Desempaquetamos los datos para saber el tipo
-                    // de reporte a guardar.
-                    const idZona = respuesta.config.params.idZonaVinculada;
-                    const idEmpleado = respuesta.config.params.idEmpleadoVinculado;
-                    const idDispositivo = respuesta.config.params.idDispositivoVinculado;
+                    // Si es el segundo reporte, este se mapea
+                    // en el general.
+                    case 1:
+                        reporte.general = respuesta.data.reporte;
 
-                    // Verificamos que el reporte sea de tipo acceso.
-                    if(typeof idZona != 'undefined') {
-                        reporte.porDia[
-                            indexDia
-                        ].accesos.push({
-                            idZonaVinculada: idZona,
-                            reporte: respuesta.data.reporte
-                        });
+                        break;
+                
+                    default:
+                        // Desempaquetamos el dia del reporte.
+                        indexDia = respuesta.config.params.dia - 1;
 
-                    } else {
-                        // Verificamos que el reporte sea de
-                        // tipo actividad.
-                        if(typeof idDispositivo != 'undefined') {
+                        // Desempaquetamos los datos para saber el tipo
+                        // de reporte a guardar.
+                        const idZona = respuesta.config.params.idZonaVinculada;
+                        const idEmpleado = respuesta.config.params.idEmpleadoVinculado;
+                        const idDispositivo = respuesta.config.params.idDispositivoVinculado;
+
+                        // Verificamos que el reporte sea de tipo acceso.
+                        if(typeof idZona != 'undefined') {
                             reporte.porDia[
                                 indexDia
-                            ].actividades.push({
-                                idDispositivoVinculado: idDispositivo,
+                            ].accesos.push({
+                                idZonaVinculada: idZona,
                                 reporte: respuesta.data.reporte
                             });
 
                         } else {
-                            // Verificamos que el reporte sea
-                            // de tipo chequeos.
-                            if(typeof idEmpleado != 'undefined') {
+                            // Verificamos que el reporte sea de
+                            // tipo actividad.
+                            if(typeof idDispositivo != 'undefined') {
                                 reporte.porDia[
                                     indexDia
-                                ].chequeos = respuesta.data.reporte;
+                                ].actividades.push({
+                                    idDispositivoVinculado: idDispositivo,
+                                    reporte: respuesta.data.reporte
+                                });
+
+                            } else {
+                                // Verificamos que el reporte sea
+                                // de tipo chequeos.
+                                if(typeof idEmpleado != 'undefined') {
+                                    reporte.porDia[
+                                        indexDia
+                                    ].chequeos = respuesta.data.reporte;
+                                }
                             }
                         }
-                    }
+
+                        break;
                 }
             });
 
@@ -782,6 +846,7 @@ export {
     ConsultaHorasTrabajadasDetalleResumen,
     ReporteCompletoHorasTrabajadasDetalle,
     ConsultaHorasTrabajadasDetalleChequeos,
+    ConsultaHorasTrabajadasDetalleDiasHorario,
     ConsultaHorasTrabajadasDetalleAccesosZona,
     ConsultaHorasTrabajadasDetalleIntentosAccesos,
     ConsultaHorasTrabajadasDetalleRegistrosReporte,

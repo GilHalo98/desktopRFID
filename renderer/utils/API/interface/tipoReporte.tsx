@@ -23,8 +23,11 @@ function ConsultaTipoReporte(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetTipoReporte(parametrosBusqueda));
+
     // Realizamos el request.
-    GetTipoReporte(parametrosBusqueda).then((respuesta) => {
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -55,8 +58,11 @@ function RegistrarTipoReporte(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(PostTipoReporte(formRegistro));
+
     // Realizamos el request.
-    PostTipoReporte(formRegistro).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);
@@ -96,8 +102,14 @@ function ModificarTipoReporte(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(PutTipoReporte(
+        parametrosBusqueda,
+        formRegistro
+    ));
+
     // Realizamos el request.
-    PutTipoReporte(parametrosBusqueda, formRegistro).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);
@@ -136,8 +148,11 @@ function RemoverTipoReporte(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(DeleteTipoReporte(parametrosBusqueda));
+
     // Realizamos el request.
-    DeleteTipoReporte(parametrosBusqueda).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);

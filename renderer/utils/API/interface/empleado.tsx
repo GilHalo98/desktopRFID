@@ -30,8 +30,11 @@ function ConsultaEmpleado(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetEmpleado(parametrosBusqueda));
+
     // Realizamos el request.
-    GetEmpleado(parametrosBusqueda).then((respuesta) => {
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -62,8 +65,11 @@ function RegistrarEmpleado(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(PostEmpleado(formRegistro));
+
     // Realizamos el request.
-    PostEmpleado(formRegistro).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);
@@ -103,8 +109,14 @@ function ModificarEmpleado(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(PutEmpleado(
+        parametrosBusqueda,
+        formRegistro
+    ));
+
     // Realizamos el request.
-    PutEmpleado(parametrosBusqueda, formRegistro).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);
@@ -142,8 +154,11 @@ function RemoverEmpleado(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(DeleteEmpleado(parametrosBusqueda));
+
     // Realizamos el request.
-    DeleteEmpleado(parametrosBusqueda).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);
@@ -177,8 +192,11 @@ function RegistrarEmpleadoCompleto(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(PostEmpleadoCompleto(formRegistro));
+
     // Realizamos el request.
-    PostEmpleadoCompleto(formRegistro).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);
@@ -221,8 +239,11 @@ function ConsultaEmpleadoCompleto(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetEmpleadoCompleto(parametrosBusqueda));
+
     // Realizamos el request.
-    GetEmpleadoCompleto(parametrosBusqueda).then((respuesta) => {
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -259,8 +280,14 @@ function ModificarEmpleadoCompleto(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(PutEmpleadoCompleto(
+        parametrosBusqueda, 
+        formRegistro
+    ));
+
     // Realizamos el request.
-    PutEmpleadoCompleto(parametrosBusqueda, formRegistro).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);

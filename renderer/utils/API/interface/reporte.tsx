@@ -24,8 +24,11 @@ function ConsultaReporte(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetReporte(parametrosBusqueda));
+
     // Realizamos el request.
-    GetReporte(parametrosBusqueda).then((respuesta) => {
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -56,8 +59,11 @@ function RegistrarReporte(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(PostReporte(formRegistro));
+
     // Realizamos el request.
-    PostReporte(formRegistro).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);
@@ -97,8 +103,14 @@ function ModificarReporte(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(PutReporte(
+        parametrosBusqueda,
+        formRegistro
+    ));
+
     // Realizamos el request.
-    PutReporte(parametrosBusqueda, formRegistro).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);
@@ -137,8 +149,12 @@ function RemoverReporte(
         onAntes();
     }
 
+
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(DeleteReporte(parametrosBusqueda));
+
     // Realizamos el request.
-    DeleteReporte(parametrosBusqueda).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);

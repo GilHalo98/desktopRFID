@@ -13,14 +13,16 @@ export interface HorasTrabajadas {
     dia: number
     detalle: Detalle
     tiempoTrabajo: number
+    tiempoDescanso: number
     llegoTarde: boolean
     salioTarde: boolean
     esDescanso: boolean
     falto: boolean
-    diaFueraDeRango: boolean
 };
 
 export interface Detalle {
     entrada?: string
+    inicioDescanso?: string
+    finDescanso?: string
     salida?: string
 };  

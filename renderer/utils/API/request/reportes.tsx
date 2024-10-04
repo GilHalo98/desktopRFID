@@ -14,6 +14,19 @@ const GetHorasTrabajadas = async (
     return ENDPOINTS.REPORTES.HORAS_TRABAJADAS(parametros);
 };
 
+const GetHorasTrabajadasConDescanso = async (
+    parametros?: {
+        limit?: number,
+        offset?: number,
+        id?: string,
+        nombres?: string,
+        idRolVinculado?: number,
+        semanaReporte?: string
+    }
+) => {
+    return ENDPOINTS.REPORTES.HORAS_TRABAJADAS_CON_DESCANSO(parametros);
+};
+
 const GetHistorialActividadMaquina = async (
     parametros?: {
         id?: number,
@@ -62,6 +75,17 @@ const GetHorasTrabajadasDetalleGeneral = async (
     );
 };
 
+const GetHorasTrabajadasDetalleGeneralConDescanso = async (
+    parametros?: {
+        idEmpleadoVinculado?: string,
+        semanaReporte?: string
+    }
+) => {
+    return ENDPOINTS.REPORTES.HORAS_TRABAJADAS_DETALLE.GENERAL_CON_DESCANSO(
+        parametros
+    );
+};
+
 const GetHorasTrabajadasDetalleTracker = async (
     parametros?: {
         idEmpleadoVinculado?: string,
@@ -82,6 +106,18 @@ const GetHorasTrabajadasDetalleChequeos = async (
     }
 ) => {
     return ENDPOINTS.REPORTES.HORAS_TRABAJADAS_DETALLE.CHEQUEOS(
+        parametros
+    );
+};
+
+const GetHorasTrabajadasDetalleChequeosConDescanso = async (
+    parametros?: {
+        idEmpleadoVinculado?: string,
+        semanaReporte?: string,
+        dia?: number
+    }
+) => {
+    return ENDPOINTS.REPORTES.HORAS_TRABAJADAS_DETALLE.CHEQUEOS_CON_DESCANSO(
         parametros
     );
 };
@@ -169,18 +205,34 @@ const GetHorasTrabajadasDetalleActividadDispositivo = async (
     );
 };
 
+const GetHorasTrabajadasDetalleDiasHorario = async (
+    parametros?: {
+        idEmpleadoVinculado?: string,
+        semanaReporte?: string,
+        dia?: number
+    }
+) => {
+    return ENDPOINTS.REPORTES.HORAS_TRABAJADAS_DETALLE.DIAS_HORARIO(
+        parametros
+    );
+};
+
 export {
     GetHorasTrabajadas,
     GetHistorialUsosMaquina,
     GetHistorialActividadMaquina,
     GetHistorialOperadoresMaquina,
+    GetHorasTrabajadasConDescanso,
     GetHorasTrabajadasDetalleGeneral,
     GetHorasTrabajadasDetalleTracker,
     GetHorasTrabajadasDetalleResumen,
     GetHorasTrabajadasDetalleChequeos,
+    GetHorasTrabajadasDetalleDiasHorario,
     GetHorasTrabajadasDetalleAccesosZona,
     GetHorasTrabajadasDetalleIntentosAccesos,
     GetHorasTrabajadasDetalleRegistrosReporte,
     GetHorasTrabajadasDetalleIntentoActividad,
+    GetHorasTrabajadasDetalleGeneralConDescanso,
+    GetHorasTrabajadasDetalleChequeosConDescanso,
     GetHorasTrabajadasDetalleActividadDispositivo,
 };

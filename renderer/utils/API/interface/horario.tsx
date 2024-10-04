@@ -26,8 +26,11 @@ function ConsultaHorario(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetHorario(parametrosBusqueda));
+
     // Realizamos el request.
-    GetHorario(parametrosBusqueda).then((respuesta) => {
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -58,8 +61,11 @@ function RegistrarHorario(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(PostHorario(formRegistro));
+
     // Realizamos el request.
-    PostHorario(formRegistro).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);
@@ -99,8 +105,14 @@ function ModificarHorario(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(PutHorario(
+        parametrosBusqueda,
+        formRegistro
+    ));
+
     // Realizamos el request.
-    PutHorario(parametrosBusqueda, formRegistro).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);
@@ -139,8 +151,11 @@ function RemoverHorario(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(DeleteHorario(parametrosBusqueda));
+
     // Realizamos el request.
-    DeleteHorario(parametrosBusqueda).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);
@@ -181,8 +196,11 @@ function ConsultaHorarioCompleto(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetHorarioCompleto(parametrosBusqueda));
+
     // Realizamos el request.
-    GetHorarioCompleto(parametrosBusqueda).then((respuesta) => {
+    promesa.then((respuesta) => {
         // Al cumplirse el request, se ejecuta la función.
         onOk(respuesta.data);
 
@@ -219,8 +237,14 @@ function ModificarHorarioCompleto(
         onAntes();
     }
 
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(PutHorarioCompleto(
+        parametrosBusqueda,
+        formModificacion
+    ));
+
     // Realizamos el request.
-    PutHorarioCompleto(parametrosBusqueda, formModificacion).then((respuesta) => {
+    promesa.then((respuesta) => {
         if(typeof onOk != 'undefined') {
             // Ejecutamos la funcion de onOk.
             onOk(respuesta.data);

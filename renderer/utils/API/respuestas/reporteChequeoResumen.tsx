@@ -9,8 +9,6 @@ import {
 export interface ReporteChequeoResumenCompleto {
     entrada: ReporteChequeoVinculada
     salida: ReporteChequeoVinculada
-    inicioDescanso: ReporteChequeoVinculada
-    finDescanso: ReporteChequeoVinculada
 }
 
 export interface ReporteChequeoResumen {
