@@ -1,3 +1,4 @@
+import { Empleado } from "../API/modelos/empleado";
 import {
     ReporteAccesosDetalle
 } from "../API/respuestas/reporteAccesosDetalle";
@@ -13,6 +14,10 @@ import {
 import {
     ReporteGeneral
 } from "../API/respuestas/reporteGeneral";
+
+/**
+ * Modelos de datos del reporte de detalles de horas trabajadas.
+ */
 
 export interface ReporteHorasTrabajadasDetalleAccesos {
     idZonaVinculada: string,
@@ -31,6 +36,7 @@ export interface ReporteHorasTrabajadasDetallePorDia {
 };
 
 export interface ReporteHorasTrabajadasDetalle {
+    datosEmpleado: Empleado
     general: ReporteGeneral
     porDia: ReporteHorasTrabajadasDetallePorDia []
 };
