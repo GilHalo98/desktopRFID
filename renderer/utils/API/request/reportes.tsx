@@ -18,13 +18,13 @@ const GetHorasTrabajadasConDescanso = async (
     parametros?: {
         limit?: number,
         offset?: number,
-        id?: string,
+        idEmpleadoVinculado?: string,
         nombres?: string,
         idRolVinculado?: number,
         semanaReporte?: string
     }
 ) => {
-    return ENDPOINTS.REPORTES.HORAS_TRABAJADAS_CON_DESCANSO(parametros);
+    return ENDPOINTS.REPORTES.HORAS_TRABAJADAS(parametros);
 };
 
 const GetHistorialActividadMaquina = async (

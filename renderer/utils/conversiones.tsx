@@ -136,6 +136,36 @@ function numeroDiaANombreDia(dia: number) {
     return nombreDia;
 };
 
+function dateDiaSemana(
+    dia: number,
+    semana: Date[],
+    setToCero: boolean = false
+) {
+    // Le quitamos una unidad al dia pasado, si el dia es 7 o domingo,
+    // se establece a -1 para empezar con el domingo de
+    // la semana pasada.
+    dia = dia == 7?
+        -1 : dia - 1;
+
+    // Instanciamos dos fechas.
+    const fecha = semana? new Date(semana[0]) : new Date();
+
+    // Calculamos el dia de la semana.
+    fecha.setDate(fecha.getDate() + (dia - fecha.getDay()) + 1);
+
+    if(setToCero) {
+        // Establecemos la hora a las 00:00:00
+        fecha.setHours(0, 0, 0);
+
+    } else {
+        // Establecemos la hora a las 23:59:59
+        fecha.setHours(23, 59, 59);
+    }
+
+    // Cambiamos el formato y las retornamos.
+    return fecha;
+};
+
 function rangoSemana() {
     // Instanciamos dos fechas.
     const fechaA = new Date();
@@ -303,9 +333,10 @@ export {
     bin2dec,
     dec2bin,
     msToTime,
-    a12HorasTiempo,
     rangoSemana,
+    dateDiaSemana,
     separarTiempo,
+    a12HorasTiempo,
     fechaStrATiempo,
     deserealizarSemana,
     numeroDiaANombreDia,

@@ -1,54 +1,62 @@
+// Funcionalidad
 import {
     numeroDiaANombreDia,
-    msToTime
+    msToTime,
+    fechaStrATiempo,
+    a12HorasTiempo,
+    separarTiempo
 } from "../../../../utils/conversiones";
 
+// Modelo de datos.
+import {
+    HorasTrabajadas
+} from "../../../../utils/API/respuestas/horasTrabajadas";
+
 // Formatemos los datos para mostrarlos en el tracker.
-const formatearDatosTracker = (datos: any[]) => {
+const formatearDatosTracker = (datos: HorasTrabajadas[]) => {
     const datosFormateados: ItemTracker[] = [];
 
-    datos.forEach((dato: {
-        dia: number,
-        esDescanso: boolean,
-        falto: boolean,
-        llegoTarde: boolean,
-        salioTarde: boolean,
-        tiempoDescanso: number,
-        tiempoTrabajo: number
-    }) => {
-        let color: "slate" | "gray" | "zinc" | "neutral" | "stone" | "red" | "orange" | "amber" | "yellow" | "lime" | "green" | "emerald" | "teal" | "cyan" | "sky" | "blue" | "indigo" | "violet" | "purple" | "fuchsia" | "pink" | "rose" = 'red';
-        let tooltip: string = 'No hay datos registrados';
+    datos.forEach((dato: HorasTrabajadas) => {
+        let color: "slate" | "gray" | "zinc" | "neutral" | "stone" | "red" | "orange" | "amber" | "yellow" | "lime" | "green" | "emerald" | "teal" | "cyan" | "sky" | "blue" | "indigo" | "violet" | "purple" | "fuchsia" | "pink" | "rose" = 'gray';
+        let tooltip: string = 'Sin Registro';
 
-        if(dato.esDescanso) {
-            color = 'gray';
-            tooltip = numeroDiaANombreDia(dato.dia) + ' descanso';
-            if(dato.tiempoTrabajo > 0) {
-                tooltip += ' laborado: ' + msToTime(
-                    dato.tiempoTrabajo
-                );
+        if(!dato.diaFueraDeRango) {
+            const tiempoEnTrabajo: string = separarTiempo(msToTime(
+                dato.tiempoTrabajo
+            ));
+    
+            const nombreDia: string = numeroDiaANombreDia(dato.dia);
+    
+            if(dato.esDescanso) {
+                color = dato.tiempoTrabajo > 0? 'lime' : 'gray';
+                tooltip = `${nombreDia} descanso${
+                    dato.tiempoTrabajo > 0?
+                        ` laborado: ${tiempoEnTrabajo}` : ''
+                }`;
+    
+            } else if(dato.falto) {
+                color = 'red'
+                tooltip = `${nombreDia} falto`;
+    
+            } else if(dato.llegoTarde) {
+                color = 'yellow'
+                tooltip = `${nombreDia} llego tarde: ${tiempoEnTrabajo}`;
+    
+            } else if(dato.salioTarde) {
+                color = 'blue'
+                tooltip = `${nombreDia} salio tarde: ${tiempoEnTrabajo}`;
+    
+            } else if(dato.tiempoTrabajo > 0) {
+                color = 'green';
+                tooltip = `${nombreDia}: ${tiempoEnTrabajo}`;
+
+            } else if(!dato.detalle.entrada || !dato.detalle.salida) {
+                color = 'orange';
+                tooltip = `No realizo registro de chequeo de ${
+                    !dato.detalle.entrada?
+                        'entrada' : 'salida'
+                }`;
             }
-
-        } else if(dato.falto) {
-            color = 'red'
-            tooltip = numeroDiaANombreDia(dato.dia) + ' falto'
-
-        } else if(dato.llegoTarde) {
-            color = 'yellow'
-            tooltip = numeroDiaANombreDia(
-                dato.dia
-            ) + ' llego tarde: ' + msToTime(dato.tiempoTrabajo);
-
-        } else if(dato.salioTarde) {
-            color = 'blue'
-            tooltip = numeroDiaANombreDia(
-                dato.dia
-            ) + ' salio tarde: ' + msToTime(dato.tiempoTrabajo);
-
-        } else if(dato.tiempoTrabajo > 0) {
-            color = 'green';
-            tooltip = numeroDiaANombreDia(
-                dato.dia
-            ) + ': ' + msToTime(dato.tiempoTrabajo);
         }
 
         datosFormateados.push({

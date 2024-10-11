@@ -3,30 +3,33 @@
 // React.
 import React from 'react';
 
+// Componentes de reactstap
+import {
+    Col, Row, Spinner
+} from 'reactstrap';
+
 // Componentes propios.
-import FormModificarRegistroEmpleadoCompleto from '../../forms/registros/empleadoCompleto/formModificarRegistroEmpleadoCompleto';
-import ModalModificarRegistroEmpleadoCompleto from '../../modals/modalEmpleadoCompleto/modalModificarRegistroEmpleadoCompleto';
-import FormRegistroEmpleadoCompleto from '../../forms/registros/empleadoCompleto/formRegistroEmpleadoCompleto';
-import ModalRegistroEmpleadoCompleto from '../../modals/modalEmpleadoCompleto/modalRegistroEmpleadoCompleto';
-import ModalVisualizarDatosDetalles from '../../modals/modalGrid/modalVisualizarDatosDetalles';
-import ModalGuardarDatosTarjeta from '../../modals/modalGrid/modalGuardarDatosTarjeta';
-import ModalConexionSerial from '../../modals/modalGrid/modalConexionSerial';
 import GridParaRegistrosDeEmpleados from '../gridParaRegistrosDeEmpleados';
+import ModalConexionSerial from '../../modals/modalGrid/modalConexionSerial';
+import ModalGuardarDatosTarjeta from '../../modals/modalGrid/modalGuardarDatosTarjeta';
+import ModalVisualizarDatosDetalles from '../../modals/modalGrid/modalVisualizarDatosDetalles';
+import ModalRegistroEmpleadoCompleto from '../../modals/modalEmpleadoCompleto/modalRegistroEmpleadoCompleto';
+import FormRegistroEmpleadoCompleto from '../../forms/registros/empleadoCompleto/formRegistroEmpleadoCompleto';
+import ModalModificarRegistroEmpleadoCompleto from '../../modals/modalEmpleadoCompleto/modalModificarRegistroEmpleadoCompleto';
+import FormModificarRegistroEmpleadoCompleto from '../../forms/registros/empleadoCompleto/formModificarRegistroEmpleadoCompleto';
 
 
 // Importamos la funcionalidad de la tabla.
 import {
+    guardarRegistro,
+    modificarRegistro,
     consultarRegistros,
     consultarRegistrosVinculados,
-    guardarRegistro,
-    modificarRegistro
 } from './logic/registros';
 
 import {
-    renderBarraBusqueda,
     renderizarCardsEmpleados
 } from './logic/renders';
-import { Col, Row, Spinner } from 'reactstrap';
 
 // Modelo de datos.
 

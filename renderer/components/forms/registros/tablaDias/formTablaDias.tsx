@@ -48,6 +48,135 @@ export default function FormTablaDias(
         console.log('refresh');
     }, [refresh]);
 
+    const renderContenido = () => {
+        // Reorganizamos el contenido de la lista.
+        // Mapeamos la lista reorganizada.
+        return props.listaDias.map((dia: {
+            nombreDia: string,
+            id: number
+        }, index: number) => {
+            // Registro de dia laboral correspondiente.
+            let registroDiaLaboral: DiaLaboral = Object();
+
+            // Buscamos el registro del dia correspondiente.
+            registros.map((registro: DiaLaboral) => {
+                if(registro.dia == dia.id) {
+                    registroDiaLaboral = registro;
+                }
+            });
+
+            return(
+                <tr>
+                    <th>{dia.nombreDia}</th>
+                    <td>
+                        {/* Campo que indica si el dia es descansado */}
+                        <FormGroup
+                            check
+                            style={{
+                                color: 'white',
+                                paddingLeft: '50%'
+                            }}
+                        >
+                            <Input
+                                type="checkbox"
+                                id={"esDescanso" + dia.nombreDia}
+                                defaultChecked={
+                                    diasDescanso[index]
+                                }
+                                onChange={(evento: SyntheticEvent) => {
+                                    const input = evento.target as HTMLInputElement;
+
+                                    diasDescanso[
+                                        index
+                                    ] = input.checked;
+
+                                    setDiasDescanso(diasDescanso);
+
+                                    props.setListaDiasDescanso(
+                                        diasDescanso
+                                    );
+
+                                    setRefresh(!refresh);
+                                }}
+                            />
+                        </FormGroup>
+                    </td>
+
+                    {/* Renderizamos los campos de las horas. */}
+                    <td>
+                        {/*Campo hora de entrada*/}
+                        <FormGroup>
+                            <Input
+                                id={'horaEntrada' + dia.nombreDia}
+                                type='time'
+                                disabled={
+                                    diasDescanso[index]
+                                }
+                                defaultValue={
+                                    registroDiaLaboral.horaEntrada
+                                }
+                            />
+                        </FormGroup>
+                    </td>
+
+                    <td>
+                        {/*Campo hora de incio de descanso*/}
+                        <FormGroup>
+                            <Input
+                                id={
+                                    'horaSalidaDescanso'
+                                    + dia.nombreDia
+                                }
+                                type='time'
+                                disabled={
+                                    diasDescanso[index]
+                                }
+                                defaultValue={
+                                    registroDiaLaboral.horaSalidaDescanso
+                                }
+                            />
+                        </FormGroup>
+                    </td>
+
+                    <td>
+                        {/*Campo hora de fin de descanso*/}
+                        <FormGroup>
+                            <Input
+                                id={
+                                    'horaEntradaDescanso'
+                                    + dia.nombreDia
+                                }
+                                type='time'
+                                disabled={
+                                    diasDescanso[index]
+                                }
+                                defaultValue={
+                                    registroDiaLaboral.horaEntradaDescanso
+                                }
+                            />
+                        </FormGroup>
+                    </td>
+
+                    <td>
+                        {/*Campo hora de salida*/}
+                        <FormGroup>
+                            <Input
+                                id={'horaSalida' + dia.nombreDia}
+                                type='time'
+                                disabled={
+                                    diasDescanso[index]
+                                }
+                                defaultValue={
+                                    registroDiaLaboral.horaSalida
+                                }
+                            />
+                        </FormGroup>
+                    </td>
+                </tr>
+            )
+        })
+    };
+
     return(
         <Table hover dark responsive>
             {/* Cabecera de la tabla. */}
@@ -62,130 +191,7 @@ export default function FormTablaDias(
 
             {/* Renderizamos el contenido de la tabla. */}
             <tbody>
-                {props.listaDias.map((dia: {
-                    nombreDia: string,
-                    id: number
-                }, index: number) => {
-                    // Registro de dia laboral correspondiente.
-                    let registroDiaLaboral: DiaLaboral = Object();
-
-                    // Buscamos el registro del dia correspondiente.
-                    registros.map((registro: DiaLaboral) => {
-                        if(registro.dia == dia.id) {
-                            registroDiaLaboral = registro;
-                        }
-                    });
-
-                    return(
-                        <tr>
-                            <th>{dia.nombreDia}</th>
-                            <td>
-                                {/* Campo que indica si el dia es descansado */}
-                                <FormGroup
-                                    check
-                                    style={{
-                                        color: 'white',
-                                        paddingLeft: '50%'
-                                    }}
-                                >
-                                    <Input
-                                        type="checkbox"
-                                        id={"esDescanso" + dia.nombreDia}
-                                        defaultChecked={
-                                            diasDescanso[index]
-                                        }
-                                        onChange={(evento: SyntheticEvent) => {
-                                            const input = evento.target as HTMLInputElement;
-
-                                            diasDescanso[
-                                                index
-                                            ] = input.checked;
-
-                                            setDiasDescanso(diasDescanso);
-
-                                            props.setListaDiasDescanso(
-                                                diasDescanso
-                                            );
-
-                                            setRefresh(!refresh);
-                                        }}
-                                    />
-                                </FormGroup>
-                            </td>
-
-                            {/* Renderizamos los campos de las horas. */}
-                            <td>
-                                {/*Campo hora de entrada*/}
-                                <FormGroup>
-                                    <Input
-                                        id={'horaEntrada' + dia.nombreDia}
-                                        type='time'
-                                        disabled={
-                                            diasDescanso[index]
-                                        }
-                                        defaultValue={
-                                            registroDiaLaboral.horaEntrada
-                                        }
-                                    />
-                                </FormGroup>
-                            </td>
-
-                            <td>
-                                {/*Campo hora de incio de descanso*/}
-                                <FormGroup>
-                                    <Input
-                                        id={
-                                            'horaSalidaDescanso'
-                                            + dia.nombreDia
-                                        }
-                                        type='time'
-                                        disabled={
-                                            diasDescanso[index]
-                                        }
-                                        defaultValue={
-                                            registroDiaLaboral.horaSalidaDescanso
-                                        }
-                                    />
-                                </FormGroup>
-                            </td>
-
-                            <td>
-                                {/*Campo hora de fin de descanso*/}
-                                <FormGroup>
-                                    <Input
-                                        id={
-                                            'horaEntradaDescanso'
-                                            + dia.nombreDia
-                                        }
-                                        type='time'
-                                        disabled={
-                                            diasDescanso[index]
-                                        }
-                                        defaultValue={
-                                            registroDiaLaboral.horaEntradaDescanso
-                                        }
-                                    />
-                                </FormGroup>
-                            </td>
-
-                            <td>
-                                {/*Campo hora de salida*/}
-                                <FormGroup>
-                                    <Input
-                                        id={'horaSalida' + dia.nombreDia}
-                                        type='time'
-                                        disabled={
-                                            diasDescanso[index]
-                                        }
-                                        defaultValue={
-                                            registroDiaLaboral.horaSalida
-                                        }
-                                    />
-                                </FormGroup>
-                            </td>
-                        </tr>
-                    )
-                })}
+                {renderContenido()}
             </tbody>
         </Table>
     );

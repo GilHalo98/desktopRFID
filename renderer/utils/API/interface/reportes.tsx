@@ -31,7 +31,7 @@ function ConsultaHorasTrabajadas(
     parametrosBusqueda?: {
         limit?: number,
         offset?: number,
-        id?: string,
+        idEmpleadoVinculado?: string,
         nombres?: string,
         idRolVinculado?: number,
         semanaReporte?: string
@@ -755,7 +755,7 @@ function ReporteCompletoHorasTrabajadasDetalle(
                  * Evaluamos el index del reporte, dependidendo del index
                  * guardamos el reporte.
                  */
-                switch (index) {
+                switch(index) {
                     // Si es el primer reporte, se mapea a los
                     // datos del empleado.
                     case 0:
@@ -782,10 +782,12 @@ function ReporteCompletoHorasTrabajadasDetalle(
 
                         // Verificamos que el reporte sea de tipo acceso.
                         if(typeof idZona != 'undefined') {
+                            // Guardamos los datos en el reporte.
                             reporte.porDia[
                                 indexDia
                             ].accesos.push({
                                 idZonaVinculada: idZona,
+                                nombreZona: respuesta.data.zona.nombreZona,
                                 reporte: respuesta.data.reporte
                             });
 
@@ -793,13 +795,14 @@ function ReporteCompletoHorasTrabajadasDetalle(
                             // Verificamos que el reporte sea de
                             // tipo actividad.
                             if(typeof idDispositivo != 'undefined') {
+                                // Guardamos los datos en el reporte.
                                 reporte.porDia[
                                     indexDia
                                 ].actividades.push({
                                     idDispositivoVinculado: idDispositivo,
+                                    nombreDispositivo: respuesta.data.dispositivo.nombreDispositivo,
                                     reporte: respuesta.data.reporte
                                 });
-
                             } else {
                                 // Verificamos que el reporte sea
                                 // de tipo chequeos.

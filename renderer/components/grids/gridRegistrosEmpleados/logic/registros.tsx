@@ -7,7 +7,18 @@ import {
     formatearDatos
 } from "../../../../utils/formatDataTabla";
 
-// Modelo de permiso
+// Busca elementos de cierto tipo en elementos html.
+import {
+    buscarElementosHTML,
+    formatearFormulario
+} from "../../../../utils/funcionalidadHTML";
+
+// Cambia el numero del dia al nombre del dia.
+import {
+    numeroDiaANombreDia
+} from "../../../../utils/conversiones";
+
+// Modelo de datos
 import {
     Rol
 } from "../../../../utils/API/modelos/rol";
@@ -68,7 +79,7 @@ const exportarDatos = (
 
     } else {
         ConsultaEmpleado(
-            (respuesta) => {exportarDatosTabla(
+            (respuesta: any) => {exportarDatosTabla(
                 respuesta.registros,
                 cabeceras,
                 formatearRegistros
@@ -90,18 +101,31 @@ const guardarRegistro = (
 ) => {
     /**
      * Creamos un nuevo registro y lo guardamos en la base de datos.
-     */
+    */
 
-    // Lista de dias.
-    const listaDias = [
-        'Lunes',
-        'Martes',
-        'Miercoles',
-        'Jueves',
-        'Viernes',
-        'Sabado',
-        'Domingo'
-    ];
+    // Listamos los elementos del formulario.
+    const listaElementosFormulario: HTMLInputElement [] = buscarElementosHTML(
+        evento.target as HTMLFormElement,
+        ['INPUT', 'SELECT']
+    );
+
+    // Formateamos los datos del formulario.
+    const formulario: any = formatearFormulario(
+        listaElementosFormulario,
+        {
+            Empleado: {},
+            Usuario: {},
+            Horario: {
+                Lunes: {},
+                Martes: {},
+                Miercoles: {},
+                Jueves: {},
+                Viernes: {},
+                Sabado: {},
+                Domingo: {}
+            }
+        }
+    );
 
     // Registros de formularios.
     const datosRegistro = new FormData();
@@ -113,117 +137,73 @@ const guardarRegistro = (
     );
 
     // Guardamos los datos del registro del empleado.
-    datosRegistro.append('nombres', evento.target[1].value);
-    datosRegistro.append('apellidoPaterno', evento.target[2].value);
-    datosRegistro.append('apellidoMaterno', evento.target[3].value);
-    datosRegistro.append('numeroTelefonico', evento.target[4].value);
-    datosRegistro.append('fechaNacimiento', evento.target[5].value);
-    datosRegistro.append('idRolVinculado', evento.target[6].value);
+    datosRegistro.append('nombres', formulario.Empleado.nombreEmpleado);
+    datosRegistro.append('apellidoPaterno', formulario.Empleado.apellidoPaternoEmpleado);
+    datosRegistro.append('apellidoMaterno', formulario.Empleado.apellidoMaternoEmpleado);
+    datosRegistro.append('numeroTelefonico', formulario.Empleado.numeroEmpleado);
+    datosRegistro.append('fechaNacimiento', formulario.Empleado.nacimientoEmpleado);
+    datosRegistro.append('idRolVinculado', formulario.Empleado.rolEmpleado);
 
     // Guardamos los datos del registro del usuario.
-    datosRegistro.append('nombreUsuario', evento.target[7].value);
-    datosRegistro.append('password', evento.target[9].value);
+    datosRegistro.append('nombreUsuario', formulario.Usuario.nombreUsuario);
+    datosRegistro.append('password', formulario.Usuario.passwordUsuario);
 
     // Guardamos los datos del registro del horario.
-    datosRegistro.append('descripcionHorario', "Prueba de registro de horarios");
-    datosRegistro.append('tolerancia', evento.target[12].value);
+    datosRegistro.append('tolerancia', formulario.Horario.tiempoToleranciaHorario);
+    datosRegistro.append(
+        'descripcionHorario',
+        `Registro de horario de ${
+            formulario.Empleado.nombreEmpleado
+        } ${
+            formulario.Empleado.apellidoPaternoEmpleado
+        } ${
+            formulario.Empleado.apellidoMaternoEmpleado
+        }`
+    );
 
-    // Si las horas de entrada, salida y descanso son similares para
-    // toda la semana.
-    if (evento.target[13].checked) {
-        // Recuperamos los datos que seran similares para todos los dias
-        // de la semana.
-        const horaEntrada = evento.target[14].value;
-        const horaSalidaDescanso = evento.target[15].value;
-        const horaEntradaDescanso = evento.target[16].value;
-        const HoraSalida = evento.target[17].value;
+    // Si los dias de trabajo son distintos.
+    for(let i = 0; i < 7; i ++) {
+        // Instanciamos el nombre del dia.
+        const dia: string = numeroDiaANombreDia(i + 1);
 
-        // Esto nos permite iterar entre los nombres de los dias.
-        let indexDia = 0;
+        // Agregamos el valor si el dia es laborado o descanso.
+        datosRegistro.append(
+            `esDescanso${dia}`,
+            formulario.Horario[dia][`esDescansoHorario${dia}`]
+        );
 
-        // Los campos para identificar los dias empiezan en el index
-        // 18 hasta el 24, iteramos entre cada uno de ellos.
-        for (let index = 18; index <= 24; index++) {
-            // Desempaquetamos los datos.
-            const id: string = evento.target[index].id;
-            const checked: string = evento.target[index].checked? '1' : '0';
+        // Agregamos la hora de entrada del empleado.
+        datosRegistro.append(
+            `horaEntrada${dia}`,
+            formulario.Horario.diasSimilaresHorario?
+            formulario.Horario[`horaEntradaHorario`] : formulario.Horario[
+                dia
+            ][`horaEntradaHorario${dia}`]
+        );
 
-            // Agregamos el valor si el dia es laborado o descanso.
-            datosRegistro.append(
-                id,
-                checked
-            );
-
-            // Si el dia es laborado, mandamos la hora de entrada
-            // y salida, asi como la hora de descanso
-            if(!evento.target[index].checked) {
-                datosRegistro.append(
-                    'horaEntrada' + listaDias[indexDia],
-                    horaEntrada
-                );
-                datosRegistro.append(
-                    'horaSalidaDescanso' + listaDias[indexDia],
-                    horaSalidaDescanso
-                );
-                datosRegistro.append(
-                    'horaEntradaDescanso' + listaDias[indexDia],
-                    horaEntradaDescanso
-                );
-                datosRegistro.append(
-                    'horaSalida' + listaDias[indexDia],
-                    HoraSalida
-                );
-            }
-
-            // Cambiamos de dia.
-            indexDia++;
-        }
-
-    // Si son diferentes, iteramos por todos los campos que representen
-    // la semana y los agregamos al form.
-    } else {
-        // Los campos del dia, si es descanso, entrada, salida y
-        // hora de descanso empiezan en el index 14 hasta el 48.
-        for (let index = 14; index <= 48; index++) {
-            // Si el campo es de tipo check.
-            if (evento.target[index].className == 'form-check-input') {
-                // Desempaquetamos los datos.
-                const id: string = evento.target[index].id;
-                const checked: string = evento.target[index].checked? '1' : '0';
-
-                // Agregamos el valor si el dia es laborado o descanso.
-                datosRegistro.append(
-                    id,
-                    checked
-                );
-
-                // Si el dia es dia descansado, entonces
-                // saltamos los proximos 4 campos que indican hora de
-                // entrada, salida y hora de descanso.
-                if(evento.target[index].checked) {
-                    index += 4;
-                }
-
-            } else {
-                // Si no es un check, agregamos el valor almacenado en
-                // el campo.
-                datosRegistro.append(
-                    evento.target[index].id,
-                    evento.target[index].value
-                );
-            }
-        }
+        // Agregamos la hora de salida del empleado.
+        datosRegistro.append(
+            `horaSalida${dia}`,
+            formulario.Horario.diasSimilaresHorario?
+            formulario.Horario[`horaSalidaHorario`] : formulario.Horario[
+                dia
+            ][`horaSalidaHorario${dia}`]
+        );
     }
 
-    console.log('hola');
-
-    // Enviamos el registro al api.
+    // Registramos el permiso en la base de datos.
     RegistrarEmpleadoCompleto(
         datosRegistro,
         (respuesta: any) => {
-            console.log('hola');
             console.log(respuesta);
-        }
+        },
+        (error: any) => {console.log(
+            error
+        )},
+        undefined,
+        () => {setRefresh(
+            !refresh
+        )},
     );
 };
 
@@ -239,18 +219,29 @@ const modificarRegistro = (
      * Modificamos el registro pasado por evento.
      */
 
-    console.log(evento);
+    // Listamos los elementos del formulario.
+    const listaElementosFormulario: HTMLInputElement [] = buscarElementosHTML(
+        evento.target as HTMLFormElement,
+        ['INPUT', 'SELECT']
+    );
 
-    // Lista de dias.
-    const listaDias = [
-        'Lunes',
-        'Martes',
-        'Miercoles',
-        'Jueves',
-        'Viernes',
-        'Sabado',
-        'Domingo'
-    ];
+    // Formateamos los datos del formulario.
+    const formulario: any = formatearFormulario(
+        listaElementosFormulario,
+        {
+            Empleado: {},
+            Usuario: {},
+            Horario: {
+                Lunes: {},
+                Martes: {},
+                Miercoles: {},
+                Jueves: {},
+                Viernes: {},
+                Sabado: {},
+                Domingo: {}
+            }
+        }
+    );
 
     // Registros de formularios.
     const datosModificaion = new FormData();
@@ -262,114 +253,67 @@ const modificarRegistro = (
     );
 
     // Guardamos los datos del registro del empleado.
-    datosModificaion.append('nombres', evento.target[1].value);
-    datosModificaion.append('apellidoPaterno', evento.target[2].value);
-    datosModificaion.append('apellidoMaterno', evento.target[3].value);
-    datosModificaion.append('numeroTelefonico', evento.target[4].value);
-    datosModificaion.append('fechaNacimiento', evento.target[5].value);
-    datosModificaion.append('idRolVinculado', evento.target[6].value);
+    datosModificaion.append('idEmpleado', idRegistro.toString());
+    datosModificaion.append('nombres', formulario.Empleado.nombreEmpleado);
+    datosModificaion.append('apellidoPaterno', formulario.Empleado.apellidoPaternoEmpleado);
+    datosModificaion.append('apellidoMaterno', formulario.Empleado.apellidoMaternoEmpleado);
+    datosModificaion.append('numeroTelefonico', formulario.Empleado.numeroEmpleado);
+    datosModificaion.append('fechaNacimiento', formulario.Empleado.nacimientoEmpleado);
+    datosModificaion.append('idRolVinculado', formulario.Empleado.rolEmpleado);
 
     // Guardamos los datos del registro del usuario.
-    datosModificaion.append('nombreUsuario', evento.target[7].value);
-    datosModificaion.append('password', evento.target[9].value);
+    datosModificaion.append('nombreUsuario', formulario.Usuario.nombreUsuario);
+    datosModificaion.append('password', formulario.Usuario.passwordUsuario);
 
     // Guardamos los datos del registro del horario.
-    datosModificaion.append('descripcionHorario', "Prueba de registro de horarios");
-    datosModificaion.append('tolerancia', evento.target[12].value);
+    datosModificaion.append('tolerancia', formulario.Horario.tiempoToleranciaHorario);
+    datosModificaion.append(
+        'descripcionHorario',
+        `Registro de horario de ${
+            formulario.Empleado.nombreEmpleado
+        } ${
+            formulario.Empleado.apellidoPaternoEmpleado
+        } ${
+            formulario.Empleado.apellidoMaternoEmpleado
+        }`
+    );
 
-    // Si las horas de entrada, salida y descanso son similares para
-    // toda la semana.
-    if (evento.target[13].checked) {
-        // Recuperamos los datos que seran similares para todos los dias
-        // de la semana.
-        const horaEntrada = evento.target[14].value;
-        const horaSalidaDescanso = evento.target[15].value;
-        const horaEntradaDescanso = evento.target[16].value;
-        const HoraSalida = evento.target[17].value;
+    // Si los dias de trabajo son distintos.
+    for(let i = 0; i < 7; i ++) {
+        // Instanciamos el nombre del dia.
+        const dia: string = numeroDiaANombreDia(i + 1);
 
-        // Esto nos permite iterar entre los nombres de los dias.
-        let indexDia = 0;
+        // Agregamos el valor si el dia es laborado o descanso.
+        datosModificaion.append(
+            `esDescanso${dia}`,
+            formulario.Horario[dia][`esDescansoHorario${dia}`]
+        );
 
-        // Los campos para identificar los dias empiezan en el index
-        // 18 hasta el 24, iteramos entre cada uno de ellos.
-        for (let index = 18; index <= 24; index++) {
-            // Desempaquetamos los datos.
-            const id: string = evento.target[index].id;
-            const checked: string = evento.target[index].checked? '1' : '0';
+        // Agregamos la hora de entrada del empleado.
+        datosModificaion.append(
+            `horaEntrada${dia}`,
+            formulario.Horario.diasSimilaresHorario?
+            formulario.Horario[`horaEntradaHorario`] : formulario.Horario[
+                dia
+            ][`horaEntradaHorario${dia}`]
+        );
 
-            // Agregamos el valor si el dia es laborado o descanso.
-            datosModificaion.append(
-                id,
-                checked
-            );
-
-            // Si el dia es laborado, mandamos la hora de entrada
-            // y salida, asi como la hora de descanso
-            if(!evento.target[index].checked) {
-                datosModificaion.append(
-                    'horaEntrada' + listaDias[indexDia],
-                    horaEntrada
-                );
-                datosModificaion.append(
-                    'horaSalidaDescanso' + listaDias[indexDia],
-                    horaSalidaDescanso
-                );
-                datosModificaion.append(
-                    'horaEntradaDescanso' + listaDias[indexDia],
-                    horaEntradaDescanso
-                );
-                datosModificaion.append(
-                    'horaSalida' + listaDias[indexDia],
-                    HoraSalida
-                );
-            }
-
-            // Cambiamos de dia.
-            indexDia++;
-        }
-
-    // Si son diferentes, iteramos por todos los campos que representen
-    // la semana y los agregamos al form.
-    } else {
-        // Los campos del dia, si es descanso, entrada, salida y
-        // hora de descanso empiezan en el index 14 hasta el 48.
-        for (let index = 14; index <= 48; index++) {
-            // Si el campo es de tipo check.
-            if (evento.target[index].className == 'form-check-input') {
-                // Desempaquetamos los datos.
-                const id: string = evento.target[index].id;
-                const checked: string = evento.target[index].checked? '1' : '0';
-
-                // Agregamos el valor si el dia es laborado o descanso.
-                datosModificaion.append(
-                    id,
-                    checked
-                );
-                // Si el dia es dia descansado, entonces
-                // saltamos los proximos 4 campos que indican hora de
-                // entrada, salida y hora de descanso.
-                if(evento.target[index].checked) {
-                    index += 4;
-                }
-
-            } else {
-                // Si no es un check, agregamos el valor almacenado en
-                // el campo.
-                datosModificaion.append(
-                    evento.target[index].id,
-                    evento.target[index].value
-                );
-            }
-        }
+        // Agregamos la hora de salida del empleado.
+        datosModificaion.append(
+            `horaSalida${dia}`,
+            formulario.Horario.diasSimilaresHorario?
+            formulario.Horario[`horaSalidaHorario`] : formulario.Horario[
+                dia
+            ][`horaSalidaHorario${dia}`]
+        );
     }
 
     // Registramos el permiso en la base de datos.
     ModificarEmpleadoCompleto(
         idRegistro,
         datosModificaion,
-        (resp) => {
-            console.log(resp)
-
+        (respuesta: any) => {
+            console.log(respuesta);
         },
         (error: any) => {console.log(
             error

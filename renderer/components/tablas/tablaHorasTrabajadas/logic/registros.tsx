@@ -75,7 +75,7 @@ const consultarRegistros = (
     querry: {
         limit?: number,
         offset?: number,
-        id?: string,
+        idEmpleadoVinculado?: string,
         nombres?: string,
         idRolVinculado?: number,
         semanaReporte?: string

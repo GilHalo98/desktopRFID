@@ -1,16 +1,18 @@
 // Para la manipulacion de archivos pdf.
 import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import autoTable, { CellHookData } from "jspdf-autotable";
 
 // Funciones de tiempo.
 import {
-    fechaStrATiempo,
-    a12HorasTiempo,
-    deserealizarSemana,
-    numeroDiaANombreDia,
-    numeroMesANombreMes,
     msToTime,
-    separarTiempo
+    dateDiaSemana,
+    separarTiempo,
+    a12HorasTiempo,
+    fechaStrATiempo,
+    deserealizarSemana,
+    numeroMesANombreMes,
+    numeroDiaANombreDia,
+    rangoSemana,
 } from "../../../../utils/conversiones";
 
 // Modelo de datos.
@@ -29,16 +31,13 @@ import {
 } from "../../../../utils/interfaces/reporteHorasTrabajadasDetalle";
 
 import {
-    ReporteChequeoResumenCompleto
-} from "../../../../utils/API/respuestas/reporteChequeoResumen";
-
-import {
     ReporteAccesosDetalle
 } from "../../../../utils/API/respuestas/reporteAccesosDetalle";
 
 import {
     ReporteActividadDetalle
 } from "../../../../utils/API/respuestas/reporteActividadDetalle";
+import { ReporteChequeoResumen } from "../../../../utils/API/respuestas/reporteChequeoResumen";
 
 // Formatemos los datos para mostrarlos en el tracker.
 const formatearDatosTracker = (datos: Reporte[]) => {
@@ -156,21 +155,32 @@ const formatearDatosTracker = (datos: Reporte[]) => {
     return datosFormateados;
 };
 
+// Renderiza el contenido del documento en este.
 const renderizarDocumento = (
     semanaReporte: string,
     reporte: ReporteHorasTrabajadasDetalle,
     documento: jsPDF
 ) => {
     // Deserealizamos la semana del reporte.
-    const rangoSemana: Date [] = deserealizarSemana(semanaReporte);
+    const rangoSemanaReporte: Date [] = !semanaReporte?
+        rangoSemana() : deserealizarSemana(semanaReporte);
 
     // Consutlamos el tamaño de la pagina.
     const pageSize = documento.internal.pageSize;
 
+    // Nombre completo del empleado.
+    const nombreCompletoEmpleado = `${        
+        reporte.datosEmpleado.nombres
+    } ${
+        reporte.datosEmpleado.apellidoPaterno
+    } ${
+        reporte.datosEmpleado.apellidoMaterno
+    }`;
+
     // Cortamos el titulo del documento para que concuerde con las
     // dimenciones del documento.
     const titulo = documento.splitTextToSize(
-        'Reporte de semana laboral de Diego Rafael Gil Meza.',
+        `Reporte de semana laboral de ${nombreCompletoEmpleado}.`,
         pageSize.getWidth() - 35,
         {}
     );
@@ -187,22 +197,22 @@ const renderizarDocumento = (
     // dimenciones del documento.
     const descripcionReporte = documento.splitTextToSize(
         `Reporte del día ${
-            numeroDiaANombreDia(rangoSemana[0].getDay() == 0?
-                7 : rangoSemana[0].getDay())
+            numeroDiaANombreDia(rangoSemanaReporte[0].getDay() == 0?
+                7 : rangoSemanaReporte[0].getDay())
         } ${
-            rangoSemana[0].getDate()
+            rangoSemanaReporte[0].getDate()
         } de ${
-            numeroMesANombreMes(rangoSemana[0].getMonth())
+            numeroMesANombreMes(rangoSemanaReporte[0].getMonth())
         } del ${
-            rangoSemana[0].getFullYear()
+            rangoSemanaReporte[0].getFullYear()
         } al día ${
-            numeroDiaANombreDia(rangoSemana[1].getDay())
+            numeroDiaANombreDia(rangoSemanaReporte[1].getDay())
         } ${
-            rangoSemana[1].getDate()
+            rangoSemanaReporte[1].getDate()
         } de ${
-            numeroMesANombreMes(rangoSemana[1].getMonth())
+            numeroMesANombreMes(rangoSemanaReporte[1].getMonth())
         } del ${
-            rangoSemana[1].getFullYear()
+            rangoSemanaReporte[1].getFullYear()
         }.`,
         pageSize.getWidth() - 35,
         {}
@@ -224,7 +234,6 @@ const renderizarDocumento = (
     autoTable(documento, {
         head: [[
             'Tiempo laboral total',
-            'Tiempo descanso total',
             'Descansos laborados',
             'Extras',
             'Retrasos',
@@ -232,7 +241,6 @@ const renderizarDocumento = (
         ]],
         body: [[
             separarTiempo(msToTime(reporte.general.tiempoTrabajoTotal)),
-            separarTiempo(msToTime(reporte.general.tiempoDescansoTotal)),
             reporte.general.descansosLaborados,
             reporte.general.extras,
             reporte.general.retraso,
@@ -241,14 +249,68 @@ const renderizarDocumento = (
         startY: 80,
         showHead: 'firstPage',
         theme: 'plain',
-        styles: { halign: 'center' }
+        styles: { halign: 'center' },
+        didParseCell: function (data: CellHookData) {
+            if(data.row.section === 'head') {
+                data.cell.styles.lineColor = 'black';
+
+                switch(data.column.index) {
+                    case 0:
+                        data.cell.styles.lineWidth = {
+                            top: 1,
+                            bottom: 1,
+                            left: 1
+                        };
+                        break;
+
+                    case 4:
+                        data.cell.styles.lineWidth = {
+                            top: 1,
+                            bottom: 1,
+                            right: 1
+                        };
+
+                        break;
+
+                    default:
+                        data.cell.styles.lineWidth = {
+                            top: 1,
+                            bottom: 1
+                        };
+
+                        break;
+                }
+
+            } else {
+                data.cell.styles.lineColor = 'black'
+
+                data.cell.styles.lineWidth = { bottom: 0.2 }
+            }
+
+        },
     });
 
     // Por cada dia de la semana, que son 7.
     for (let i = 0; i < 7; i++) {
+        // Generamos la fecha de la semana.
+        const fechaDiaSemana: Date = dateDiaSemana(
+            i + 1,
+            rangoSemanaReporte,
+            true
+        );
+
+        // Texto de cabecera del dia de la semana.
+        const cabeceraDiaSemana: string = `${
+            numeroDiaANombreDia(i + 1)
+        } ${
+            fechaDiaSemana.getDate()
+        } de ${
+            numeroMesANombreMes(fechaDiaSemana.getMonth())
+        }`;
+
         // Renderizamos el subtitulo
         autoTable(documento, {
-            head: [[`${numeroDiaANombreDia(i + 1)}`]],
+            head: [[cabeceraDiaSemana]],
             body: [['']],
             startY: documento['lastAutoTable'].finalY + 20,
             showHead: 'firstPage',
@@ -257,7 +319,7 @@ const renderizarDocumento = (
         });
 
         // Desempaquetamos los reportes de chequeos
-        const reporteChequeos: ReporteChequeoResumenCompleto = reporte.porDia[
+        const reporteChequeos: ReporteChequeoResumen = reporte.porDia[
             i
         ].chequeos;
 
@@ -279,42 +341,72 @@ const renderizarDocumento = (
                     reporteChequeos.entrada.fechaRegistroReporteChequeo
                 ));
 
-            // Desempaquetamos y serializamos el tiempo de inicio de descanso.
-            const inicioDescanso: string = !reporteChequeos.inicioDescanso?
-                '' : a12HorasTiempo(fechaStrATiempo(
-                    reporteChequeos.inicioDescanso.fechaRegistroReporteChequeo
-                ));
-
-            // Desempaquetamos y serializamos el tiempo de fin de descanso.
-            const finDescanso: string = !reporteChequeos.finDescanso?
-                '' : a12HorasTiempo(fechaStrATiempo(
-                    reporteChequeos.finDescanso.fechaRegistroReporteChequeo
-                ));
-
             // Desempaquetamos y serializamos el tiempo de salida.
             const salida: string = !reporteChequeos.salida?
                 '' : a12HorasTiempo(fechaStrATiempo(
                     reporteChequeos.salida.fechaRegistroReporteChequeo
                 ));
 
+            // Desempaquetamos el tiempo laboral total.
+            const tiempoLaboralTotal: string = !reporteChequeos.tiempoLaboralTotal?
+                '' : separarTiempo(msToTime(
+                    reporteChequeos.tiempoLaboralTotal
+                ));
+
             // Renderizamos los chequeos del empleado.
             autoTable(documento, {
                 head: [[
                     'Entrada',
-                    'Inicio descanso',
-                    'Inicio descanso',
-                    'Salida'
+                    'Salida',
+                    'Tiempo laboral total'
                 ]],
                 body: [[
                     entrada,
-                    inicioDescanso,
-                    finDescanso,
-                    salida
+                    salida,
+                    tiempoLaboralTotal
                 ]],
                 startY: documento['lastAutoTable'].finalY + 20,
                 showHead: 'firstPage',
                 theme: 'plain',
-                styles: { halign: 'center' }
+                styles: { halign: 'center' },
+                didParseCell: function (data: CellHookData) {
+                    if(data.row.section === 'head') {
+                        data.cell.styles.lineColor = 'black';
+        
+                        switch(data.column.index) {
+                            case 0:
+                                data.cell.styles.lineWidth = {
+                                    top: 1,
+                                    bottom: 1,
+                                    left: 1
+                                };
+                                break;
+        
+                            case 2:
+                                data.cell.styles.lineWidth = {
+                                    top: 1,
+                                    bottom: 1,
+                                    right: 1
+                                };
+        
+                                break;
+        
+                            default:
+                                data.cell.styles.lineWidth = {
+                                    top: 1,
+                                    bottom: 1
+                                };
+        
+                                break;
+                        }
+        
+                    } else {
+                        data.cell.styles.lineColor = 'black'
+        
+                        data.cell.styles.lineWidth = { bottom: 0.2 }
+                    }
+        
+                },
             });
         }
 
@@ -324,7 +416,9 @@ const renderizarDocumento = (
             // renderizamos en el documento.
             for (let j = 0; j < reportesAccesos.length; j ++) {
                 // Desempaquetamos el id de la zona.
-                const idZona: string = reportesAccesos[j].idZonaVinculada;
+                const nombreZona: string = reportesAccesos[j].nombreZona;
+
+                // Consultamos los datos de la zona, despues continuamos (?)
 
                 // Desempaquetamos los reportes.
                 const reporteAccesos: ReporteAccesosDetalle [] = reportesAccesos[j].reporte;
@@ -356,11 +450,9 @@ const renderizarDocumento = (
 
                 // Renderizamos la zona perteneciente
                 autoTable(documento, {
-                    head: [['']],
-                    body: [[`Accesos a ${idZona}`]],
+                    head: [[`Accesos a ${nombreZona}`]],
                     startY: documento['lastAutoTable'].finalY + 20,
                     showHead: 'firstPage',
-                    theme: 'plain',
                     styles: { halign: 'center' }
                 });
 
@@ -370,7 +462,46 @@ const renderizarDocumento = (
                     body: reporteAccesosFormateado ,
                     startY: documento['lastAutoTable'].finalY + 20,
                     showHead: 'firstPage',
-                    styles: { halign: 'center' }
+                    styles: { halign: 'center' },
+                    theme: 'plain',
+                    didParseCell: function (data: CellHookData) {
+                        if(data.row.section === 'head') {
+                            data.cell.styles.lineColor = 'black';
+
+                            switch(data.column.index) {
+                                case 0:
+                                    data.cell.styles.lineWidth = {
+                                        top: 1,
+                                        bottom: 1,
+                                        left: 1
+                                    };
+                                    break;
+
+                                case 2:
+                                    data.cell.styles.lineWidth = {
+                                        top: 1,
+                                        bottom: 1,
+                                        right: 1
+                                    };
+
+                                    break;
+
+                                default:
+                                    data.cell.styles.lineWidth = {
+                                        top: 1,
+                                        bottom: 1
+                                    };
+
+                                    break;
+                            }
+
+                        } else {
+                            data.cell.styles.lineColor = 'black'
+
+                            data.cell.styles.lineWidth = { bottom: 0.2 }
+                        }
+
+                    },
                 });
             }
         }
@@ -381,7 +512,7 @@ const renderizarDocumento = (
             // renderizamos en el documento.
             for (let j = 0; j < reportesActividades.length; j ++) {
                 // Desempaquetamos el id de la zona.
-                const idDispositivo: string = reportesActividades[j].idDispositivoVinculado;
+                const nombreDispositivo: string = reportesActividades[j].nombreDispositivo;
 
                 // Desempaquetamos los reportes.
                 const reportesActividad: ReporteActividadDetalle [] = reportesActividades[j].reporte;
@@ -411,13 +542,11 @@ const renderizarDocumento = (
                     }
                 );
 
-                // Renderizamos la zona perteneciente
+                // Renderizamos el dispositivo perteneciente
                 autoTable(documento, {
-                    head: [['']],
-                    body: [[`Actividades en ${idDispositivo}`]],
+                    head: [[`Actividades en ${nombreDispositivo}`]],
                     startY: documento['lastAutoTable'].finalY + 20,
                     showHead: 'firstPage',
-                    theme: 'plain',
                     styles: { halign: 'center' }
                 });
 
@@ -427,13 +556,53 @@ const renderizarDocumento = (
                     body: reporteActividadFormateado ,
                     startY: documento['lastAutoTable'].finalY + 20,
                     showHead: 'firstPage',
-                    styles: { halign: 'center' }
+                    styles: { halign: 'center' },
+                    theme: 'plain',
+                    didParseCell: function (data: CellHookData) {
+                        if(data.row.section === 'head') {
+                            data.cell.styles.lineColor = 'black';
+
+                            switch(data.column.index) {
+                                case 0:
+                                    data.cell.styles.lineWidth = {
+                                        top: 1,
+                                        bottom: 1,
+                                        left: 1
+                                    };
+                                    break;
+
+                                case 2:
+                                    data.cell.styles.lineWidth = {
+                                        top: 1,
+                                        bottom: 1,
+                                        right: 1
+                                    };
+
+                                    break;
+
+                                default:
+                                    data.cell.styles.lineWidth = {
+                                        top: 1,
+                                        bottom: 1
+                                    };
+
+                                    break;
+                            }
+
+                        } else {
+                            data.cell.styles.lineColor = 'black'
+
+                            data.cell.styles.lineWidth = { bottom: 0.2 }
+                        }
+
+                    },
                 });
             }
         }
     }
 };
 
+// Funcion que genera el documento con su contenido.
 const onGenerarDocumento = (
     idEmpleado: string,
     semanaReporte: string,
@@ -453,8 +622,26 @@ const onGenerarDocumento = (
             // Renderizamos el documento.
             renderizarDocumento(semanaReporte, reporte, documento);
 
+            const UID: string = `${
+                reporte.datosEmpleado.nombres
+            } ${
+                reporte.datosEmpleado.apellidoPaterno
+            } ${
+                reporte.datosEmpleado.apellidoMaterno
+            }`;
+
+            // Instanciamos la fecha de hoy.
+            const fecha: Date = new Date();
+
+            // Preparamos el nombre del archivo de salida.
+            const nombreArchivo: string = `AC-RSL-${
+                UID
+            }-${
+                fecha.getTime()
+            }.pdf`;
+
             // Guardamos el archivo.
-            documento.save("prueba.pdf");
+            documento.save(nombreArchivo);
         },
         {
             idEmpleadoVinculado: idEmpleado,

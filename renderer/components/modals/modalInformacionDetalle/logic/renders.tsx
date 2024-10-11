@@ -1,35 +1,20 @@
-// Modelo de datos.
+// Componentes de reacstrap.
 import { Button } from "reactstrap";
+
+// Modelo de datos.
 import {
-    Detalle,
     HorasTrabajadas
 } from "../../../../utils/API/respuestas/horasTrabajadas";
-import { numeroDiaANombreDia } from "../../../../utils/conversiones";
 
-const dateStringToDateObject = (dateString: string) => {
-    if(!dateString) {
-        return null;
-    }
-
-    const fechaFormateada = new Date();
-
-    const componentes = dateString.replaceAll('.000Z', '').split('T');
-
-    const fecha = componentes[0].split('-').map((dato: string) => {
-        return parseInt(dato);
-    });
-    const hora = componentes[1].split(':').map((dato: string) => {
-            return parseInt(dato);
-    });
-
-    fechaFormateada.setFullYear(fecha[0], fecha[1], fecha[2]);
-    fechaFormateada.setHours(hora[0], hora[1], hora[2]);
-
-    return fechaFormateada;
-};
+// Funcionalidad.
+import {
+    fechaStrATiempo,
+    numeroDiaANombreDia,
+    a12HorasTiempo,
+} from "../../../../utils/conversiones";
 
 const renderCeldasDias = (
-    fecha: Date,
+    fecha: string,
     llegoTarde: boolean,
     salioTarde: boolean
 ) => {
@@ -46,7 +31,7 @@ const renderCeldasDias = (
         // En caso de que exista fecha, retornamos el indicador del dia y la
         // fecha del registro.
         return <Button color='warning' block size='sm'>
-            {fecha.toLocaleString()}
+            {fecha}
         </Button>;
     }
 
@@ -54,14 +39,14 @@ const renderCeldasDias = (
         // En caso de que exista fecha, retornamos el indicador del dia y la
         // fecha del registro.
         return <Button color='primary' block size='sm'>
-            {fecha.toLocaleString()}
+            {fecha}
         </Button>;
     }
 
     // En caso de que exista fecha, retornamos el indicador del dia y la
     // fecha del registro.
     return <Button color='success' block size='sm'>
-        {fecha.toLocaleString()}
+        {fecha}
     </Button>;
 };
 
@@ -76,7 +61,10 @@ const renderDetalleHorasTrabajadas = (
     return registros.map((registro: HorasTrabajadas) => {
         // Si el dia es marcado como descanso, entonces se retorna un
         // indicador de descanso.
-        if(registro.esDescanso) {
+        if(registro.esDescanso
+            && !registro.detalle.entrada
+            && !registro.detalle.salida
+        ) {
             return <tr>
                 <td style={{textAlign: 'center'}}>
                     {numeroDiaANombreDia(registro.dia)}
@@ -106,22 +94,29 @@ const renderDetalleHorasTrabajadas = (
             </tr>
         }
 
-        // Generamos un objeto fecha para cada fecha de registro.
-        const entrada = dateStringToDateObject(
-            registro.detalle.entrada
-        );
+        // Si el dia esta fuera de rango.
+        if(registro.diaFueraDeRango) {
+            return <tr>
+                <td style={{textAlign: 'center'}}>
+                    {numeroDiaANombreDia(registro.dia)}
+                </td>
 
-        const inicioDescanso = dateStringToDateObject(
-            registro.detalle.inicioDescanso
-        );
+                <td colSpan={4} style={{textAlign: 'center'}}>
+                    <Button color='secondary' block size='sm'>
+                        SIN REGISTRO
+                    </Button>
+                </td>
+            </tr>
+        }
 
-        const finDescanso = dateStringToDateObject(
-            registro.detalle.finDescanso
-        );
+        // Formateamos las fechas de los registros.
+        const entrada = registro.detalle.entrada? a12HorasTiempo(fechaStrATiempo(
+             registro.detalle.entrada
+        )) : '';
 
-        const salida = dateStringToDateObject(
-            registro.detalle.salida
-        );
+        const salida = registro.detalle.salida? a12HorasTiempo(fechaStrATiempo(
+             registro.detalle.salida
+        )) : '';
 
         // Retornamos la fila con los datos de los registros.
         return (
@@ -134,22 +129,6 @@ const renderDetalleHorasTrabajadas = (
                     {renderCeldasDias(
                         entrada,
                         registro.llegoTarde,
-                        false
-                    )}
-                </td>
-
-                <td style={{textAlign: 'center'}}>
-                    {renderCeldasDias(
-                        inicioDescanso,
-                        false,
-                        false
-                    )}
-                </td>
-
-                <td style={{textAlign: 'center'}}>
-                    {renderCeldasDias(
-                        finDescanso,
-                        false,
                         false
                     )}
                 </td>

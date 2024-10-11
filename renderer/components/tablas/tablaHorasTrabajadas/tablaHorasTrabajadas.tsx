@@ -1,12 +1,16 @@
 'use client'
 
+// Router de next
+import Router from 'next/router';
+
 // React.
 import React from 'react';
 
 // Componentes propios.
-import ModalHorasTrabajadasDetalle from '../../modals/modalInformacionDetalle/modalHorasTrabajadasDetalle';
-import FormBusquedaHorasTrabajadas from '../../forms/busqueda/formBusquedaHorasTrabajadas';
+import TrackerDatos from '../../graficos/trackerDatos';
 import TablaParaHorasTrabajadas from '../tablaParaHorasTrabajadas';
+import FormBusquedaHorasTrabajadas from '../../forms/busqueda/formBusquedaHorasTrabajadas';
+import ModalHorasTrabajadasDetalle from '../../modals/modalInformacionDetalle/modalHorasTrabajadasDetalle';
 
 // Importamos la funcionalidad de la tabla.
 import {
@@ -26,10 +30,12 @@ import {
 } from "../../../utils/API/modelos/horario";
 
 import {
-    msToTime
+    msToTime, separarTiempo
 } from '../../../utils/conversiones';
-import TrackerDatos from '../../graficos/trackerDatos';
-import { formatearDatosTracker } from './logic/rutinas';
+
+import {
+    formatearDatosTracker
+} from './logic/rutinas';
 
 export default function TablaHorasTrabajadas(
     props: {}
@@ -115,7 +121,8 @@ export default function TablaHorasTrabajadas(
         setRegistroOperacion
     ] = React.useState(undefined);
 
-    // Hook para los forms de registro, modificacion y la barra de busqueda.
+    // Hook para los forms de registro, modificacion y
+    // la barra de busqueda.
     const [
         listaRoles,
         setListaRoles
@@ -133,7 +140,7 @@ export default function TablaHorasTrabajadas(
             {
                 limit: registrosPorPagina,
                 offset: offset,
-                id: idEmpleado,
+                idEmpleadoVinculado: idEmpleado,
                 nombres: nombres,
                 idRolVinculado: idRolVinculado,
                 semanaReporte: semanaReporte
@@ -167,7 +174,7 @@ export default function TablaHorasTrabajadas(
 
     // Funciones de las opciones de los registros.
     const funcionesRegistros = {
-        onVisualizarDetalles: (
+        onVisualizar: (
             idRegistro: number,
             indexRegistro: number
         ) => {
@@ -182,6 +189,28 @@ export default function TablaHorasTrabajadas(
             setEstadoModalVisualizarDetalle(
                 !estadoModalVisualizarDetalle
             )
+        },
+        onVisualizarDetalles: (
+            idRegistro: number,
+            indexRegistro: number
+        ) => {
+            setIdRegistroOperacion(
+                idRegistro
+            );
+
+            setRegistroOperacion(
+                listaRegistros[indexRegistro]
+            );
+
+            // Se hace el cambio de pagina a
+            // la pagina principal.
+            Router.push({
+                pathname: '/home/reportes/horasTrabajadas/horasTrabajadasDetalle',
+                query: {
+                    id: listaRegistros[indexRegistro].id,
+                    semanaReporte: semanaReporte
+                }
+            });
         }
     };
 
@@ -205,9 +234,6 @@ export default function TablaHorasTrabajadas(
     const funcionesOpciones = {
         onRefrescarTabla: () => {setRefresh(
             !refresh
-        )},
-        onExportarDatos: () => {console.log(
-            "datos exportados"
         )},
         onCambiarConfiguracion: () => {console.log(
             "configuracion cambiada"
@@ -245,9 +271,9 @@ export default function TablaHorasTrabajadas(
         },
         "Horas trabajadas totales": (tiempoTrabajoTotal?: number) => {
             if(!tiempoTrabajoTotal) {
-                return "00:00:00";
+                return "Sin Registro";
             }
-            return msToTime(tiempoTrabajoTotal);
+            return separarTiempo(msToTime(tiempoTrabajoTotal));
         }
     };
 

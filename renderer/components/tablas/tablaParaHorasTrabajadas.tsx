@@ -13,7 +13,6 @@ import {
 
 // Funcionalidad de la tabla.
 import {
-    renderBarraOpciones,
     renderPaginacion,
     renderHeaderOpciones,
     renderModalOpcionesTabla,
@@ -49,6 +48,7 @@ export default function TablaParaHorasTrabajadas(
         funcionesRegistros?: {
             onEliminar?: Function,
             onModificar?: Function,
+            onVisualizar?: Function,
             onVisualizarDetalles?: Function
         },
         opcionesTabla?: {

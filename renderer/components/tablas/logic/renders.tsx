@@ -48,7 +48,8 @@ const renderOpcionesRegistro = (
     funcionesRegistros?: {
         onEliminar?: Function,
         onModificar?: Function,
-        onVisualizarDetalles?: Function
+        onVisualizar?: Function,
+        onVisualizarDetalles?: Function,
     }
 ) => {
     if(typeof opcionesTabla == 'undefined') {
@@ -83,6 +84,9 @@ const renderOpcionesRegistro = (
                             }
                             onModificar={
                                 funcionesRegistros.onModificar
+                            }
+                            onVisualizar={
+                                funcionesRegistros.onVisualizar
                             }
                             onVisualizarDetalles={
                                 funcionesRegistros.onVisualizarDetalles
@@ -339,10 +343,12 @@ const renderBarraOpcionesReporteHorasTrabajadas = (
 
             funcionesOpciones.onRefrescarTabla()
         }}
-        onExportarDatos={() => {
-            funcionesOpciones.onExportarDatos();
-            toggleModalExportarDatos();
-        }}
+        onExportarDatos={!funcionesOpciones.onExportarDatos?
+            undefined : () => {
+                funcionesOpciones.onExportarDatos();
+                toggleModalExportarDatos();
+            }
+        }
         onOpciones={() => {
             funcionesOpciones.onCambiarConfiguracion();
             toggleModalOpcionesTabla();
@@ -384,6 +390,7 @@ const renderHeaderOpciones = (
     funcionesRegistros?: {
         onEliminar?: Function,
         onModificar?: Function,
+        onVisualizar?: Function,
         onVisualizarDetalles?: Function
     },
     opcionesTabla?: {
@@ -515,6 +522,7 @@ const renderContenidoTabla = (
     funcionesRegistros?: {
         onEliminar?: Function,
         onModificar?: Function,
+        onVisualizar?: Function,
         onVisualizarDetalles?: Function
     }
 ) => {

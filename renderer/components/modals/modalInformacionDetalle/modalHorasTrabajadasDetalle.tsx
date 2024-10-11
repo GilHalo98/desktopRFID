@@ -52,29 +52,20 @@ export default function ModalHorasTrabajadasDetalle(
                         Reporte de horas trabajadas de {props.registro.nombres}
                     </CardTitle>
 
-                    <Link href={{
-                        pathname: '/home/reportes/horasTrabajadas/horasTrabajadasDetalle',
-                        query: {
-                            id: props.registro.id,
-                            semanaReporte: props.semanaReporte
-                        }
-                    }}>
-                        <Button
-                            block
-                            outline
-                            size='sm'
-                            color='info'
-                            style={{
-                                border: 'none'
-                            }}
-                        >
-                            Ir a detalle
-                        </Button>
-                    </Link>
-
                     <Table hover dark responsive>
                         <thead className='cabeceraTablaRegistros'>
                             <tr key="header">
+                                <th>
+                                    Día
+                                </th>
+
+                                <th>
+                                    Entrada
+                                </th>
+
+                                <th>
+                                    Salida
+                                </th>                          
                             </tr>
                         </thead>
 

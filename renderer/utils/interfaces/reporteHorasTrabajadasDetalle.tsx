@@ -8,7 +8,7 @@ import {
 } from "../API/respuestas/reporteActividadDetalle";
 
 import {
-    ReporteChequeoResumenCompleto
+    ReporteChequeoResumen
 } from "../API/respuestas/reporteChequeoResumen";
 
 import {
@@ -21,16 +21,18 @@ import {
 
 export interface ReporteHorasTrabajadasDetalleAccesos {
     idZonaVinculada: string,
+    nombreZona: string,
     reporte: ReporteAccesosDetalle []
 };
 
 export interface ReporteHorasTrabajadasDetalleActividades {
     idDispositivoVinculado: string,
+    nombreDispositivo: string,
     reporte: ReporteActividadDetalle []
 };
 
 export interface ReporteHorasTrabajadasDetallePorDia {
-    chequeos: ReporteChequeoResumenCompleto
+    chequeos: ReporteChequeoResumen
     accesos: ReporteHorasTrabajadasDetalleAccesos []
     actividades: ReporteHorasTrabajadasDetalleActividades []
 };

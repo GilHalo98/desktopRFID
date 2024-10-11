@@ -8,7 +8,9 @@ import SideBarLayout from "../../../../components/Layout/sideBarLayout";
 import TablaHorasTrabajadas from "../../../../components/tablas/tablaHorasTrabajadas/tablaHorasTrabajadas";
 
 // Componentes de reactstrap.
-import { Container, Row, Col } from "reactstrap";
+import {
+    Container, Row, Col
+} from "reactstrap";
 
 export default function Home() {
     return (

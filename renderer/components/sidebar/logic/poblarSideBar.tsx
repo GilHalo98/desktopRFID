@@ -39,12 +39,14 @@ const paginas: Vista[] = [{
             id: "1.1",
             url: "/home/dashboard/actividadMaquinas",
             descripcion: "Actividad de maquinas",
-            icono: mdiListStatus
+            icono: mdiListStatus,
+            rolesValidos: [-1]
         }, {
             id: "1.2",
             url: "/home/dashboard/accesosRecientes",
             descripcion: "Accesos Recientes",
-            icono: mdiClipboardTextClock
+            icono: mdiClipboardTextClock,
+            rolesValidos: [-1]
         }, {
             id: "1.3",
             url: "/home/dashboard/statusDispositivos",
@@ -149,19 +151,19 @@ const paginas: Vista[] = [{
             url: "/home/reportes/horasTrabajadas",
             descripcion: "Horas trabajadas",
             icono: mdiArchiveClock,
-            rolesValidos: [1],
+            rolesValidos: [1]
         }, {
             id: "3.2",
             url: "/home/reportes/historialActividadMaquinas",
             descripcion: "Historial de actividad de maquinas",
             icono: mdiArchiveCog,
-            rolesValidos: [1],
+            rolesValidos: [-1]
         }, {
             id: "3.3",
             url: "/home/reportes/mastercam",
             descripcion: "Reportes de MasterCam",
             icono: mdiFileCad,
-            rolesValidos: [1, 5],
+            rolesValidos: [1, 5]
         }]
     }, {
         id: "apartadoEmpleados",

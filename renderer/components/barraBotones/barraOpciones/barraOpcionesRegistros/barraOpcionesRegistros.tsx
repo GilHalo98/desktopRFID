@@ -5,14 +5,15 @@ import React from 'react';
 
 // Componentes de reactstrap.
 import {
-    Button, ButtonGroup
+    Button, ButtonGroup, UncontrolledTooltip
 } from 'reactstrap';
 
 // Iconos usados.
 import {
+    mdiEye,
+    mdiTableClock,
     mdiDatabaseEdit,
     mdiDatabaseRemove,
-    mdiEye
 } from '@mdi/js';
 
 // Componente para mostrar los iconos.
@@ -24,25 +25,36 @@ export default function BarraOpcionesRegistros(
         indexRegistro: number,
         onEliminar?: Function,
         onModificar?: Function,
+        onVisualizar?: Function,
         onVisualizarDetalles?: Function
     }
 ) {
     const renderBotonModificar = () => {
         if(typeof props.onModificar != 'undefined') {
             return (
-                <Button
-                    className='botonIcono'
-                    color='warning'
-                    outline
-                    onClick={() => {
-                        props.onModificar(
-                            props.idRegistro,
-                            props.indexRegistro
-                        );
-                    }}
-                >
-                    <Icon path={mdiDatabaseEdit} size={1} />
-                </Button>
+                <>
+                    <Button
+                        id={`botonModiciar-${props.indexRegistro}`}
+                        className='botonIcono'
+                        color='warning'
+                        outline
+                        onClick={() => {
+                            props.onModificar(
+                                props.idRegistro,
+                                props.indexRegistro
+                            );
+                        }}
+                    >
+                        <Icon path={mdiDatabaseEdit} size={1} />
+                    </Button>
+
+                    <UncontrolledTooltip
+                        placement="bottom"
+                        target={`botonModiciar-${props.indexRegistro}`}
+                    >
+                        Modificar registro
+                    </UncontrolledTooltip>
+                </>
             );
         }
 
@@ -52,19 +64,29 @@ export default function BarraOpcionesRegistros(
     const renderBotonEliminar = () => {
         if(typeof props.onModificar != 'undefined') {
             return (
-                <Button
-                    className='botonIcono'
-                    color='danger'
-                    outline
-                    onClick={() => {
-                        props.onEliminar(
-                            props.idRegistro,
-                            props.indexRegistro
-                        );
-                    }}
-                >
-                    <Icon path={mdiDatabaseRemove} size={1} />
-                </Button>
+                <>
+                    <Button
+                        id={`botonEliminar-${props.indexRegistro}`}
+                        className='botonIcono'
+                        color='danger'
+                        outline
+                        onClick={() => {
+                            props.onEliminar(
+                                props.idRegistro,
+                                props.indexRegistro
+                            );
+                        }}
+                    >
+                        <Icon path={mdiDatabaseRemove} size={1} />
+                    </Button>
+
+                    <UncontrolledTooltip
+                        placement="bottom"
+                        target={`botonEliminar-${props.indexRegistro}`}
+                    >
+                        Eliminar registro
+                    </UncontrolledTooltip>
+                </>
             );
         }
 
@@ -72,21 +94,63 @@ export default function BarraOpcionesRegistros(
     };
 
     const renderBotonVisualizar = () => {
+        if(typeof props.onVisualizar != 'undefined') {
+            return (
+                <>
+                    <Button
+                        id={`botonVisualizar-${props.indexRegistro}`}
+                        className='botonIcono'
+                        color='info'
+                        outline
+                        onClick={() => {
+                            props.onVisualizar(
+                                props.idRegistro,
+                                props.indexRegistro
+                            );
+                        }}
+                    >
+                        <Icon path={mdiTableClock} size={1} />
+                    </Button>
+
+                    <UncontrolledTooltip
+                        placement="bottom"
+                        target={`botonVisualizar-${props.indexRegistro}`}
+                    >
+                        Visualizar registro
+                    </UncontrolledTooltip>
+                </>
+            );
+        }
+
+        return "";
+    };
+
+    const renderBotonVisualizarDetalle = () => {
         if(typeof props.onVisualizarDetalles != 'undefined') {
             return (
-                <Button
-                    className='botonIcono'
-                    color='info'
-                    outline
-                    onClick={() => {
-                        props.onVisualizarDetalles(
-                            props.idRegistro,
-                            props.indexRegistro
-                        );
-                    }}
-                >
-                    <Icon path={mdiEye} size={1} />
-                </Button>
+                <>
+                    <Button
+                        id={`botonDetalle-${props.indexRegistro}`}
+                        className='botonIcono'
+                        color='info'
+                        outline
+                        onClick={() => {
+                            props.onVisualizarDetalles(
+                                props.idRegistro,
+                                props.indexRegistro
+                            );
+                        }}
+                    >
+                        <Icon path={mdiEye} size={1} />
+                    </Button>
+
+                    <UncontrolledTooltip
+                        placement="bottom"
+                        target={`botonDetalle-${props.indexRegistro}`}
+                    >
+                        Visualizar detalle del registro
+                    </UncontrolledTooltip>
+                </>
             );
         }
 
@@ -98,6 +162,7 @@ export default function BarraOpcionesRegistros(
             {renderBotonModificar()}
             {renderBotonEliminar()}
             {renderBotonVisualizar()}
+            {renderBotonVisualizarDetalle()}
         </ButtonGroup>
     );
 };

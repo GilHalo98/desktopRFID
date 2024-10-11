@@ -1,16 +1,32 @@
-import { ConsultaEmpleadoCompleto } from "../../../../../utils/API/interface/empleado";
+import {
+    ConsultaEmpleadoCompleto
+} from "../../../../../utils/API/interface/empleado";
+import { EmpleadoCompleto } from "../../../../../utils/API/respuestas/empleadoCompleto";
 
-// Consulta los registros de los permisos filtrados.
+// Consulta el registro del empleado.
 const consultarRegistros = (
     setDatosRegistro: Function,
+    setRegistrarUsuario: Function,
     setEnCarga: Function,
     querry: {
         id?: string
     }
 ) => {
+    /**
+     * Consulta el registro del empleado.
+     */
+
     return ConsultaEmpleadoCompleto(
         (respuesta: any) => {
-            setDatosRegistro(respuesta.registros[0]);
+            const registro = respuesta.registros[0] as EmpleadoCompleto;
+
+            setDatosRegistro(
+                registro
+            );
+
+            setRegistrarUsuario(
+                !registro.usuario? false : true
+            );
         },
         querry,
         (error: any) => {
@@ -18,7 +34,7 @@ const consultarRegistros = (
             setEnCarga(false);
         },
         () => {
-            setDatosRegistro(undefined);
+            setDatosRegistro({} as EmpleadoCompleto);
             setEnCarga(true);
         },
         () => {

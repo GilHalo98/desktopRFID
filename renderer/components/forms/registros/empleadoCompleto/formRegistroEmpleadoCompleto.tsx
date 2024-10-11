@@ -8,12 +8,14 @@ import {
     Container, Row, Col, Button, Spinner
 } from 'reactstrap';
 
+// Componentes propios.
+import FormRegistroUsuario from './formUsuario';
+import FormRegistroHorario from './formHorario';
+import FormRegistroEmpleado from './formEmpleado';
+
 // Funcionalidad propia.
 import {
     renderBarraBotones,
-    renderRegistroEmpleado,
-    renderRegistroHorario,
-    renderRegistroUsuario,
 } from './logic/renders';
 
 // Modelo de datos.
@@ -52,55 +54,6 @@ export default function FormRegistroEmpleadoCompleto(
         setMostrarFormHorario
     ] = React.useState(false);
 
-    const [
-        mostarSpinner,
-        setMostarSpinner
-    ] = React.useState(false);
-
-    // Hooks para autogenerar datos.
-    const [
-        autoGenerarUsername,
-        setAutoGenerarUsername
-    ] = React.useState(false);
-
-    const [
-        autoGenerarPassword,
-        setAutoGenerarPassword
-    ] = React.useState(false);
-
-    // Hook para mostrar la contraseña.
-    const [
-        mostrarContra,
-        setMostrarContra
-    ] = React.useState(false);
-
-    // Hooks de los datos ingresados por el usuario.
-    const [
-        indexRegistro,
-        setIndexRegistro
-    ] = React.useState(1);
-
-    const [
-        username,
-        setUsername
-    ] = React.useState(undefined);
-
-    const [
-        password,
-        setPassword
-    ] = React.useState(undefined);
-
-    // Hooks de valores auxiliares de datos ingresados.
-    const [
-        auxUsername,
-        setAuxUsername
-    ] = React.useState(undefined);
-
-    const [
-        auxPassword,
-        setAuxPassword
-    ] = React.useState(undefined);
-
     // Hook de los datos a registrar.
     const [
         listaDiasDescanso,
@@ -125,6 +78,22 @@ export default function FormRegistroEmpleadoCompleto(
         refresh,
         setRefresh
     ] = React.useState(false)
+
+    // Hook que indica si se registra un usuario.
+    const [
+        registrarUsuario,
+        setRegistrarUsuario
+    ] = React.useState(false);
+
+    // Hooks para autogenerar los datos del usuario.
+    const [
+        datosAutogenerar,
+        setDatosAutogenerar
+    ] = React.useState({
+        nombre: undefined,
+        apellidoPaterno: undefined,
+        apellidoMaterno: undefined
+    });
 
     // Permite refrescar la vista.
     React.useEffect(() => {
@@ -154,70 +123,7 @@ export default function FormRegistroEmpleadoCompleto(
             default:
                 break;
         }
-    }, [numeroForm]);    
-
-    // Use Effect de la autogeneracion del username.
-    React.useEffect(() => {
-        if(autoGenerarUsername) {
-            props.onAutogenerarUsername(
-                props.elementosOpciones[indexRegistro],
-                setUsername
-            );
-
-            setAuxUsername(username);
-
-        } else {
-            setUsername(auxUsername);
-        }
-
-    }, [
-        autoGenerarUsername
-    ]);
-
-    // Use Effect de la autogeneracion del password.
-    React.useEffect(() => {
-        if(autoGenerarPassword) {
-            props.onAutogenerarPassword(
-                props.elementosOpciones[indexRegistro],
-                setPassword
-            );
-
-            setAuxPassword(password);
-
-        } else {
-            setPassword(auxPassword);
-        }
-
-    }, [
-        autoGenerarPassword
-    ]);
-
-    // Control para mostrar la contraseña.
-    const mostrarPassword = (
-        mostrar: boolean
-    ) => {return mostrar ?
-        "text" : "password";
-    };
-
-    // Control de render de form de empleado.
-    const controlFormEmpleado = {
-        display: (mostrarFormEmpleado? '' : 'none')
-    };
-
-    // Control de render de form de usuario.
-    const controlFormUsuario = {
-        display: (mostrarFormUsuario? '' : 'none')
-    };
-
-    // Control de render de form de horario
-    const controlFormHorario = {
-        display: (mostrarFormHorario? '' : 'none')
-    };
-
-    // Control de carga.
-    const controlSpinner = {
-        display: (mostarSpinner? '' : 'none')
-    };
+    }, [numeroForm]);
 
     // Control de render de boton de registor.
     const controlBotonSiguiente = {
@@ -237,35 +143,28 @@ export default function FormRegistroEmpleadoCompleto(
             props.onGuardarRegistro(evento);
         }}>
             <Container>
-                {renderRegistroEmpleado(
-                    props.elementosOpciones,
-                    controlFormEmpleado,
-                )}
 
-                {renderRegistroUsuario(
-                    controlFormUsuario,
-                    autoGenerarUsername,
-                    username,
-                    setUsername,
-                    setAutoGenerarUsername,
-                    mostrarPassword,
-                    mostrarContra,
-                    autoGenerarPassword,
-                    password,
-                    setAutoGenerarPassword,
-                    setMostrarContra,
-                    setPassword,
-                )}
+                <div style={{display: mostrarFormEmpleado? '' : 'none'}}>
+                    <FormRegistroEmpleado
+                        elementosOpciones={props.elementosOpciones}
+                        registrarUsuario={registrarUsuario}
+                        setRegistrarUsuario={setRegistrarUsuario}
+                        datosAutogenerar={datosAutogenerar}
+                        setDatosAutogenerar={setDatosAutogenerar}
+                        mostrarRegistrarUsuario
+                    />
+                </div>
 
-                {renderRegistroHorario(
-                    controlFormHorario,
-                    diasSimilares,
-                    setDiasSimilares,
-                    listaDiasDescanso,
-                    setListaDiasDescanso,
-                    refresh,
-                    setRefresh,
-                )}
+                <div style={{display: mostrarFormUsuario? '' : 'none'}}>
+                    <FormRegistroUsuario
+                        registrarUsuario={registrarUsuario}
+                        datosAutogenerar={datosAutogenerar}
+                    />
+                </div>
+
+                <div style={{display: mostrarFormHorario? '' : 'none'}}>
+                    <FormRegistroHorario/>
+                </div>
 
                 {renderBarraBotones(
                     numeroForm,

@@ -8,6 +8,7 @@ import {
     ConsultaHorasTrabajadasDetalleResumen,
     ReporteCompletoHorasTrabajadasDetalle,
     ConsultaHorasTrabajadasDetalleChequeos,
+    ConsultaHorasTrabajadasDetalleDiasHorario,
     ConsultaHorasTrabajadasDetalleRegistrosReporte,
 } from "../../../../utils/API/interface/reportes"
 
@@ -35,6 +36,10 @@ import {
 import {
     ReporteHorasTrabajadasDetalle
 } from "../../../../utils/interfaces/reporteHorasTrabajadasDetalle";
+
+import {
+    horasTrabajadasDetalleHorarioEmpleadoDia
+} from "../../../../utils/API/respuestas/horasTrabajadasDetalleHorarioEmpleado";
 
 const ConsultaRegistroEmpleado = (
     setRegistro: Function,
@@ -144,7 +149,6 @@ const ReporteHorasTrabajadasDetalleTracker = (
 // Consultamos el reporte de chequeo de las horas trabajadas a detalle.
 const ReporteHorasTrabajadasDetalleChequeo = (
     setReporteChequeo: Function,
-    setReporteDescanso: Function,
     setEnCarga: Function,
     querry?: {
         idEmpleadoVinculado?: string,
@@ -156,22 +160,13 @@ const ReporteHorasTrabajadasDetalleChequeo = (
     // Consultamos los dispositivos.
     return ConsultaHorasTrabajadasDetalleChequeos(
         (respuesta: any) => {
-            setReporteChequeo({
-                a: respuesta.reporte.entrada,
-                b: respuesta.reporte.salida
-            });
-
-            setReporteDescanso({
-                a: respuesta.reporte.inicioDescanso,
-                b: respuesta.reporte.finDescanso
-            });
+            setReporteChequeo(respuesta.reporte);
         },
         querry,
         (error: any) => {
             console.log(error);
         },
         () => {
-            setReporteChequeo({} as ReporteChequeoResumen);
             setReporteChequeo({} as ReporteChequeoResumen);
             setEnCarga(true);
         },
@@ -257,6 +252,40 @@ const ReporteHorasTrabajadasDetalleRegistrosReporte = (
     );
 };
 
+// Consulta los dias del horario del empleado, junto con una
+// serie de banderas por dia.
+const ListarDiasHorarioEmpleado = (
+    setListaDias: Function,
+    setEnCarga: Function,
+    querry?: {
+        idEmpleadoVinculado?: string,
+        semanaReporte?: string
+    },
+    consultaConcatenada?: Function
+) => {
+    // Consultamos los dias en el horairo del empleado.
+    return ConsultaHorasTrabajadasDetalleDiasHorario(
+        (respuesta: any) => {
+            setListaDias(respuesta.dias);
+        },
+        querry,
+        (error: any) => {
+            console.log(error);
+        },
+        () => {
+            setListaDias([] as horasTrabajadasDetalleHorarioEmpleadoDia []);
+            setEnCarga(true);
+        },
+        () => {
+            if(!consultaConcatenada) {
+                setEnCarga(false);
+            } else {
+                consultaConcatenada();
+            }
+        }
+    );
+};
+
 // Consulta los datos del reporte.
 const ConsultarDatosReporte = (
     generarReporte: Function,
@@ -279,6 +308,7 @@ const ConsultarDatosReporte = (
 export {
     ConsultarDatosReporte,
     ConsultaRegistroEmpleado,
+    ListarDiasHorarioEmpleado,
     ReporteHorasTrabajadasDetalleGeneral,
     ReporteHorasTrabajadasDetalleTracker,
     ReporteHorasTrabajadasDetalleResumen,

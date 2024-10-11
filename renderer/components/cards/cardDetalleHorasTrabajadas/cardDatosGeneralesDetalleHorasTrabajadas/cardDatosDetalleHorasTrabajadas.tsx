@@ -181,6 +181,10 @@ export default function CardDatosDetalleHorasTrabajadas(
                             </td>
 
                             <td>
+                                Descansos laborados
+                            </td>
+
+                            <td>
                                 Extras
                             </td>
 
@@ -201,6 +205,16 @@ export default function CardDatosDetalleHorasTrabajadas(
                                     props.datos.tiempoTrabajoTotal?
                                         props.datos.tiempoTrabajoTotal : 0
                                 ))}
+                            </td>
+
+                            <td>
+                                <Badge color={props.datos.descansosLaborados <= 0?
+                                    '' : 'success'
+                                } style={{
+                                    width: '100%'
+                                }}>
+                                    {props.datos.descansosLaborados}
+                                </Badge>
                             </td>
 
                             <td>

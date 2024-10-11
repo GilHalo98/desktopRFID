@@ -3,30 +3,20 @@
 // React.
 import React from 'react';
 
-// Iconos del header.
-import {
-    mdiFileDocumentPlus,
-    mdiFileMinus,
-    mdiPrinter
-} from '@mdi/js';
-
-// Componente del icono.
-import Icon from '@mdi/react';
-
 // Componentes de reacstrap
 import {
     Table,
-    Button
+    Button,
+    Badge
 } from 'reactstrap';
 
 export default function SubNavegacion(
     props: {
-        paginas: {
-            nombre: string,
-            index: number
-        }[]
+        paginas: any []
         indexPaginaActual: number
-        setIndexPaginaActual: Function
+        setIndexPaginaActual: Function,
+        evaluarDeshabilitado?: Function,
+        formatearTexto?: Function
     }
 ) {
 
@@ -36,10 +26,8 @@ export default function SubNavegacion(
                 <tbody>
                     <tr>
                         {props.paginas.map((
-                            pagina: {
-                                nombre: string,
-                                index: number
-                            }
+                            pagina: any,
+                            index: number
                         ) => {
                             return(
                                 <td
@@ -47,19 +35,26 @@ export default function SubNavegacion(
                                 >
                                     <Button
                                         block
+                                        outline
+                                        disabled={
+                                            props.evaluarDeshabilitado(pagina)
+                                        }
                                         size='sm'
                                         className='botonSubNavegacion'
                                         active={
-                                            pagina.index == props.indexPaginaActual?
+                                            index == props.indexPaginaActual?
                                                 true : false
                                         }
                                         onClick={() => {
                                             props.setIndexPaginaActual(
-                                                pagina.index
+                                                index
                                             );
                                         }}
                                     >
-                                        {pagina.nombre}
+                                        {
+                                            !props.formatearTexto?
+                                                index : props.formatearTexto(pagina)
+                                        }
                                     </Button>
                                 </td>
                             );

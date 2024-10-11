@@ -117,7 +117,7 @@ export default function TablaParaHorarioDeEmpleado(
     };
 
     // Renderizamos el contenido de la tabla.
-    const renderContienido = (registro: HorarioCompleto) => {
+    const renderContenido = (registro: HorarioCompleto) => {
         // Si los datos no existen o son invalidos.
         if(!registro) {
             // Mostramos el spinner de carga.
@@ -215,7 +215,7 @@ export default function TablaParaHorarioDeEmpleado(
                     </Row>
 
                     <Row>
-                        {renderContienido(props.registro)}
+                        {renderContenido(props.registro)}
 
                         {/* Renderizamos le contenido hijo del componente */}
                         {props.children}

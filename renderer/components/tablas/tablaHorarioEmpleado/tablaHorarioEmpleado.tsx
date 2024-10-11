@@ -4,23 +4,16 @@
 import React, { SyntheticEvent } from 'react';
 
 // Componentes propios.
-import FormModificarRegistroHorarioCompleto from '../../forms/registros/horarioCompleto/formModificarRegistroHorarioCompleto';
-import ModalModificarRegistroHorarioCompleto from '../../modals/modalHorarioCompleto/modalModificarRegistroHorarioCompleto';
 import TablaParaHorarioDeEmpleado from '../tablaParaHorarioDeEmpleado';
+import ModalModificarRegistroHorarioCompleto from '../../modals/modalHorarioCompleto/modalModificarRegistroHorarioCompleto';
+import FormModificarRegistroHorarioCompleto from '../../forms/registros/horarioCompleto/formModificarRegistroHorarioCompleto';
 
 // Importamos la funcionalidad de la tabla.
 import {
-    formatearRegistros,
-    exportarDatos,
+    modificarRegistro,
     consultarRegistros,
     consultarRegistrosVinculados,
-    modificarRegistro
 } from './logic/registros';
-
-// Modelo de datos.
-import {
-    Horario
-} from "../../../utils/API/modelos/horario";
 
 export default function TablaHorarioEmpelado(
     props: {}

@@ -1,11 +1,11 @@
-import { DiaLaboral } from "../modelos/diaLaboral"
+import {
+    DiaLaboral
+} from "../modelos/diaLaboral";
 
-export interface HorarioCompleto {
-    id: number
-    descripcionHorario: string
-    tolerancia: string
-    fechaRegistroHorario: any
-    fechaModificacionHorario: any
-    idEmpleadoVinculado: number
+import {
+    Horario
+} from "../modelos/horario";
+
+export interface HorarioCompleto extends Horario {
     diaLaborals: DiaLaboral[]
 };

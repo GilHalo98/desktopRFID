@@ -8,16 +8,19 @@ import {
     Container, Row, Col, Button, Spinner
 } from 'reactstrap';
 
+// Componentes propios.
+import FormTablaDias from '../tablaDias/formTablaDias';
+import FormListaDias from '../listaDias/formListaDias';
+
 // Funcionalidad propia.
 import {
     renderBarraBotones
 } from './logic/renders';
 
 // Modelo de datos.
-import { HorarioCompleto } from '../../../../utils/API/respuestas/horarioCompleto';
-import FormTablaDias from '../tablaDias/formTablaDias';
-import { DiaLaboral } from '../../../../utils/API/modelos/diaLaboral';
-import FormListaDias from '../listaDias/formListaDias';
+import {
+    HorarioCompleto
+} from '../../../../utils/API/respuestas/horarioCompleto';
 
 export default function FormModificarRegistroHorarioCompleto(
     props: {
@@ -48,13 +51,13 @@ export default function FormModificarRegistroHorarioCompleto(
 
     // Lista de dias.
     const listaDias = [
-        { nombreDia: 'Lunes', id: 0 },
-        { nombreDia: 'Martes', id: 1 },
-        { nombreDia: 'Miercoles', id: 2 },
-        { nombreDia: 'Jueves', id: 3 },
-        { nombreDia: 'Viernes', id: 4 },
-        { nombreDia: 'Sabado', id: 5 },
-        { nombreDia: 'Domingo', id: 6 }
+        { nombreDia: 'Lunes', id: 1 },
+        { nombreDia: 'Martes', id: 2 },
+        { nombreDia: 'Miercoles', id: 3 },
+        { nombreDia: 'Jueves', id: 4 },
+        { nombreDia: 'Viernes', id: 5 },
+        { nombreDia: 'Sabado', id: 6 },
+        { nombreDia: 'Domingo', id: 7 }
     ];
 
     const renderHorario = () => {

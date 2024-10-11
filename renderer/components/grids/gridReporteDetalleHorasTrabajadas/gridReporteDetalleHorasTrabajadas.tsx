@@ -5,18 +5,14 @@ import React from 'react';
 
 // Componentes de reacstrap.
 import {
-    Card, Row, Col, Container
+    Card, Badge,
+    Container, Row, Col,
 } from 'reactstrap';
 
 // Interfaz de datos pasados como querry.
 import {
     ParsedUrlQuery
 } from "querystring";
-
-// DataTest
-import {
-    contenidoSubNavegacion
-} from './logic/dataTest';
 
 // Componentes propios.
 import TrackerDatos from '../../graficos/trackerDatos';
@@ -40,18 +36,18 @@ import {
 
 // Funciones de tiempo.
 import {
-    msToTime,
-    separarTiempo
+    numeroDiaANombreDia
 } from '../../../utils/conversiones';
 
 // Consulta de datos de la API.
 import {
     ConsultaRegistroEmpleado,
+    ListarDiasHorarioEmpleado,
     ReporteHorasTrabajadasDetalleGeneral,
     ReporteHorasTrabajadasDetalleTracker,
     ReporteHorasTrabajadasDetalleResumen,
     ReporteHorasTrabajadasDetalleChequeo,
-    ReporteHorasTrabajadasDetalleRegistrosReporte
+    ReporteHorasTrabajadasDetalleRegistrosReporte,
 } from './logic/registros';
 
 // Modelo de datos.
@@ -75,6 +71,10 @@ import {
     ReporteChequeoResumen
 } from '../../../utils/API/respuestas/reporteChequeoResumen';
 
+import {
+    horasTrabajadasDetalleHorarioEmpleadoDia
+} from '../../../utils/API/respuestas/horasTrabajadasDetalleHorarioEmpleado';
+
 export default function GridReporteDetalleHorasTrabajadas(
     props: {
         datosReporte: ParsedUrlQuery
@@ -92,6 +92,11 @@ export default function GridReporteDetalleHorasTrabajadas(
     ] = React.useState(1);
 
     const [
+        indexDiaSemana,
+        setIndexDiaSemana
+    ] = React.useState(0);
+
+    const [
         semanaReporte,
         setSemanaReporte
     ] = React.useState(props.datosReporte.semanaReporte as string);
@@ -101,6 +106,11 @@ export default function GridReporteDetalleHorasTrabajadas(
         registroEmpleado,
         setRegistroEmpleado
     ] = React.useState({} as Empleado);
+
+    const [
+        listaDias,
+        setListaDias
+    ] = React.useState([] as horasTrabajadasDetalleHorarioEmpleadoDia []);
 
     const [
         reporteGeneral,
@@ -115,11 +125,6 @@ export default function GridReporteDetalleHorasTrabajadas(
     const [
         reporteResumenChequeo,
         setReporteResumenChequeo
-    ] = React.useState({} as ReporteChequeoResumen);
-
-    const [
-        reporteResumenDescanso,
-        setReporteResumenDescanso
     ] = React.useState({} as ReporteChequeoResumen);
 
     const [
@@ -164,6 +169,17 @@ export default function GridReporteDetalleHorasTrabajadas(
             () => {}
         );
 
+        // Consultamos el horario del empleado.
+        ListarDiasHorarioEmpleado(
+            setListaDias,
+            setEnCarga,
+            {
+                idEmpleadoVinculado: idEmpleado,
+                semanaReporte: semanaReporte
+            },
+            () => {}
+        );
+
         // Realizamos la consulta del reporte general.
         ReporteHorasTrabajadasDetalleGeneral(
             setReporteGeneral,
@@ -196,7 +212,6 @@ export default function GridReporteDetalleHorasTrabajadas(
         // Consultamos el reporte para poblar el tracker.
         ReporteHorasTrabajadasDetalleChequeo(
             setReporteResumenChequeo,
-            setReporteResumenDescanso,
             setEnCarga,
             {
                 idEmpleadoVinculado: idEmpleado,
@@ -230,7 +245,8 @@ export default function GridReporteDetalleHorasTrabajadas(
         );
     }, [
         refresh,
-        diaSemana
+        diaSemana,
+        indexDiaSemana
     ]);
 
     // Rutinas.
@@ -240,6 +256,28 @@ export default function GridReporteDetalleHorasTrabajadas(
 
     const seleccionarColorRegistroDescanso = (tipoReporte: number) => {
         return 'success';
+    };
+
+    const generarLabel = (
+        registro: horasTrabajadasDetalleHorarioEmpleadoDia
+    ) => {
+        let badge: React.JSX.Element = <></>;
+
+        if(registro.descansoLaborado) {
+            badge = <Badge color='success'>Descanso laborado</Badge>
+
+        } else {
+            if(!registro.diaFueraDeRango
+                && registro.falto
+                && !registro.esDescanso
+            ) {
+                badge = <Badge color='danger'>Falta</Badge>
+            }
+        }
+
+        return <>
+            {numeroDiaANombreDia(registro.dia)} {badge}
+        </>;
     };
 
     return(
@@ -285,11 +323,21 @@ export default function GridReporteDetalleHorasTrabajadas(
                         marginBottom: '10px'
                     }}>
                         <SubNavegacion
-                            paginas={contenidoSubNavegacion}
-                            indexPaginaActual={diaSemana}
-                            setIndexPaginaActual={(nuevoDia) => {
-                                setDiaSemana(nuevoDia);
+                            paginas={listaDias}
+                            indexPaginaActual={indexDiaSemana}
+                            evaluarDeshabilitado={(pagina: horasTrabajadasDetalleHorarioEmpleadoDia) => {
+                                return pagina.diaFueraDeRango;
                             }}
+                            setIndexPaginaActual={(
+                                nuevoIndex: number
+                            ) => {
+                                const diaSemana: horasTrabajadasDetalleHorarioEmpleadoDia = listaDias[nuevoIndex];
+
+                                setIndexDiaSemana(nuevoIndex);
+
+                                setDiaSemana(diaSemana.dia);
+                            }}
+                            formatearTexto={generarLabel}
                         />
                     </Card>
                 </Col>
@@ -324,20 +372,6 @@ export default function GridReporteDetalleHorasTrabajadas(
                                     }
                                     datos={
                                         reporteResumenChequeo
-                                    }
-                                />
-                            </Col>
-                        </Row>
-
-                        <Row>
-                            <Col>
-                                <CardReportesChicoDetalleHorasTrabajadas
-                                    titulo="Descanso"
-                                    seleccionarColorBadge={
-                                        seleccionarColorRegistroDescanso
-                                    }
-                                    datos={
-                                        reporteResumenDescanso
                                     }
                                 />
                             </Col>
