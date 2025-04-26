@@ -14,10 +14,11 @@ import ModalHorasTrabajadasDetalle from '../../modals/modalInformacionDetalle/mo
 
 // Importamos la funcionalidad de la tabla.
 import {
-    formatearRegistros,
     exportarDatos,
+    formatearRegistros,
     consultarRegistros,
-    consultarRegistrosRoles
+    consultarRegistrosRoles,
+    consultarResumenDatosReporte
 } from './logic/registros';
 
 import {
@@ -34,7 +35,7 @@ import {
 } from '../../../utils/conversiones';
 
 import {
-    formatearDatosTracker
+    formatearDatosTracker, onGenerarDocumento
 } from './logic/rutinas';
 
 export default function TablaHorasTrabajadas(
@@ -234,6 +235,12 @@ export default function TablaHorasTrabajadas(
     const funcionesOpciones = {
         onRefrescarTabla: () => {setRefresh(
             !refresh
+        )},
+        onExportarDatos: () => {onGenerarDocumento(
+            semanaReporte,
+            "portrait",
+            "pt",
+            "letter"
         )},
         onCambiarConfiguracion: () => {console.log(
             "configuracion cambiada"

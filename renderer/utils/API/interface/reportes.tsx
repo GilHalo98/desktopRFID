@@ -2,6 +2,7 @@
 import {
     GetHorasTrabajadas,
     GetHistorialUsosMaquina,
+    GetResumenHorasTrabajadas,
     GetHistorialActividadMaquina,
     GetHistorialOperadoresMaquina,
     GetHorasTrabajadasDetalleGeneral,
@@ -839,9 +840,49 @@ function ReporteCompletoHorasTrabajadasDetalle(
     });
 };
 
+function ConsultaResumenHorasTrabajadas(
+    onOk: Function,
+    parametrosBusqueda?: {
+        semanaReporte?: string
+    },
+    onError?: Function,
+    onAntes?: Function,
+    onFinalizar?: Function
+) {
+    if(typeof onAntes != 'undefined') {
+        // Ejecutamos la funcion de antes de realizar el request.
+        onAntes();
+    }
+
+    // Instanciamos la promesa.
+    const promesa = Promise.resolve(GetResumenHorasTrabajadas(
+        parametrosBusqueda
+    ));
+
+    // Realizamos el request.
+    promesa.then((respuesta) => {
+        // Al cumplirse el request, se ejecuta la función.
+        onOk(respuesta.data);
+
+    }).catch((error) => {
+        if(typeof onError != 'undefined') {
+            // Al ocurrir un error con el reques, ejecutamos la función.
+            onError(error);
+        }
+
+    }).finally(() => {
+        if(typeof onFinalizar != 'undefined') {
+            // Al terminar el request, se ejecuta la función.
+            onFinalizar();
+        }
+
+    });
+}
+
 export {
     ConsultaHorasTrabajadas,
     ConsultaHistorialUsosMaquina,
+    ConsultaResumenHorasTrabajadas,
     ConsultaHistorialActividadMaquina,
     ConsultaHistorialOperadoresMaquina,
     ConsultaHorasTrabajadasDetalleGeneral,

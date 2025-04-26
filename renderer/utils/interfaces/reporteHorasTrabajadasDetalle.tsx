@@ -1,4 +1,7 @@
-import { Empleado } from "../API/modelos/empleado";
+import {
+    Empleado
+} from "../API/modelos/empleado";
+
 import {
     ReporteAccesosDetalle
 } from "../API/respuestas/reporteAccesosDetalle";

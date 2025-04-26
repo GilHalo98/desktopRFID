@@ -467,6 +467,8 @@ export const guardarConfiguracionDispositivoControlador = async (
         // Vaciamos la cola de datos.
         colaDatos = [];
 
+        console.log(args.configuracion);
+
         // Descomponemos los datos que se guardaran en la tarjeta.
         colaDatos = [[
             EVENTOS_GUARDADO_CONFIGURACION_CONTROLADOR.CAMBIAR_ROL_PEDIDO,

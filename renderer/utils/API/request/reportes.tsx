@@ -217,9 +217,18 @@ const GetHorasTrabajadasDetalleDiasHorario = async (
     );
 };
 
+const GetResumenHorasTrabajadas = async (
+    parametros?: {
+        semanaReporte?: string
+    }
+) => {
+    return ENDPOINTS.REPORTES.RESUMEN_HORAS_TRABAJADAS(parametros);
+};
+
 export {
     GetHorasTrabajadas,
     GetHistorialUsosMaquina,
+    GetResumenHorasTrabajadas,
     GetHistorialActividadMaquina,
     GetHistorialOperadoresMaquina,
     GetHorasTrabajadasConDescanso,

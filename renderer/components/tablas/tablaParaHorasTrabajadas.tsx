@@ -174,14 +174,14 @@ export default function TablaParaHorasTrabajadas(
             )}
 
             {/*Modal para exportar los datos a un archivo xlsx*/}
-            {renderModalExportarDatosTabla(
+            {/* {renderModalExportarDatosTabla(
                 props.tituloTabla,
                 estadoModalExportarDatosTabla,
                 () => {setEstadoModalExportarDatosTabla(
                     !estadoModalExportarDatosTabla
                 )},
                 props.exportarDatos
-            )}
+            )} */}
         </Card>
     );
 };

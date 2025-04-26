@@ -14,7 +14,7 @@ function bin2dec(
     return decimal;
 };
 
-function msToTime(s: number, enTexto:boolean = false) {
+function msToTime(s: number, enTexto: boolean = false) {
     if(typeof s == 'undefined') {
         return "";
     }
@@ -220,7 +220,7 @@ function deserealizarSemana(semana: string) {
     fechaA.setFullYear(
         parseInt(semanaReporte[0]),
         0,
-        (parseInt(semanaReporte[1]) * 7) - 7
+        (parseInt(semanaReporte[1]) * 7) - 9
     );
 
     fechaA.setHours(
@@ -234,7 +234,7 @@ function deserealizarSemana(semana: string) {
     fechaB.setFullYear(
         parseInt(semanaReporte[0]),
         0,
-        (parseInt(semanaReporte[1]) * 7) - 1
+        (parseInt(semanaReporte[1]) * 7) - 3
     );
 
 
@@ -250,18 +250,18 @@ function deserealizarSemana(semana: string) {
     ];
 };
 
-const separarTiempo = (tiempo: string) => {
+const separarTiempo = (tiempo: string, incluirSegundos=true) => {
     /**
      * Separa el tiempo en formato HH:MM:SS a
      * HH horas MM minutos SS segundos
      */
 
     if(typeof tiempo == 'undefined') {
-        return '0';
+        return '-';
     }
 
     if(tiempo == '') {
-        return '0';
+        return '-';
     }
 
     const partes = tiempo.split(':');
@@ -278,7 +278,7 @@ const separarTiempo = (tiempo: string) => {
         }
     }
 
-    if(partes[2]) {
+    if(partes[2] && incluirSegundos) {
         if((partes[2] != '00') && (partes[2] != '0')) {
             tiempoSeparado = tiempoSeparado.concat(`${partes[2]} segundos`);
         }
@@ -310,11 +310,11 @@ const a12HorasTiempo = (tiempo: string) => {
      */
 
     if(typeof tiempo == 'undefined') {
-        return '0';
+        return '-';
     }
 
     if(tiempo == '') {
-        return '0';
+        return '-';
     }
 
     const partes: string [] = tiempo.split(':');

@@ -797,6 +797,15 @@ const ENDPOINTS = {
             });
         },
 
+        RESUMEN_HORAS_TRABAJADAS: (parametros: any) => {
+            return REQUEST_HANDLER({
+                method: 'get',
+                url: URL_GENERALES.REPORTES + '/horasTrabajadas/resumen',
+                params: parametros,
+                headers: { 'authorization': sessionStorage.getItem('token') }
+            });
+        },
+
         HORAS_TRABAJADAS_DETALLE: {
             DIAS_HORARIO: (parametros: any) => {
                 return REQUEST_HANDLER({
@@ -865,6 +874,15 @@ const ENDPOINTS = {
                 return REQUEST_HANDLER({
                     method: 'get',
                     url: URL_GENERALES.REPORTES + 'horasTrabajadas/detalles/registrosConReportes',
+                    params: parametros,
+                    headers: { 'authorization': sessionStorage.getItem('token') }
+                });
+            },
+
+            HORAS_TRABAJADAS: (parametros: any) => {
+                return REQUEST_HANDLER({
+                    method: 'get',
+                    url: URL_GENERALES.REPORTES + '/horasTrabajadas',
                     params: parametros,
                     headers: { 'authorization': sessionStorage.getItem('token') }
                 });

@@ -19,8 +19,13 @@ import {
 } from "../../../../utils/API/interface/rol";
 
 import {
-    ConsultaHorasTrabajadas
+    ConsultaHorasTrabajadas,
+    ConsultaResumenHorasTrabajadas
 } from "../../../../utils/API/interface/reportes";
+
+import {
+    ReporteResumenHorasTrabajadas
+} from "../../../../utils/interfaces/reporteResumenHorasTrabajadas";
 
 // Registros que se mostraran en la tabla.
 const formatearRegistros = (
@@ -125,9 +130,33 @@ const consultarRegistrosRoles = (
     )
 };
 
+// Consultamos los datos del resumen del reporte.
+const consultarResumenDatosReporte = (
+    generarReporte: Function,
+    querry?: {
+        semanaReporte?: string
+    }
+) => {
+    ConsultaResumenHorasTrabajadas(
+        (respuesta: {
+            codigoRespuesta: number,
+            reporte: ReporteResumenHorasTrabajadas[]
+        }) => {
+            if(respuesta.codigoRespuesta == 0) {
+                generarReporte(respuesta.reporte);
+            }
+        },
+        querry,
+        (error: any) => {
+            console.log(error);
+        }
+    );
+};
+
 export {
-    formatearRegistros,
     exportarDatos,
+    formatearRegistros,
     consultarRegistros,
-    consultarRegistrosRoles
+    consultarRegistrosRoles,
+    consultarResumenDatosReporte
 };
